@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
 	StyleSheet,
 	ScrollView,
@@ -7,11 +7,13 @@ import {
 	StatusBar,
 } from 'react-native';
 
-const App = () => {
-	return (
-		<StatusBar barStyle="dark-content" />
-	);
-};
+class App extends Component {
+	render() {
+		return (
+			<StatusBar barStyle="default" />
+		);
+	}
+}
 
 const styles = StyleSheet.create({
 	scrollView: {
