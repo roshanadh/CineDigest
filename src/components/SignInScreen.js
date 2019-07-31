@@ -35,8 +35,9 @@ class SignInScreen extends Component {
     };
 
 	signInBtnPressedHandler = () => {
-		alert(`You are now signed in, ${this.state.emailId}!`);
-		// this.props.navigation.navigate('MainScreen');
+		this.props.navigation.navigate('MainScreen', {
+            emailId: this.state.emailId,
+        });
 	};
 	render() {
 		return (
