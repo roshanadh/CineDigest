@@ -5,6 +5,7 @@ import {
 	View,
 	Text,
 	Button,
+	TouchableOpacity,
 	StatusBar,
 	TextInput,
 } from 'react-native';
@@ -27,9 +28,8 @@ class App extends Component {
 	render() {
 		return (
 			<View style={styles.container}>
-				<View style={styles.signInForm}>
 					<StatusBar barStyle="default" />
-					<View>
+					<View style={styles.signInForm}>
 						<Text style={styles.signInHeader}>Sign-in</Text>
 						<TextInput placeholder={this.state.emailId}
 							style={styles.textInput} name="emailIdTextInput"
@@ -38,9 +38,10 @@ class App extends Component {
 							secureTextEntry={true}
 							style={styles.textInput} name="passwordTextInput"
 							onChange={this.passwordTextChanged} />
-						<Button title="Sign-in" style={styles.signInBtn} />
+						<TouchableOpacity style={styles.signInBtn}>
+							<Text style={styles.btnText}>Sign-in</Text>
+						</TouchableOpacity>
 					</View>
-				</View>
 			</View>
 		);
 	}
@@ -52,7 +53,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center',
-		// alignItems: 'center',
 	},
 	signInHeader: {
 		fontSize: 35,
@@ -71,7 +71,18 @@ const styles = StyleSheet.create({
 		marginBottom: 10,
 	},
 	signInBtn: {
+		marginTop: 20,
+		flex: 1,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		alignSelf: 'center',
 		borderWidth: 1,
+		borderRadius: 5,
+		padding: 15,
+		width: '30%',
+	},
+	btnText: {
 	},
 });
 export default App;
