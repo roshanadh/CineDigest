@@ -25,6 +25,10 @@ class App extends Component {
 
 	// };
 
+	signInBtnPressedHandler = () => {
+		alert('You are now signed in!');
+	}
+
 	render() {
 		return (
 			<View style={styles.container}>
@@ -38,7 +42,8 @@ class App extends Component {
 							secureTextEntry={true}
 							style={styles.textInput} name="passwordTextInput"
 							onChange={this.passwordTextChanged} />
-						<TouchableOpacity style={styles.signInBtn}>
+						<TouchableOpacity style={styles.signInBtn}
+							onPress={this.signInBtnPressedHandler}>
 							<Text style={styles.btnText}>Sign-in</Text>
 						</TouchableOpacity>
 					</View>
@@ -49,7 +54,7 @@ class App extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 20,
+		padding: 50,
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center',
@@ -69,6 +74,8 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		borderWidth: 1,
 		marginBottom: 10,
+		paddingLeft: 20,
+		paddingRight: 20,
 	},
 	signInBtn: {
 		marginTop: 20,
