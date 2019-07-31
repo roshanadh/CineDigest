@@ -30,13 +30,15 @@ class App extends Component {
 				<View style={styles.signInForm}>
 					<StatusBar barStyle="default" />
 					<View>
+						<Text style={styles.signInHeader}>Sign-in</Text>
 						<TextInput placeholder={this.state.emailId}
-							style={styles.textInput} name='emailIdTextInput'
+							style={styles.textInput} name="emailIdTextInput"
 							onChange={this.emailTextChanged} />
 						<TextInput placeholder={this.state.password}
-							style={styles.textInput} name='passwordTextInput'
-							onChange={this.passwordTextChanged} />					
-						<Button title='Sign-in' style={styles.signInBtn} />
+							secureTextEntry={true}
+							style={styles.textInput} name="passwordTextInput"
+							onChange={this.passwordTextChanged} />
+						<Button title="Sign-in" style={styles.signInBtn} />
 					</View>
 				</View>
 			</View>
@@ -47,9 +49,17 @@ class App extends Component {
 const styles = StyleSheet.create({
 	container: {
 		padding: 20,
+		flex: 1,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		// alignItems: 'center',
+	},
+	signInHeader: {
+		fontSize: 35,
+		alignSelf: 'center',
+		marginBottom: 25,
 	},
 	signInForm: {
-
 	},
 	scrollView: {
 		backgroundColor: '#000000',
