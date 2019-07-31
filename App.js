@@ -30,7 +30,7 @@ class App extends Component {
 			<View style={styles.container}>
 					<StatusBar barStyle="default" />
 					<View style={styles.signInForm}>
-						<Text style={styles.signInHeader}>Sign-in</Text>
+						<Text style={styles.signInHeader}>Cine Digest</Text>
 						<TextInput placeholder={this.state.emailId}
 							style={styles.textInput} name="emailIdTextInput"
 							onChange={this.emailTextChanged} />
@@ -78,8 +78,9 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		alignSelf: 'center',
 		borderWidth: 1,
-		borderRadius: 5,
+		borderRadius: 50,
 		padding: 15,
+		minHeight: '6%',
 		width: '30%',
 	},
 	btnText: {
