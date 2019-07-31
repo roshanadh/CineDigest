@@ -10,7 +10,7 @@ import {
 	TextInput,
 } from 'react-native';
 
-class App extends Component {
+class SignInScreen extends Component {
 
 	state = {
 		emailId: 'this is email',
@@ -93,4 +93,4 @@ const styles = StyleSheet.create({
 	btnText: {
 	},
 });
-export default App;
+export default SignInScreen;
