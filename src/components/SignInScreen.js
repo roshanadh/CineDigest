@@ -9,19 +9,35 @@ import {
 } from 'react-native';
 
 class SignInScreen extends Component {
+    constructor(props, context) {
+        super(props, context);
+        this.state = {
+            emailId: 'this is email',
+            password: 'this is password',
+        };
+        this.getState = this.getState.bind(this);
+        
+    }
     static navigationOptions = {
         header: null,
     }
+    
+    getState = () => {
+        return this.state.emailId;
+    }
 
-	state = {
-		emailId: 'this is email',
-		password: 'this is password',
-	};
+    emailTextChanged = newEmail => {
+        this.setState({emailId: newEmail});
+    };
+
+    passwordTextChanged = newPassword => {
+        this.setState({password: newPassword});
+    };
 
 	signInBtnPressedHandler = () => {
-		alert('You are now signed in!');
-		this.props.navigation.navigate('MainScreen');
-	}
+		alert(`You are now signed in, ${this.state.emailId}!`);
+		// this.props.navigation.navigate('MainScreen');
+	};
 	render() {
 		return (
 			<View style={styles.container}>
@@ -29,14 +45,14 @@ class SignInScreen extends Component {
 					<View style={styles.signInForm}>
 						<Text style={styles.signInHeader}>Cine Digest</Text>
 
-						<TextInput placeholder={this.state.emailId}
+						<TextInput placeholder='E-mail'
 							style={styles.textInput} name="emailIdTextInput"
-							onChange={this.emailTextChanged} />
+							onChangeText={this.emailTextChanged} />
 
-						<TextInput placeholder={this.state.password}
+						<TextInput placeholder='Password'
 							secureTextEntry={true}
 							style={styles.textInput} name="passwordTextInput"
-							onChange={this.passwordTextChanged} />
+							onChangeText={this.passwordTextChanged} />
 
 						<TouchableOpacity style={styles.signInBtn}
 							onPress={this.signInBtnPressedHandler}>
