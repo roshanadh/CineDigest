@@ -15,15 +15,9 @@ class SignInScreen extends Component {
             emailId: 'this is email',
             password: 'this is password',
         };
-        this.getState = this.getState.bind(this);
-        
     }
     static navigationOptions = {
         header: null,
-    }
-    
-    getState = () => {
-        return this.state.emailId;
     }
 
     emailTextChanged = newEmail => {
@@ -46,11 +40,11 @@ class SignInScreen extends Component {
 					<View style={styles.signInForm}>
 						<Text style={styles.signInHeader}>Cine Digest</Text>
 
-						<TextInput placeholder='E-mail'
+						<TextInput placeholder="E-mail"
 							style={styles.textInput} name="emailIdTextInput"
 							onChangeText={this.emailTextChanged} />
 
-						<TextInput placeholder='Password'
+						<TextInput placeholder="Password"
 							secureTextEntry={true}
 							style={styles.textInput} name="passwordTextInput"
 							onChangeText={this.passwordTextChanged} />
