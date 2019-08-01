@@ -12,7 +12,7 @@ import {
 const {width, height, fontScale} = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
 const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
-const headerFontSize = 35;
+const headerFontSize = 35 / fontScale;
 
 class SignInScreen extends Component {
     constructor(props, context) {
@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	signInHeader: {
-		fontSize: headerFontSize / fontScale,
+		fontSize: headerFontSize,
 		alignSelf: 'center',
 		marginBottom: 25,
 	},
