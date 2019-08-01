@@ -1,28 +1,12 @@
-import React, {Component} from 'react';
 import {Text, View, StyleSheet} from 'react-native';
+import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
 
-export default class MainScreen extends Component {
-	render() {
-        const { navigation } = this.props;
-        const emailId = navigation.getParam('emailId', 'defaultEmail');
-		return (
-            <View style={styles.container}>
-                <Text style={styles.welcomeHeader}>Welcome, {emailId}!</Text>
-            </View>
-        );
-	}
-}
+import MoviesScreen from './MoviesScreen.js';
+import ShowsScreen from './ShowsScreen.js';
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%',
-        padding: 50,
-    },
-	welcomeHeader: {
-		fontSize: 35,
-    },
+const AppTabNavigator = createBottomTabNavigator({
+    MoviesScreen,
+	ShowsScreen,
 });
+
+export default createAppContainer(AppTabNavigator);
