@@ -5,6 +5,7 @@ import {
 	TextInput,
 	StyleSheet,
 	TouchableOpacity,
+	FlatList,
 } from 'react-native';
 
 export default class MoviesScreen extends Component {
@@ -12,20 +13,53 @@ export default class MoviesScreen extends Component {
 		super(props, context);
 		this.state = {
 			searchQuery: '',
+			searchReponse: {},
 		};
 	}
 
 	searchFieldChangedHandler = (newQuery) => {
 		this.setState({
+			isEmpty: true,
 			searchQuery: newQuery,
+			searchResponse: {
+			},
 		});
 	};
 
 	searchBtnPressedHandler = () => {
-		alert(this.state.searchQuery);
+		// alert(this.state.searchQuery);
+		fetch(`https://api-cine-digest.herokuapp.com/api/v1/searchm/${this.state.searchQuery}`)
+			.then(response => response.json())
+			.then(jsonResponse => {
+				this.setState({
+					isEmpty: false,
+					searchResponse: jsonResponse.titles,
+				})
+			})
+			.catch(error => this.state.searchResponse = error.response.status);
 	};
 
     render() {
+		if (!this.state.isEmpty) {
+			return (
+				<View style={styles.container}>
+					<View style={styles.searchWrapper}>
+						<TextInput placeholder="Search a movie"
+							style={styles.searchTextInput}
+							onChangeText={this.searchFieldChangedHandler} />
+
+						<TouchableOpacity style={styles.searchBtn}
+							onPress={this.searchBtnPressedHandler}>
+							<Text>Search</Text>
+						</TouchableOpacity>
+					</View>
+
+						<FlatList data={this.state.searchResponse}
+							renderItem={({item}) => <Text>{item}</Text>}
+						/>
+				</View>
+			);
+		}
 		return (
 			<View style={styles.container}>
 				<View style={styles.searchWrapper}>
