@@ -31,8 +31,17 @@ const AppTabNavigator = createBottomTabNavigator(
         // router config, navigationOptions {for whole tabBar},
         // tabBarOptions go here
         tabBarOptions: {
-            activeTintColor: 'red',
-            inactiveTintColor: 'grey',
+            activeTintColor: '#cf000f',
+            inactiveTintColor: '#24252a',
+            labelStyle: {
+                fontSize: 14,
+                marginBottom: 5,
+            },
+            style: {
+                // backgroundColor: '#e4f1fe',
+                height: 80,
+                padding: 5,
+            },
         },
     },
 );
