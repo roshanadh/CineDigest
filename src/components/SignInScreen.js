@@ -6,7 +6,13 @@ import {
 	TouchableOpacity,
 	StatusBar,
 	TextInput,
+	Dimensions,
 } from 'react-native';
+
+const {width, height, fontScale} = Dimensions.get('window');
+const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
+const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
+const headerFontSize = 35;
 
 class SignInScreen extends Component {
     constructor(props, context) {
@@ -14,7 +20,7 @@ class SignInScreen extends Component {
         this.state = {
             emailId: 'this is email',
             password: 'this is password',
-        };
+		};
     }
     static navigationOptions = {
         header: null,
@@ -67,7 +73,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	signInHeader: {
-		fontSize: 35,
+		fontSize: headerFontSize / fontScale,
 		alignSelf: 'center',
 		marginBottom: 25,
 	},
@@ -94,8 +100,8 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderRadius: 50,
 		padding: 15,
-		minHeight: '6%',
-		width: '30%',
+		minHeight: btnHeight,
+		width: btnWidth,
 	},
 	btnText: {
 	},
