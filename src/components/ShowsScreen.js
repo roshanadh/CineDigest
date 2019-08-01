@@ -12,6 +12,9 @@ export default class ShowsScreen extends Component {
 		super(props, context);
 		this.state = {
 			searchQuery: '',
+			searchResponse: {
+
+			},
 		};
 	}
 
@@ -38,6 +41,7 @@ export default class ShowsScreen extends Component {
 						<Text>Search</Text>
 					</TouchableOpacity>
 				</View>
+				<Text>{this.state.searchQuery}</Text>
 			</View>
 		);
 	}
