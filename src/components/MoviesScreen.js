@@ -8,11 +8,36 @@ import {
 } from 'react-native';
 
 export default class MoviesScreen extends Component {
+	constructor(props, context) {
+		super(props, context);
+		this.state = {
+			searchQuery: '',
+		};
+	}
+
+	searchFieldChangedHandler = (newQuery) => {
+		this.setState({
+			searchQuery: newQuery,
+		});
+	};
+
+	searchBtnPressedHandler = () => {
+		alert(this.state.searchQuery);
+	};
+
     render() {
 		return (
 			<View style={styles.container}>
-				<TextInput placeholder="Search movie"
-					style={styles.searchTextInput} />
+				<View style={styles.searchWrapper}>
+					<TextInput placeholder="Search a movie"
+						style={styles.searchTextInput}
+						onChangeText={this.searchFieldChangedHandler} />
+
+					<TouchableOpacity style={styles.searchBtn}
+						onPress={this.searchBtnPressedHandler}>
+						<Text>Search</Text>
+					</TouchableOpacity>
+				</View>
 			</View>
 		);
 	}
@@ -25,26 +50,29 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 	},
+	searchWrapper: {
+		margin: 10,
+		flexDirection: 'row',
+		flex: 1,
+		justifyContent: 'flex-start',
+		alignItems: 'flex-start',
+	},
 	searchTextInput: {
+		marginRight: 5,
 		borderColor: '#010101',
 		borderRadius: 5,
 		borderWidth: 1,
-		marginBottom: 10,
 		paddingLeft: 20,
 		paddingRight: 20,
+		width: '78%',
 	},
 	searchBtn: {
-		marginTop: 20,
-		flex: 1,
-		flexDirection: 'row',
-		justifyContent: 'center',
 		alignItems: 'center',
-		alignSelf: 'center',
 		borderWidth: 1,
-		borderRadius: 50,
+		borderRadius: 5,
 		padding: 15,
-		minHeight: '8%',
-		width: '5%',
+		minHeight: '6%',
+		width: '18%',
 	},
 });
 
