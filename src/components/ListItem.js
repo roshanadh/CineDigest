@@ -9,6 +9,7 @@ export default function listItem(props) {
     return (
         <TouchableOpacity style={styles.listItem}>
             <Text>{props.title}</Text>
+            <Text>{props.overview}</Text>
         </TouchableOpacity>
     );
 }
