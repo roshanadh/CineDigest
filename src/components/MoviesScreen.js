@@ -7,6 +7,7 @@ import {
 	TouchableOpacity,
 	FlatList,
 } from 'react-native';
+import ListItem from './ListItem.js';
 
 export default class MoviesScreen extends Component {
 	constructor(props, context) {
@@ -56,9 +57,10 @@ export default class MoviesScreen extends Component {
 						</TouchableOpacity>
 					</View>
 
-						<FlatList data={this.state.searchResponse}
-							renderItem={({item}) => <Text>{item}</Text>}
-						/>
+					<FlatList data={this.state.searchResponse}
+						renderItem={({item}) => <ListItem title={item} />}
+						style={styles.searchResult}
+					/>
 				</View>
 			);
 		}
@@ -109,6 +111,9 @@ const styles = StyleSheet.create({
 		padding: 15,
 		minHeight: '6%',
 		width: '18%',
+	},
+	searchResult: {
+		// marginTop: 50,
 	},
 });
 
