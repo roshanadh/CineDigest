@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
+import React from 'react';
 import {
     Text,
     TouchableOpacity,
-    View,
     StyleSheet,
 } from 'react-native';
 
@@ -20,10 +19,10 @@ const styles = StyleSheet.create({
         padding: 40,
         backgroundColor: '#e4f1fe',
         borderRadius: 15,
-        width: '100%',
+        minWidth: '95%',
         flexDirection: 'row',
         flex: 1,
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         alignItems: 'center',
     },
 });
