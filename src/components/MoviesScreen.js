@@ -2,11 +2,9 @@ import React, {Component} from 'react';
 import {
 	View,
 	StyleSheet,
-	FlatList,
 } from 'react-native';
 import SearchItem from './SearchItem';
-import ListItem from './ListItem';
-import { ScrollView } from 'react-native-gesture-handler';
+import ListContainer from './ListContainer';
 
 export default class MoviesScreen extends Component {
 	constructor(props, context) {
@@ -50,12 +48,10 @@ export default class MoviesScreen extends Component {
 						onPress={this.searchBtnPressedHandler}
 						style={styles.searchItem}
 					/>
-					<ScrollView>
-					<FlatList data={this.state.searchResponse.titles}
-						renderItem={({item}) => <ListItem title={item} />}
-						style={styles.listItem}
+
+					<ListContainer
+						source={this.state.searchResponse.titles}
 					/>
-					</ScrollView>
 				</View>
 			);
 		}
