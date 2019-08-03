@@ -30,13 +30,15 @@ export default class MoviesScreen extends Component {
 		// alert(this.state.searchQuery);
 		fetch(`https://api-cine-digest.herokuapp.com/api/v1/searchm/${this.state.searchQuery}`)
 			.then(response => response.json())
-			.then(jsonResponse => {
+			.then(jsonResponse => { // TODO read full response, not just titles
 				this.setState({
 					isEmpty: false,
 					searchResponse: jsonResponse.titles,
 				})
-			})
-			.catch(error => this.state.searchResponse = error.response.status);
+			}) // TODO fix response status parsing
+			.catch(error => {
+				this.state.searchResponse = error.response.status;
+			});
 	};
 
     render() {
