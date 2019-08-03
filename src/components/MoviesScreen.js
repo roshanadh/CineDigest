@@ -37,6 +37,7 @@ export default class MoviesScreen extends Component {
 				});
 			}) // TODO fix response status parsing
 			.catch(error => {
+				alert("Oops!\nPlease make sure your search query is correct!");
 				this.state.searchResponse = error.response.status;
 			});
 	};
