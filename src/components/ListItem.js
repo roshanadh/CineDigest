@@ -4,12 +4,14 @@ import {
     TouchableOpacity,
     StyleSheet,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default function listItem(props) {
     return (
         <TouchableOpacity style={styles.listItem}>
-            <Text>{props.title}</Text>
+            <Text style={styles.title}>{props.title}</Text>
             <Text>{props.overview}</Text>
+            <Icon name="angle-right" size={20} color="#424242" style={styles.Icon}/>
         </TouchableOpacity>
     );
 }
@@ -17,13 +19,19 @@ export default function listItem(props) {
 const styles = StyleSheet.create({
     listItem: {
         margin: 5,
-        padding: 40,
-        backgroundColor: '#e4f1fe',
+        padding: 25,
+        backgroundColor: '#fafafa',
         borderRadius: 15,
         minWidth: '95%',
         flexDirection: 'row',
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'center',
+    },
+    title: {
+        flex: 1,
+    },
+    rightIcon: {
+        flex: 1,
     },
 });
