@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import {
     StyleSheet,
     ScrollView,
@@ -7,40 +7,44 @@ import {
 
 import ListItem from './ListItem';
 
-const createListItem = (props) => {
-    let jsonResponse = props.source; // JSON
-    let totalResults = jsonResponse.totalResults; // Not array
-    let voteCounts = jsonResponse.voteCounts;
-    let titleIds = jsonResponse.titleIds;
-    let voteAverages = jsonResponse.voteAverages;
-    let posterPaths = jsonResponse.posterPaths;
-    let overviews = jsonResponse.overviews;
-    let titles = jsonResponse.titles;
+export default class ListContainer extends Component {
+    constructor(props) {
+        super(props);
+        let jsonResponse = props.source;
+        let dataLength = jsonResponse.totalResults;
+        let data = [];
+        for (let i = 0; i < dataLength - 1; i++) {
+            // TODO
+            // Use these data instead of fetch() in ListItem.js
+            data[i] = {
+                id: jsonResponse.titleIds[i],
+                title: jsonResponse.titles[i],
+                overview: jsonResponse.overviews[i],
+                voteCount: jsonResponse.voteCounts[i],
+                voteAverage: jsonResponse.voteAverages[i],
+            };
+        }
+        this.state = {
+            data,
+        };
+        this.titleIds = this.state.titleIds;
+    }
 
-    props.forEach((element, index) => {
-        // return <ListItem
-        //     title={element}
-        //     titleId={titleIds[index]}
-        //     voteCounts={voteCounts[index]}
-        //     voteAverages={voteAverages[index]}
-        //     posterPaths={posterPaths[index]}
-        //     overviews={overviews[index]}
-        // />;
-        // alert(element);
-    });
-};
-
-export default function listContainer(props) {
-    return (
-        <ScrollView>
-            <FlatList data={props.source.titles}
-                renderItem={({item}) => (
-                    <ListItem title={item} />
-                )}
-                style={styles.listItem}
-            />
-		</ScrollView>
-    );
+    render() {
+        return (
+            <ScrollView>
+                <FlatList data={this.state.data}
+                    renderItem={({item}) => (
+                        <ListItem
+                            titleId={item.id}
+                            onItemPressed={() => this.props.onIdSelected(item.id)}
+                        />
+                    )}
+                    style={styles.listItem}
+                />
+            </ScrollView>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
