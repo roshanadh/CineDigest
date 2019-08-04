@@ -46,7 +46,6 @@ class SignInScreen extends Component {
 			if (!state.isConnected) {
 				this.showSnackBar('An internet connection is required!');
 			}
-			else this.showSnackBar('Welcome to Cine Digest!');
 		});
 	};
 
