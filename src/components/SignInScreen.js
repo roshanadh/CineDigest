@@ -8,6 +8,8 @@ import {
 	TextInput,
 	Dimensions,
 } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
+import Snackbar from 'react-native-snackbar';
 
 const {width, height, fontScale} = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
@@ -24,7 +26,29 @@ class SignInScreen extends Component {
     }
     static navigationOptions = {
         header: null,
-    }
+	}
+
+	showSnackBar = (message) => {
+		Snackbar.show({
+			title: message,
+			duration: Snackbar.LENGTH_INDEFINITE,
+			action: {
+				title: 'UNDO',
+				color: 'green',
+				onPress: () => {},
+			},
+			backgroundColor: '#efefef',
+		});
+	};
+
+	checkNetConn = () => {
+		NetInfo.fetch().then(state => {
+			if (!state.isConnected) {
+				this.showSnackBar('An internet connection is required!');
+			}
+			else this.showSnackBar('Welcome to Cine Digest!');
+		});
+	};
 
     emailTextChanged = newEmail => {
         this.setState({emailId: newEmail});
@@ -40,6 +64,7 @@ class SignInScreen extends Component {
         });
 	};
 	render() {
+		this.checkNetConn();
 		return (
 			<View style={styles.container}>
 					<StatusBar barStyle="default" />
