@@ -33,7 +33,7 @@ class SignInScreen extends Component {
 			title: message,
 			duration: Snackbar.LENGTH_INDEFINITE,
 			action: {
-				title: 'UNDO',
+				title: 'OK',
 				color: 'green',
 				onPress: () => {},
 			},
