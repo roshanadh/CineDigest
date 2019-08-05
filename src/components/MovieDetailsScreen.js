@@ -57,8 +57,8 @@ export default class MovieDetails extends Component {
                         status: jsonResponse.status,
                         genres: genres,
                         credits: jsonResponse.credits,
-                        creditsProfilePath: `https://image.tmdb.org/t/p/w185/${jsonResponse.creditsProfilePath}`,
-                        backdropPath: `https://image.tmdb.org/t/p/w185/${jsonResponse.backdrop_path}`,
+                        creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
+                        backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
                         // Unused
                         // budget: jsonResponse.budget,
                         // revenue: jsonResponse.revenue,
@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
         fontSize: 19,
     },
     posterPath: {
-        width: 300,
+        width: 400,
         height: 400,
         alignSelf: 'center',
         borderRadius: 2,
@@ -200,9 +200,9 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
     },
     backdropPath: {
-        width: 300,
+        width: 380,
         height: 200,
         alignSelf: 'center',
-        borderRadius: 2,
+        borderRadius: 10,
     },
 });
