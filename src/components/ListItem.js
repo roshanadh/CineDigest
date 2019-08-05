@@ -81,7 +81,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
         flex: 2,
-        marginRight: 20,
+        marginRight: 10,
     },
     aboutItemWrapper: {
         flexDirection: 'row',
@@ -91,7 +91,7 @@ const styles = StyleSheet.create({
         width: 90,
         height: 90,
         borderRadius: 5,
-        marginRight: 10,
+        marginRight: 20,
         marginTop: 10,
     },
     textWrapper: {
