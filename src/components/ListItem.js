@@ -14,24 +14,11 @@ export default class ListItem extends Component {
 
         this.state = {
             titleId: this.props.titleId,
-            title: '',
-            overview: '',
+            title: this.props.title,
+            overview: this.props.overview,
+            voteCount: this.props.voteCount,
+            voteAverage: this.props.voteAverage,
         };
-        fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${props.titleId}`)
-            .then(response => response.json())
-            .then(jsonResponse => {
-                this.setState({
-                    title: jsonResponse.title,
-                    // Limit overview to 100 letters or less
-                    overview: jsonResponse.overview.length <= 100 ?
-                        jsonResponse.overview : jsonResponse.overview.slice(0, 100) + "...",
-                    voteCount: jsonResponse.vote_count,
-                    voteAverage: jsonResponse.vote_average,
-                });
-            })
-            .catch(error => {
-                alert(error.message);
-            });
     }
 
     render() {
