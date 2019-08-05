@@ -46,7 +46,8 @@ export default class ListItem extends Component {
                         <View style={styles.footerWrapper}>
                             <View style={styles.voteWrapper}>
                                 <Text>{this.state.voteAverage}</Text>
-                                <Icon name="heart" size={18} color="#db0a5b" style={styles.heartIcon}/>
+                                <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
+                                <Text>by {this.state.voteCount} people</Text>
                             </View>
                             <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
                         </View>
@@ -73,7 +74,7 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize: 16,
         fontWeight: 'bold',
-        marginBottom: 10,
+        marginBottom: 5,
     },
     infoWrapper: {
         flexDirection: 'column',
@@ -85,20 +86,19 @@ const styles = StyleSheet.create({
     aboutItemWrapper: {
         flexDirection: 'row',
         justifyContent: 'flex-start',
-        alignItems: 'flex-start',
     },
     posterImage:{
         width: 90,
         height: 90,
         borderRadius: 5,
         marginRight: 10,
-        marginTop: 5,
+        marginTop: 10,
     },
     textWrapper: {
         flexDirection: 'column',
         flex: 4,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     overview: {
         fontSize: 15,
@@ -117,5 +117,7 @@ const styles = StyleSheet.create({
     },
     heartIcon: {
         marginLeft: 5,
+        marginRight: 5,
+        marginTop: 3,
     },
 });
