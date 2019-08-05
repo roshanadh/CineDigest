@@ -7,10 +7,6 @@ import {
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
-const fetchMovie = (props) => {
-    
-};
-
 export default class ListItem extends Component {
     constructor(props) {
         // alert(props.titleId);
