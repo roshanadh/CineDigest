@@ -14,8 +14,6 @@ export default class ListContainer extends Component {
         let dataLength = jsonResponse.totalResults;
         let data = [];
         for (let i = 0; i < dataLength - 1; i++) {
-            // TODO
-            // Use these data instead of fetch() in ListItem.js
             data[i] = {
                 id: jsonResponse.titleIds[i],
                 title: jsonResponse.titles[i],
@@ -37,6 +35,10 @@ export default class ListContainer extends Component {
                     renderItem={({item}) => (
                         <ListItem
                             titleId={item.id}
+                            title={item.title}
+                            overview={item.overview}
+                            voteCount={item.voteCount}
+                            voteAverage={item.voteAverage}
                             onItemPressed={() => this.props.onIdSelected(item.id)}
                         />
                     )}
