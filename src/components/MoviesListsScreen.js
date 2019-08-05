@@ -3,7 +3,6 @@ import {
 	View,
 	StyleSheet,
 } from 'react-native';
-import {createStackNavigator, createAppContainer} from 'react-navigation';
 import SearchItem from './SearchItem';
 import ListContainer from './ListContainer';
 
@@ -41,8 +40,9 @@ export default class MoviesListsScreen extends Component {
 	};
 
 	onIdSelected = (itemId) => {
-		alert("You chose movie: " + itemId);
-		this.props.navigation.navigate('MovieDetailsScreen');
+		this.props.navigation.navigate('MovieDetailsScreen', {
+			titleId: itemId,
+		});
 	};
 
     render() {
@@ -77,23 +77,4 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 });
-
-// const stackNavigator = createStackNavigator(
-// 	{
-// 		MoviesListsScreen: {
-// 			screen: MoviesListsScreen,
-// 			navigationOptions: {
-//                 header: null,
-//             },
-// 		},
-// 		MovieDetailsScreen: {
-// 			screen: MovieDetailsScreen,
-// 			navigationOptions: {
-//                 header: null,
-//             },
-// 		},
-// 	}
-// );
-
-// export default createAppContainer(stackNavigator);
 
