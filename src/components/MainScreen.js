@@ -1,19 +1,18 @@
-import {Text, View, StyleSheet} from 'react-native';
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
 
-import MoviesScreen from './MoviesScreen.js';
-import ShowsScreen from './ShowsScreen.js';
+import MoviesListsScreen from './MoviesListsScreen';
+import ShowsScreen from './ShowsScreen';
 
 const AppTabNavigator = createBottomTabNavigator(
     {
-        MoviesScreen: {
-            screen: MoviesScreen,
+        MoviesListsScreen: {
+            screen: MoviesListsScreen,
             navigationOptions: {
                 tabBarLabel: 'Movies',
                 tabBarIcon: ({tintColor}) => (
-                    <Icon name="film" size={30} color={tintColor} />
+                    <Icon name="film" size={20} color={tintColor} />
                 ),
             },
         },
@@ -22,7 +21,7 @@ const AppTabNavigator = createBottomTabNavigator(
             navigationOptions: {
                 tabBarLabel: 'Shows',
                 tabBarIcon: ({tintColor}) => (
-                    <Icon name="television" size={30} color={tintColor} />
+                    <Icon name="television" size={20} color={tintColor} />
                 ),
             },
         },
@@ -39,7 +38,7 @@ const AppTabNavigator = createBottomTabNavigator(
             },
             style: {
                 // backgroundColor: '#e4f1fe',
-                height: 80,
+                height: 60,
                 padding: 5,
             },
         },
