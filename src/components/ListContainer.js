@@ -17,7 +17,9 @@ export default class ListContainer extends Component {
             data[i] = {
                 id: jsonResponse.titleIds[i],
                 title: jsonResponse.titles[i],
-                overview: jsonResponse.overviews[i],
+                // Limit overview to 150 letters or less
+                overview: jsonResponse.overviews[i].length <= 100 ?
+                    jsonResponse.overviews[i] : jsonResponse.overviews[i].slice(0, 150) + "...",
                 voteCount: jsonResponse.voteCounts[i],
                 voteAverage: jsonResponse.voteAverages[i],
             };
