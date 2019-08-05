@@ -47,7 +47,7 @@ export default class ListItem extends Component {
                             <View style={styles.voteWrapper}>
                                 <Text>{this.state.voteAverage}</Text>
                                 <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
-                                <Text>by {this.state.voteCount} people</Text>
+                                <Text>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                             </View>
                             <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
                         </View>
