@@ -22,6 +22,7 @@ export default class ListContainer extends Component {
                     jsonResponse.overviews[i] : jsonResponse.overviews[i].slice(0, 150) + "...",
                 voteCount: jsonResponse.voteCounts[i],
                 voteAverage: jsonResponse.voteAverages[i],
+                posterPath: `https://image.tmdb.org/t/p/w185${posterPath[i]}`,
             };
         }
         this.state = {
