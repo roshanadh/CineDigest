@@ -6,18 +6,14 @@ import {
 
 import MainScreen from './src/components/MainScreen';
 import SignInScreen from './src/components/SignInScreen';
-import ShowsListsScreen from './src/components/ShowsListsScreen';
 import ShowDetailsScreen from './src/components/ShowDetailsScreen';
 import MovieDetailsScreen from './src/components/MovieDetailsScreen';
-import MoviesListsScreen from './src/components/MoviesListsScreen';
 
 const AppNavigator = createStackNavigator(
 	{
 		Home: SignInScreen,
 		MainScreen,
-		MoviesListsScreen,
 		MovieDetailsScreen,
-		ShowsListsScreen,
 		ShowDetailsScreen,
 	},
 	{
