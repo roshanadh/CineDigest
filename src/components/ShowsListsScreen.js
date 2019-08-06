@@ -1,12 +1,10 @@
 import React, {Component} from 'react';
 import {
 	View,
-	Text,
 	StyleSheet,
 } from 'react-native';
 import SearchItem from './SearchItem';
 import ListContainer from './ListContainer';
-import ShowDetailsScreen from './ShowDetailsScreen';
 
 export default class MoviesScreen extends Component {
 	constructor(props, context) {
