@@ -42,9 +42,9 @@ export default class MoviesScreen extends Component {
 	};
 
 	onIdSelected = (itemId, itemTitle) => {
-		alert("You chose show: " + itemId);
 		this.props.navigation.navigate('ShowDetailsScreen', {
 			screenName: itemTitle,
+			titleId: itemId,
 		});
 	};
 
