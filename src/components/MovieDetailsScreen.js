@@ -71,7 +71,7 @@ export default class MovieDetails extends Component {
                         // homepage: jsonResponse.homepage,
                         originalLanguage: jsonResponse.original_language,
                         overview: jsonResponse.overview,
-                        posterPath: `https://image.tmdb.org/t/p/w185/${jsonResponse.poster_path}`,
+                        posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
                         releaseDate: jsonResponse.release_date,
                     });
                 }) // TODO fix response status parsing
