@@ -10,7 +10,7 @@ import {
 export default function searchItem(props) {
     return (
         <View style={styles.searchWrapper}>
-			<TextInput placeholder="Search a movie"
+			<TextInput placeholder={props.placeholder}
 				style={styles.searchTextInput}
 				onChangeText={props.onChangeText} />
 
