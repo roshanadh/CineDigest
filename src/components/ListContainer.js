@@ -43,7 +43,7 @@ export default class ListContainer extends Component {
                             voteCount={item.voteCount}
                             voteAverage={item.voteAverage}
                             posterPath={item.posterPath}
-                            onItemPressed={() => this.props.onIdSelected(item.id)}
+                            onItemPressed={() => this.props.onIdSelected(item.id, item.title)}
                         />
                     )}
                     style={styles.listItem}
