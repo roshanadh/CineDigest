@@ -1,6 +1,9 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
+import {
+    createBottomTabNavigator,
+    createAppContainer,
+} from 'react-navigation';
 
 import MoviesListsScreen from './MoviesListsScreen';
 import ShowsListsScreen from './ShowsListsScreen';
@@ -10,6 +13,7 @@ const AppTabNavigator = createBottomTabNavigator(
         MoviesListsScreen: {
             screen: MoviesListsScreen,
             navigationOptions: {
+                headerTtle: 'Movies Lists',
                 tabBarLabel: 'Movies',
                 tabBarIcon: ({tintColor}) => (
                     <Icon name="film" size={20} color={tintColor} />
