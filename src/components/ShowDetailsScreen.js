@@ -116,12 +116,12 @@ export default class ShowDetailsScreen extends Component {
                     <TouchableOpacity style={styles.watchingListBtn}><Text>Add to Watching-list</Text></TouchableOpacity>
                     <View style={styles.airDateWrapper}>
                         <Text style={styles.airDate}>
-                            First aired
+                            First aired on
                             {' ' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
                             {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
                         </Text>
                         <Text style={styles.airDate}>
-                            Last aired
+                            Last aired on
                             {' ' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
                             {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
                         </Text>
