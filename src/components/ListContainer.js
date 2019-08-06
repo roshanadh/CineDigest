@@ -13,7 +13,7 @@ export default class ListContainer extends Component {
         let jsonResponse = props.source;
         let dataLength = jsonResponse.totalResults;
         let data = [];
-        for (let i = 0; i < dataLength - 1; i++) {
+        for (let i = 0; i < dataLength; ++i) {
             data[i] = {
                 id: jsonResponse.titleIds[i],
                 title: jsonResponse.titles[i],
