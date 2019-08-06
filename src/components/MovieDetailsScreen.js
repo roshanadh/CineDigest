@@ -11,6 +11,12 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class MovieDetails extends Component {
+    static navigationOptions = ({ navigation }) => {
+        return {
+            title: navigation.getParam('screenName', 'Movie Details'),
+        };
+    };
+
     constructor(props) {
         super(props);
         this.monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -127,7 +133,7 @@ const styles = StyleSheet.create({
     container: {
         margin: 10,
         padding: 25,
-        backgroundColor: '#e4f1fe',
+        backgroundColor: '#fefefa',
         borderRadius: 15,
         minWidth: '95%',
         flexDirection: 'column',
