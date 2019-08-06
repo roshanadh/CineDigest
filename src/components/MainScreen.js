@@ -3,7 +3,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
 
 import MoviesListsScreen from './MoviesListsScreen';
-import ShowsScreen from './ShowsScreen';
+import ShowsListsScreen from './ShowsListsScreen';
 
 const AppTabNavigator = createBottomTabNavigator(
     {
@@ -16,8 +16,8 @@ const AppTabNavigator = createBottomTabNavigator(
                 ),
             },
         },
-        ShowsScreen: {
-            screen: ShowsScreen,
+        ShowsListsScreen: {
+            screen: ShowsListsScreen,
             navigationOptions: {
                 tabBarLabel: 'Shows',
                 tabBarIcon: ({tintColor}) => (
