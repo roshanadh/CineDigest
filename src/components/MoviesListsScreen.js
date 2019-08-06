@@ -39,9 +39,10 @@ export default class MoviesListsScreen extends Component {
 			});
 	};
 
-	onIdSelected = (itemId) => {
+	onIdSelected = (itemId, itemTitle) => {
 		this.props.navigation.navigate('MovieDetailsScreen', {
 			titleId: itemId,
+			screenName: itemTitle,
 		});
 	};
 
