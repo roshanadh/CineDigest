@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {
 	View,
+	Text,
 	StyleSheet,
 } from 'react-native';
-import {createStackNavigator, createAppContainer} from 'react-navigation';
 import SearchItem from './SearchItem';
 import ListContainer from './ListContainer';
-import MovieDetails from './MovieDetails';
+import ShowDetailsScreen from './ShowDetailsScreen';
 
 export default class MoviesScreen extends Component {
 	constructor(props, context) {
@@ -27,7 +27,7 @@ export default class MoviesScreen extends Component {
 	};
 
 	searchBtnPressedHandler = () => {
-		fetch(`https://api-cine-digest.herokuapp.com/api/v1/searchm/${this.state.searchQuery}`)
+		fetch(`https://api-cine-digest.herokuapp.com/api/v1/searchs/${this.state.searchQuery}`)
 			.then(response => response.json())
 			.then(jsonResponse => { // TODO read full response, not just titles
 				this.setState({
@@ -42,8 +42,8 @@ export default class MoviesScreen extends Component {
 	};
 
 	onIdSelected = (itemId) => {
-		alert("You chose movie: " + itemId);
-		this.props.navigation.navigate('MovieDetails');
+		alert("You chose show: " + itemId);
+		this.props.navigation.navigate('ShowDetailsScreen');
 	};
 
     render() {
@@ -51,6 +51,7 @@ export default class MoviesScreen extends Component {
 			return (
 				<View style={styles.container}>
 					<SearchItem onChangeText={this.searchFieldChangedHandler}
+						placeholder="Search a TV show"
 						onPress={this.searchBtnPressedHandler}
 						style={styles.searchItem}
 					/>
@@ -64,6 +65,7 @@ export default class MoviesScreen extends Component {
 		return (
 			<View style={styles.container}>
 				<SearchItem onChangeText={this.searchFieldChangedHandler}
+					placeholder="Search a TV show"
 					onPress={this.searchBtnPressedHandler} />
 			</View>
 		);
@@ -79,11 +81,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-const stackNavigator = createStackNavigator(
-	{
-		MovieDetails: {
-			screen: MovieDetails,
-		},
-	}
-);
 
