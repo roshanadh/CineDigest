@@ -115,10 +115,9 @@ export default class MovieDetails extends Component {
                     <Image source={{uri: this.state.backdropPath}}
                         style={styles.backdropPath}
                         resizeMode="contain"/>
+                    <Text style={styles.castHeader}>Cast</Text>
+                    <Text style={styles.text}>{this.state.credits.join(' | ')}</Text>
                 </View>
-                <ScrollView horizontal={true}>
-                    {/* TODO Credit Profile */}
-                </ScrollView>
             </ScrollView>
         );
     }
@@ -128,7 +127,7 @@ const styles = StyleSheet.create({
     container: {
         margin: 10,
         padding: 25,
-        backgroundColor: '#fafafa',
+        backgroundColor: '#e4f1fe',
         borderRadius: 15,
         minWidth: '95%',
         flexDirection: 'column',
@@ -204,5 +203,12 @@ const styles = StyleSheet.create({
         height: 200,
         alignSelf: 'center',
         borderRadius: 10,
+        marginTop: 10,
+        marginBottom: 30,
     },
+    castHeader: {
+        fontSize: 15,
+        marginTop: 10,
+        marginBottom: 10,
+    }
 });
