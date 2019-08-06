@@ -68,7 +68,7 @@ export default class MoviesScreen extends Component {
 			<View style={styles.container}>
 				<SearchItem onChangeText={this.searchFieldChangedHandler}
 					placeholder="Search a TV show"
-					onPress={this.searchBtnPressedHandler} />
+					onSubmitEditing={this.searchBtnPressedHandler} />
 			</View>
 		);
 	}
