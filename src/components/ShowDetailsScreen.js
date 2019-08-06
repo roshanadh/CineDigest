@@ -84,6 +84,15 @@ export default class ShowDetailsScreen extends Component {
     render() {
         this.titleId = this.props.navigation.getParam('titleId', 'null');
         this.fetchShowDetails(this.titleId);
+        let seasonsJsx = [];
+        for (let i = 0; i < this.state.seasons.length; ++i) {
+            seasonsJsx.push(
+                <TouchableOpacity style={styles.seasonWrapper}>
+                    <Text style={styles.text}>{this.state.seasons[i]}</Text>
+                    <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
+                </TouchableOpacity>
+            )
+        }
         return (
             <ScrollView>
                 <View style={styles.container}>
@@ -121,6 +130,7 @@ export default class ShowDetailsScreen extends Component {
                     <Image source={{uri: this.state.backdropPath}}
                         style={styles.backdropPath}
                         resizeMode="contain"/>
+                    {seasonsJsx}
                 </View>
             </ScrollView>
         );
@@ -199,6 +209,7 @@ const styles = StyleSheet.create({
     airDate: {
         fontSize: 15,
         textAlign: 'justify',
+        marginBottom: 10,
     },
     voteWrapper: {
         flexDirection: 'row',
@@ -223,6 +234,22 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 10,
         marginTop: 10,
-        marginBottom: 30,
+        marginBottom: 50,
+    },
+    text: {
+        fontSize: 15,
+    },
+    seasonWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        width: '100%',
+        borderWidth: 0.1,
+        borderRadius: 50,
+        padding: 20,
+        marginBottom: 10,
+    },
+    rightIcon: {
+        marginLeft: 20,
     },
 });
