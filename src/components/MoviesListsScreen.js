@@ -51,6 +51,7 @@ export default class MoviesListsScreen extends Component {
 			return (
 				<View style={styles.container}>
 					<SearchItem onChangeText={this.searchFieldChangedHandler}
+						placeholder="Search a movie"
 						onPress={this.searchBtnPressedHandler}
 						style={styles.searchItem}
 					/>
@@ -64,6 +65,7 @@ export default class MoviesListsScreen extends Component {
 		return (
 			<View style={styles.container}>
 				<SearchItem onChangeText={this.searchFieldChangedHandler}
+					placeholder="Search a movie"
 					onPress={this.searchBtnPressedHandler} />
 			</View>
 		);
