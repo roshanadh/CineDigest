@@ -1,28 +1,48 @@
-import React, {Component} from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import React from 'react';
+import Icon from 'react-native-vector-icons/FontAwesome';
+import {createBottomTabNavigator, createAppContainer} from 'react-navigation';
 
-export default class MainScreen extends Component {
-	render() {
-        const { navigation } = this.props;
-        const emailId = navigation.getParam('emailId', 'defaultEmail');
-		return (
-            <View style={styles.container}>
-                <Text style={styles.welcomeHeader}>Welcome, {emailId}!</Text>
-            </View>
-        );
-	}
-}
+import MoviesListsScreen from './MoviesListsScreen';
+import ShowsScreen from './ShowsScreen';
 
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        height: '100%',
-        padding: 50,
+const AppTabNavigator = createBottomTabNavigator(
+    {
+        MoviesListsScreen: {
+            screen: MoviesListsScreen,
+            navigationOptions: {
+                tabBarLabel: 'Movies',
+                tabBarIcon: ({tintColor}) => (
+                    <Icon name="film" size={20} color={tintColor} />
+                ),
+            },
+        },
+        ShowsScreen: {
+            screen: ShowsScreen,
+            navigationOptions: {
+                tabBarLabel: 'Shows',
+                tabBarIcon: ({tintColor}) => (
+                    <Icon name="television" size={20} color={tintColor} />
+                ),
+            },
+        },
     },
-	welcomeHeader: {
-		fontSize: 35,
+    {
+        // router config, navigationOptions {for whole tabBar},
+        // tabBarOptions go here
+        tabBarOptions: {
+            activeTintColor: '#cf000f',
+            inactiveTintColor: '#24252a',
+            labelStyle: {
+                fontSize: 14,
+                marginBottom: 5,
+            },
+            style: {
+                // backgroundColor: '#e4f1fe',
+                height: 60,
+                padding: 5,
+            },
+        },
     },
-});
+);
+
+export default createAppContainer(AppTabNavigator);

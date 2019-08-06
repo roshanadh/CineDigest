@@ -6,7 +6,15 @@ import {
 	TouchableOpacity,
 	StatusBar,
 	TextInput,
+	Dimensions,
 } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
+import Snackbar from 'react-native-snackbar';
+
+const {width, height, fontScale} = Dimensions.get('window');
+const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
+const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
+const headerFontSize = 35 / fontScale;
 
 class SignInScreen extends Component {
     constructor(props, context) {
@@ -14,17 +22,32 @@ class SignInScreen extends Component {
         this.state = {
             emailId: 'this is email',
             password: 'this is password',
-        };
-        this.getState = this.getState.bind(this);
-        
+		};
     }
     static navigationOptions = {
         header: null,
-    }
-    
-    getState = () => {
-        return this.state.emailId;
-    }
+	}
+
+	showSnackBar = (message) => {
+		Snackbar.show({
+			title: message,
+			duration: Snackbar.LENGTH_INDEFINITE,
+			action: {
+				title: 'OK',
+				color: 'green',
+				onPress: () => {},
+			},
+			backgroundColor: '#efefef',
+		});
+	};
+
+	checkNetConn = () => {
+		NetInfo.fetch().then(state => {
+			if (!state.isConnected) {
+				this.showSnackBar('An internet connection is required!');
+			}
+		});
+	};
 
     emailTextChanged = newEmail => {
         this.setState({emailId: newEmail});
@@ -40,17 +63,18 @@ class SignInScreen extends Component {
         });
 	};
 	render() {
+		this.checkNetConn();
 		return (
 			<View style={styles.container}>
 					<StatusBar barStyle="default" />
 					<View style={styles.signInForm}>
 						<Text style={styles.signInHeader}>Cine Digest</Text>
 
-						<TextInput placeholder='E-mail'
+						<TextInput placeholder="E-mail"
 							style={styles.textInput} name="emailIdTextInput"
 							onChangeText={this.emailTextChanged} />
 
-						<TextInput placeholder='Password'
+						<TextInput placeholder="Password"
 							secureTextEntry={true}
 							style={styles.textInput} name="passwordTextInput"
 							onChangeText={this.passwordTextChanged} />
@@ -73,7 +97,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 	},
 	signInHeader: {
-		fontSize: 35,
+		fontSize: headerFontSize,
 		alignSelf: 'center',
 		marginBottom: 25,
 	},
@@ -100,8 +124,8 @@ const styles = StyleSheet.create({
 		borderWidth: 1,
 		borderRadius: 50,
 		padding: 15,
-		minHeight: '6%',
-		width: '30%',
+		minHeight: btnHeight,
+		width: btnWidth,
 	},
 	btnText: {
 	},
