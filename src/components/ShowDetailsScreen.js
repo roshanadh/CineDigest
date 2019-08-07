@@ -79,16 +79,16 @@ export default class ShowDetailsScreen extends Component {
                     // alert('Oops!\nPlease make sure your search query is correct!');
                 });
         }
+    }
 
-        onSeasonSelected = (seasonNo, seasonName) => {
-            this.props.navigation.navigate('SeasonDetailsScreen',
-            {
-                showName: this.state.title,
-                titleId: this.state.titleId,
-                seasonNo,
-                seasonName,
-            });
-        }
+    onSeasonSelected = (seasonNo, seasonName) => {
+        this.props.navigation.navigate('SeasonDetailsScreen',
+        {
+            showName: this.state.title,
+            titleId: this.state.titleId,
+            seasonNo,
+            seasonName,
+        });
     }
 
     render() {
@@ -130,7 +130,7 @@ export default class ShowDetailsScreen extends Component {
         let seasonsJsx = [];
         for (let i = 0; i < this.state.seasons.length; ++i) {
             seasonsJsx.push(
-                <TouchableOpacity style={styles.seasonWrapper} onPress={() => onSeasonSelected(i, this.state.seasons[i])}>
+                <TouchableOpacity style={styles.seasonWrapper} onPress={() => this.onSeasonSelected(i, this.state.seasons[i])}>
                     <Text style={styles.text}>{this.state.seasons[i]}</Text>
                     <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
                 </TouchableOpacity>
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 		borderRadius: 50,
 		padding: 15,
-        width: '50%',
+        width: '70%',
         marginBottom: 10,
         backgroundColor: '#7befb2',
     },
@@ -218,7 +218,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 		borderRadius: 50,
 		padding: 15,
-        width: '50%',
+        width: '70%',
         backgroundColor: '#22a7f0',
         marginBottom: 10,
     },
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 		borderRadius: 50,
 		padding: 15,
-        width: '50%',
+        width: '70%',
         backgroundColor: '#f5e51b',
         marginBottom: 30,
     },
