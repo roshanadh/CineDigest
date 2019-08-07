@@ -52,8 +52,8 @@ export default class ShowDetailsScreen extends Component {
     fetchShowDetails = (titleId) => {
         if (this.titleId !== 'null') {
             fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}`, {
-                signal: this.controller.signal,
-              })
+                    signal: this.controller.signal,
+                })
                 .then(response => response.json())
                 .then(jsonResponse => { // TODO read full response, not just titles
                     // Parse Genres from array of JSON
