@@ -42,6 +42,8 @@ export default class MovieDetails extends Component {
             posterPath: '',
             releaseDate: '',
         };
+        this.noBackdrop = false;
+        this.noPoster = false;
     }
 
     fetchMovieDetails = (titleId) => {
@@ -53,6 +55,8 @@ export default class MovieDetails extends Component {
                     let genres = [];
                     for (let i = 0; i < jsonResponse.genres.length; i++)
                         {genres[i] = jsonResponse.genres[i].name;}
+                    this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
+                    this.noPoster = jsonResponse.poster_path !== null ? false : true;
                     this.setState({
                         titleId: jsonResponse.id,
                         title: jsonResponse.title,
@@ -65,10 +69,6 @@ export default class MovieDetails extends Component {
                         credits: jsonResponse.credits,
                         creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
                         backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
-                        // Unused
-                        // budget: jsonResponse.budget,
-                        // revenue: jsonResponse.revenue,
-                        // homepage: jsonResponse.homepage,
                         originalLanguage: jsonResponse.original_language,
                         overview: jsonResponse.overview,
                         posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
@@ -84,7 +84,7 @@ export default class MovieDetails extends Component {
     render() {
         this.titleId = this.props.navigation.getParam('titleId', 'null');
         this.fetchMovieDetails(this.titleId);
-        let posterJsx = this.state.posterPath !== null ?
+        let posterJsx = this.noPoster === false ?
             <Image source={{uri: this.state.posterPath}}
                 style={styles.posterPath}
                 resizeMode="contain"/> : null;
@@ -108,10 +108,10 @@ export default class MovieDetails extends Component {
                 {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
                 {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
             </Text> ) : null;
-        let overviewJsx = this.state.overview !== null ? 
+        let overviewJsx = this.state.overview !== null ?
             <Text style={styles.text}>{this.state.overview}</Text>
             : null;
-        let backdropPathJsx = this.state.backdropPath !== null ?
+        let backdropPathJsx = this.noBackdrop === false ?
             <Image source={{uri: this.state.backdropPath}}
                 style={styles.backdropPath}
                 resizeMode="contain"/> : null;

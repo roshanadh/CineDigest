@@ -40,6 +40,8 @@ export default class ShowDetailsScreen extends Component {
             overview: '',
             posterPath: '',
         };
+        this.noBackdrop = false;
+        this.noPoster = false;
     }
 
     fetchShowDetails = (titleId) => {
@@ -51,6 +53,8 @@ export default class ShowDetailsScreen extends Component {
                     let genres = [];
                     for (let i = 0; i < jsonResponse.genres.length; i++)
                         {genres[i] = jsonResponse.genres[i].name;}
+                    this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
+                    this.noPoster = jsonResponse.poster_path !== null ? false : true;
                     this.setState({
                         titleId: jsonResponse.id,
                         title: jsonResponse.name,
@@ -67,10 +71,6 @@ export default class ShowDetailsScreen extends Component {
                         genres: genres,
                         networks: jsonResponse.networks,
                         numberOfEpisodes: jsonResponse.number_of_episodes,
-                        // Unused
-                        // budget: jsonResponse.budget,
-                        // revenue: jsonResponse.revenue,
-                        // homepage: jsonResponse.homepage,
                         overview: jsonResponse.overview,
                         posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
                     });
@@ -94,7 +94,7 @@ export default class ShowDetailsScreen extends Component {
     render() {
         this.titleId = this.props.navigation.getParam('titleId', 'null');
         this.fetchShowDetails(this.titleId);
-        let posterJsx = this.state.posterPath !== null ?
+        let posterJsx = this.noPoster === false ?
             <Image source={{uri: this.state.posterPath}}
                 style={styles.posterPath}
                 resizeMode="contain"/> : null;
@@ -123,7 +123,7 @@ export default class ShowDetailsScreen extends Component {
         let overviewJsx = this.state.overview !== null ?
             <Text style={styles.overview}>{this.state.overview}</Text>
             : null;
-        let backdropPathJsx = this.state.backdropPath !== null ?
+        let backdropPathJsx = this.noBackdrop === null ?
             <Image source={{uri: this.state.backdropPath}}
                 style={styles.backdropPath}
                 resizeMode="contain"/> : null;
