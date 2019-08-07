@@ -42,6 +42,8 @@ export default class MovieDetails extends Component {
             posterPath: '',
             releaseDate: '',
         };
+        this.noBackdrop = false;
+        this.noPoster = false;
     }
 
     fetchMovieDetails = (titleId) => {
@@ -53,6 +55,8 @@ export default class MovieDetails extends Component {
                     let genres = [];
                     for (let i = 0; i < jsonResponse.genres.length; i++)
                         {genres[i] = jsonResponse.genres[i].name;}
+                    this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
+                    this.noPoster = jsonResponse.poster_path !== null ? false : true;
                     this.setState({
                         titleId: jsonResponse.id,
                         title: jsonResponse.title,
@@ -65,13 +69,9 @@ export default class MovieDetails extends Component {
                         credits: jsonResponse.credits,
                         creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
                         backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
-                        // Unused
-                        // budget: jsonResponse.budget,
-                        // revenue: jsonResponse.revenue,
-                        // homepage: jsonResponse.homepage,
                         originalLanguage: jsonResponse.original_language,
                         overview: jsonResponse.overview,
-                        posterPath: `https://image.tmdb.org/t/p/w185/${jsonResponse.poster_path}`,
+                        posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
                         releaseDate: jsonResponse.release_date,
                     });
                 }) // TODO fix response status parsing
@@ -84,45 +84,62 @@ export default class MovieDetails extends Component {
     render() {
         this.titleId = this.props.navigation.getParam('titleId', 'null');
         this.fetchMovieDetails(this.titleId);
+        let posterJsx = this.noPoster === false ?
+            <Image source={{uri: this.state.posterPath}}
+                style={styles.posterPath}
+                resizeMode="contain"/> : null;
+        let taglineJsx = this.state.tagline !== null ?
+            <Text style={styles.tagline}>{this.state.tagline}</Text>
+            : null;
+        let genresJsx = this.state.genres.length !== 0 ?
+            <Text style={styles.genres}>
+                Genres:
+                {' ' + this.state.genres.join(' | ')}
+            </Text> : null;
+        let releaseDateJsx = this.state.releaseDate !== null ?
+            ( new Date(this.state.releaseDate) > new Date() ?
+            <Text style={styles.releaseDate}>
+                Releases
+                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+            </Text> :
+            <Text style={styles.releaseDate}>
+                Released
+                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+            </Text> ) : null;
+        let overviewJsx = this.state.overview !== null ?
+            <Text style={styles.text}>{this.state.overview}</Text>
+            : null;
+        let backdropPathJsx = this.noBackdrop === false ?
+            <Image source={{uri: this.state.backdropPath}}
+                style={styles.backdropPath}
+                resizeMode="contain"/> : null;
+        let castJsx = this.state.credits.length !== 0 ?
+            <View>
+                <Text style={styles.castHeader}>Cast</Text>
+                <Text style={styles.text}>
+                    {this.state.credits.join(' | ')}
+                </Text>
+            </View> : null;
         return (
-            <ScrollView>
+            <ScrollView style={styles.scrollView}>
                 <View style={styles.container}>
-                    <Image source={{uri: this.state.posterPath}}
-                        style={styles.posterPath}
-                        resizeMode="contain"/>
+                    {posterJsx}
                     <Text style={styles.title}>{this.state.title}</Text>
                     <View style={styles.voteWrapper}>
                         <Text style={styles.text}>{this.state.voteAverage}</Text>
                         <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
                         <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                     </View>
-                    <Text style={styles.tagline}>{this.state.tagline}</Text>
-                    <Text style={styles.genres}>
-                    {
-                        this.state.genres.join(' | ')
-                    }
-                    </Text>
+                    {taglineJsx}
+                    {genresJsx}
                     <TouchableOpacity style={styles.wishListBtn}><Text>Add to Wish-list</Text></TouchableOpacity>
                     <TouchableOpacity style={styles.watchedListBtn}><Text>Add to Watched-list</Text></TouchableOpacity>
-                    {
-                        new Date(this.state.releaseDate) > new Date() ?
-                            <Text style={styles.releaseDate}>
-                                Releases 
-                                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-                            </Text> :
-                            <Text style={styles.releaseDate}>
-                                Released 
-                                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-                            </Text>
-                    }
-                    <Text style={styles.text}>{this.state.overview}</Text>
-                    <Image source={{uri: this.state.backdropPath}}
-                        style={styles.backdropPath}
-                        resizeMode="contain"/>
-                    <Text style={styles.castHeader}>Cast</Text>
-                    <Text style={styles.text}>{this.state.credits.join(' | ')}</Text>
+                    {releaseDateJsx}
+                    {overviewJsx}
+                    {backdropPathJsx}
+                    {castJsx}
                 </View>
             </ScrollView>
         );
@@ -130,6 +147,9 @@ export default class MovieDetails extends Component {
 }
 
 const styles = StyleSheet.create({
+    scrollView: {
+        backgroundColor: '#f2f1ef',
+    },
     container: {
         margin: 10,
         padding: 25,
@@ -146,7 +166,7 @@ const styles = StyleSheet.create({
         width: 400,
         height: 400,
         alignSelf: 'center',
-        borderRadius: 2,
+        borderRadius: 5,
         marginBottom: 30,
     },
     title: {
@@ -170,7 +190,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 		borderRadius: 50,
 		padding: 15,
-        width: '50%',
+        width: '70%',
         marginBottom: 10,
         backgroundColor: '#7befb2',
     },
@@ -180,7 +200,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 		borderRadius: 50,
 		padding: 15,
-        width: '50%',
+        width: '70%',
         backgroundColor: '#22a7f0',
         marginBottom: 30,
     },

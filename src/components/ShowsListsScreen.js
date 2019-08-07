@@ -2,11 +2,10 @@ import React, {Component} from 'react';
 import {
 	View,
 	StyleSheet,
+	ScrollView,
 } from 'react-native';
-import {createStackNavigator, createAppContainer} from 'react-navigation';
 import SearchItem from './SearchItem';
 import ListContainer from './ListContainer';
-import MovieDetails from './MovieDetails';
 
 export default class MoviesScreen extends Component {
 	constructor(props, context) {
@@ -27,7 +26,7 @@ export default class MoviesScreen extends Component {
 	};
 
 	searchBtnPressedHandler = () => {
-		fetch(`https://api-cine-digest.herokuapp.com/api/v1/searchm/${this.state.searchQuery}`)
+		fetch(`https://api-cine-digest.herokuapp.com/api/v1/searchs/${this.state.searchQuery}`)
 			.then(response => response.json())
 			.then(jsonResponse => { // TODO read full response, not just titles
 				this.setState({
@@ -41,16 +40,20 @@ export default class MoviesScreen extends Component {
 			});
 	};
 
-	onIdSelected = (itemId) => {
-		alert("You chose movie: " + itemId);
-		this.props.navigation.navigate('MovieDetails');
+	onIdSelected = (itemId, itemTitle) => {
+		this.props.navigation.navigate('ShowDetailsScreen', {
+			screenName: itemTitle,
+			titleId: itemId,
+		});
 	};
 
     render() {
 		if (!this.state.isEmpty) {
 			return (
+				<ScrollView style={styles.scrollView}>
 				<View style={styles.container}>
 					<SearchItem onChangeText={this.searchFieldChangedHandler}
+						placeholder="Search a TV show"
 						onPress={this.searchBtnPressedHandler}
 						style={styles.searchItem}
 					/>
@@ -59,18 +62,25 @@ export default class MoviesScreen extends Component {
 						onIdSelected={this.onIdSelected}
 					/>
 				</View>
+				</ScrollView>
 			);
 		}
 		return (
-			<View style={styles.container}>
-				<SearchItem onChangeText={this.searchFieldChangedHandler}
-					onPress={this.searchBtnPressedHandler} />
-			</View>
+			<ScrollView style={styles.scrollView}>
+				<View style={styles.container}>
+					<SearchItem onChangeText={this.searchFieldChangedHandler}
+						placeholder="Search a TV show"
+						onSubmitEditing={this.searchBtnPressedHandler} />
+				</View>
+			</ScrollView>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
+	scrollView: {
+		backgroundColor: '#f2f1ef',
+	},
 	container: {
 		flex: 1,
 		flexDirection: 'column',
@@ -79,11 +89,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-const stackNavigator = createStackNavigator(
-	{
-		MovieDetails: {
-			screen: MovieDetails,
-		},
-	}
-);
 

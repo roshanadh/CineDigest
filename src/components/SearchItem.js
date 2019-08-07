@@ -1,51 +1,42 @@
 import React from 'react';
 import {
-    Text,
-    TouchableOpacity,
     View,
     TextInput,
     StyleSheet,
 } from 'react-native';
 
+import Icon from 'react-native-vector-icons/Feather';
+
 export default function searchItem(props) {
     return (
         <View style={styles.searchWrapper}>
-			<TextInput placeholder="Search a movie"
+			<TextInput placeholder={props.placeholder}
 				style={styles.searchTextInput}
-				onChangeText={props.onChangeText} />
-
-			<TouchableOpacity style={styles.searchBtn}
-				onPress={props.onPress}>
-				<Text>Search</Text>
-			</TouchableOpacity>
+				onChangeText={props.onChangeText}
+				onSubmitEditing={props.onSubmitEditing} />
+			<Icon name="search" size={20}
+				color="#bbb" style={styles.heartIcon}
+				onPress={props.onSubmitEditing} />
 		</View>
     );
 }
 
 const styles = StyleSheet.create({
     searchWrapper: {
+		backgroundColor: '#fefefa',
 		margin: 10,
         flexDirection: 'row',
 		justifyContent: 'center',
-        alignItems: 'center',
-	},
-	searchTextInput: {
-		marginRight: 5,
-		borderColor: '#010101',
-		borderRadius: 5,
-		borderWidth: 1,
-		paddingLeft: 20,
-		paddingRight: 20,
-		flex: 5,
-		minHeight: '6%',
-	},
-	searchBtn: {
 		alignItems: 'center',
 		borderWidth: 1,
+		borderColor: '#010101',
 		borderRadius: 5,
-		padding: 15,
+		paddingLeft: 20,
+		paddingRight: 20,
+	},
+	searchTextInput: {
+		marginRight: 10,
+		flex: 5,
 		minHeight: '6%',
-		flex: 1,
-		width: '18%',
 	},
 });

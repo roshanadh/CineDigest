@@ -6,17 +6,17 @@ import {
 
 import MainScreen from './src/components/MainScreen';
 import SignInScreen from './src/components/SignInScreen';
-import ShowsScreen from './src/components/ShowsScreen';
+import ShowDetailsScreen from './src/components/ShowDetailsScreen';
 import MovieDetailsScreen from './src/components/MovieDetailsScreen';
-import MoviesListsScreen from './src/components/MoviesListsScreen';
+import SeasonDetailsScreen from './src/components/SeasonDetailsScreen';
 
 const AppNavigator = createStackNavigator(
 	{
 		Home: SignInScreen,
 		MainScreen,
-		MoviesListsScreen,
-		ShowsScreen,
 		MovieDetailsScreen,
+		ShowDetailsScreen,
+		SeasonDetailsScreen,
 	},
 	{
 		initialRouteName: 'Home',
