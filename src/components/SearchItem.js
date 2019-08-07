@@ -23,6 +23,7 @@ export default function searchItem(props) {
 
 const styles = StyleSheet.create({
     searchWrapper: {
+		backgroundColor: '#fefefa',
 		margin: 10,
         flexDirection: 'row',
 		justifyContent: 'center',
