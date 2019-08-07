@@ -84,45 +84,62 @@ export default class MovieDetails extends Component {
     render() {
         this.titleId = this.props.navigation.getParam('titleId', 'null');
         this.fetchMovieDetails(this.titleId);
+        let posterJsx = this.state.posterPath !== null ?
+            <Image source={{uri: this.state.posterPath}}
+                style={styles.posterPath}
+                resizeMode="contain"/> : null;
+        let taglineJsx = this.state.tagline !== null ?
+            <Text style={styles.tagline}>{this.state.tagline}</Text>
+            : null;
+        let genresJsx = this.state.genres.length !== 0 ?
+            <Text style={styles.genres}>
+                Genres:
+                {' ' + this.state.genres.join(' | ')}
+            </Text> : null;
+        let releaseDateJsx = this.state.releaseDate !== null ?
+            ( new Date(this.state.releaseDate) > new Date() ?
+            <Text style={styles.releaseDate}>
+                Releases
+                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+            </Text> :
+            <Text style={styles.releaseDate}>
+                Released
+                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+            </Text> ) : null;
+        let overviewJsx = this.state.overview !== null ? 
+            <Text style={styles.text}>{this.state.overview}</Text>
+            : null;
+        let backdropPathJsx = this.state.backdropPath !== null ?
+            <Image source={{uri: this.state.backdropPath}}
+                style={styles.backdropPath}
+                resizeMode="contain"/> : null;
+        let castJsx = this.state.credits.length !== 0 ?
+            <View>
+                <Text style={styles.castHeader}>Cast</Text>
+                <Text style={styles.text}>
+                    {this.state.credits.join(' | ')}
+                </Text>
+            </View> : null;
         return (
             <ScrollView>
                 <View style={styles.container}>
-                    <Image source={{uri: this.state.posterPath}}
-                        style={styles.posterPath}
-                        resizeMode="contain"/>
+                    {posterJsx}
                     <Text style={styles.title}>{this.state.title}</Text>
                     <View style={styles.voteWrapper}>
                         <Text style={styles.text}>{this.state.voteAverage}</Text>
                         <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
                         <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                     </View>
-                    <Text style={styles.tagline}>{this.state.tagline}</Text>
-                    <Text style={styles.genres}>
-                    {
-                        this.state.genres.join(' | ')
-                    }
-                    </Text>
+                    {taglineJsx}
+                    {genresJsx}
                     <TouchableOpacity style={styles.wishListBtn}><Text>Add to Wish-list</Text></TouchableOpacity>
                     <TouchableOpacity style={styles.watchedListBtn}><Text>Add to Watched-list</Text></TouchableOpacity>
-                    {
-                        new Date(this.state.releaseDate) > new Date() ?
-                            <Text style={styles.releaseDate}>
-                                Releases 
-                                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-                            </Text> :
-                            <Text style={styles.releaseDate}>
-                                Released 
-                                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-                            </Text>
-                    }
-                    <Text style={styles.text}>{this.state.overview}</Text>
-                    <Image source={{uri: this.state.backdropPath}}
-                        style={styles.backdropPath}
-                        resizeMode="contain"/>
-                    <Text style={styles.castHeader}>Cast</Text>
-                    <Text style={styles.text}>{this.state.credits.join(' | ')}</Text>
+                    {releaseDateJsx}
+                    {overviewJsx}
+                    {backdropPathJsx}
+                    {castJsx}
                 </View>
             </ScrollView>
         );
