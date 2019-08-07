@@ -151,8 +151,7 @@ export default class SeasonDetailsScreen extends Component {
 					</View>
 				</ScrollView>
 
-				<ScrollView horizontal={true}
-					showsHorizontalScrollIndicator={false}>
+				<ScrollView horizontal={true}>
 					{episodesJsx}
 				</ScrollView>
 			</ScrollView>
