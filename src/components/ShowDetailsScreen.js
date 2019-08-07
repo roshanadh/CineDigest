@@ -85,7 +85,7 @@ export default class ShowDetailsScreen extends Component {
         this.props.navigation.navigate('SeasonDetailsScreen',
         {
             showName: this.state.title,
-            titleId: this.state.titleId,
+            titleId:  this.state.titleId,
             seasonNo,
             seasonName,
         });
@@ -135,13 +135,27 @@ export default class ShowDetailsScreen extends Component {
                 resizeMode="contain"/> : null;
 
         let seasonsJsx = [];
-        for (let i = 0; i < this.state.seasons.length; ++i) {
-            seasonsJsx.push(
-                <TouchableOpacity style={styles.seasonWrapper} onPress={() => this.onSeasonSelected(i, this.state.seasons[i])}>
-                    <Text style={styles.text}>{this.state.seasons[i]}</Text>
-                    <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
-                </TouchableOpacity>
-            );
+
+        if (this.state.seasons[0] === 'Specials') {
+            for (let i = 0; i < this.state.seasons.length; i++) {
+                seasonsJsx.push(
+                    <TouchableOpacity style={styles.seasonWrapper}
+                        onPress={() => this.onSeasonSelected(i, this.state.seasons[i])}>
+                        <Text style={styles.text}>{this.state.seasons[i]}</Text>
+                        <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
+                    </TouchableOpacity>
+                );
+            }
+        } else {
+            for (let i = 1; i <= this.state.seasons.length; i++) {
+                seasonsJsx.push(
+                    <TouchableOpacity style={styles.seasonWrapper}
+                        onPress={() => this.onSeasonSelected(i, this.state.seasons[i - 1])}>
+                        <Text style={styles.text}>{this.state.seasons[i - 1]}</Text>
+                        <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
+                    </TouchableOpacity>
+                );
+            }
         }
         return (
             <ScrollView style={styles.scrollView}>
