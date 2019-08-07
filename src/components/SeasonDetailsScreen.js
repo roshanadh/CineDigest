@@ -186,7 +186,7 @@ const styles = StyleSheet.create(
 		padding: 25,
         backgroundColor: '#fefefa',
         borderRadius: 15,
-		width: 400,
+		width: 300,
         flexDirection: 'column',
         justifyContent: 'flex-start',
 		alignItems: 'flex-start',
