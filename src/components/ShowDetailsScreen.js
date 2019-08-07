@@ -127,7 +127,7 @@ export default class ShowDetailsScreen extends Component {
             )
         }
         return (
-            <ScrollView>
+            <ScrollView style={styles.scrollView}>
                 <View style={styles.container}>
                     {posterJsx}
                     <Text style={styles.title}>{this.state.title}</Text>
@@ -155,6 +155,9 @@ export default class ShowDetailsScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+    scrollView: {
+        backgroundColor: '#f2f1ef',
+    },
     container: {
         margin: 10,
         padding: 25,
