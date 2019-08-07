@@ -79,6 +79,16 @@ export default class ShowDetailsScreen extends Component {
                     // alert('Oops!\nPlease make sure your search query is correct!');
                 });
         }
+
+        onSeasonSelected = (seasonNo, seasonName) => {
+            this.props.navigation.navigate('SeasonDetailsScreen',
+            {
+                showName: this.state.title,
+                titleId: this.state.titleId,
+                seasonNo,
+                seasonName,
+            });
+        }
     }
 
     render() {
@@ -87,7 +97,7 @@ export default class ShowDetailsScreen extends Component {
         let posterJsx = this.state.posterPath !== null ?
             <Image source={{uri: this.state.posterPath}}
                 style={styles.posterPath}
-                resizeMode="contain"/> : '';
+                resizeMode="contain"/> : null;
         let createdByJsx = this.state.createdBy.length !== 0 ?
             <Text style={styles.createdBy}>
                 Created by
@@ -120,11 +130,11 @@ export default class ShowDetailsScreen extends Component {
         let seasonsJsx = [];
         for (let i = 0; i < this.state.seasons.length; ++i) {
             seasonsJsx.push(
-                <TouchableOpacity style={styles.seasonWrapper}>
+                <TouchableOpacity style={styles.seasonWrapper} onPress={() => onSeasonSelected(i, this.state.seasons[i])}>
                     <Text style={styles.text}>{this.state.seasons[i]}</Text>
                     <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
                 </TouchableOpacity>
-            )
+            );
         }
         return (
             <ScrollView style={styles.scrollView}>
