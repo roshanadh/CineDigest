@@ -8,6 +8,7 @@ import MainScreen from './src/components/MainScreen';
 import SignInScreen from './src/components/SignInScreen';
 import ShowDetailsScreen from './src/components/ShowDetailsScreen';
 import MovieDetailsScreen from './src/components/MovieDetailsScreen';
+import SeasonDetailsScreen from './src/components/SeasonDetailsScreen';
 
 const AppNavigator = createStackNavigator(
 	{
@@ -15,6 +16,7 @@ const AppNavigator = createStackNavigator(
 		MainScreen,
 		MovieDetailsScreen,
 		ShowDetailsScreen,
+		SeasonDetailsScreen,
 	},
 	{
 		initialRouteName: 'Home',
