@@ -66,11 +66,13 @@ export default class MoviesScreen extends Component {
 			);
 		}
 		return (
-			<View style={styles.container}>
-				<SearchItem onChangeText={this.searchFieldChangedHandler}
-					placeholder="Search a TV show"
-					onSubmitEditing={this.searchBtnPressedHandler} />
-			</View>
+			<ScrollView style={styles.scrollView}>
+				<View style={styles.container}>
+					<SearchItem onChangeText={this.searchFieldChangedHandler}
+						placeholder="Search a TV show"
+						onSubmitEditing={this.searchBtnPressedHandler} />
+				</View>
+			</ScrollView>
 		);
 	}
 }
