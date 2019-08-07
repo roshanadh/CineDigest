@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
 	View,
 	StyleSheet,
+	ScrollView,
 } from 'react-native';
 import SearchItem from './SearchItem';
 import ListContainer from './ListContainer';
@@ -49,30 +50,37 @@ export default class MoviesListsScreen extends Component {
     render() {
 		if (!this.state.isEmpty) {
 			return (
-				<View style={styles.container}>
-					<SearchItem onChangeText={this.searchFieldChangedHandler}
-						placeholder="Search a movie"
-						onPress={this.searchBtnPressedHandler}
-						style={styles.searchItem}
-					/>
-					<ListContainer
-						source={this.state.searchResponse}
-						onIdSelected={this.onIdSelected}
-					/>
-				</View>
+				<ScrollView style={styles.scrollView}>
+					<View style={styles.container}>
+						<SearchItem onChangeText={this.searchFieldChangedHandler}
+							placeholder="Search a movie"
+							onPress={this.searchBtnPressedHandler}
+							style={styles.searchItem}
+						/>
+						<ListContainer
+							source={this.state.searchResponse}
+							onIdSelected={this.onIdSelected}
+						/>
+					</View>
+				</ScrollView>
 			);
 		}
 		return (
-			<View style={styles.container}>
-				<SearchItem onChangeText={this.searchFieldChangedHandler}
-					placeholder="Search a movie"
-					onSubmitEditing={this.searchBtnPressedHandler} />
-			</View>
+			<ScrollView style={styles.scrollView}>
+				<View style={styles.container}>
+					<SearchItem onChangeText={this.searchFieldChangedHandler}
+						placeholder="Search a movie"
+						onSubmitEditing={this.searchBtnPressedHandler} />
+				</View>
+			</ScrollView>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
+	scrollView: {
+		backgroundColor: '#f2f1ef',
+	},
 	container: {
 		flex: 1,
 		flexDirection: 'column',
