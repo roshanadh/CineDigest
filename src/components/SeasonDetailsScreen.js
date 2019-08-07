@@ -220,6 +220,7 @@ const styles = StyleSheet.create(
 	overview: {
 		fontSize: 15,
 		textAlign: 'justify',
+		marginBottom: 10,
 	},
 	text: {
 		fontSize: 15,
