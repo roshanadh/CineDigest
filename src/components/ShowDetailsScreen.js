@@ -84,6 +84,39 @@ export default class ShowDetailsScreen extends Component {
     render() {
         this.titleId = this.props.navigation.getParam('titleId', 'null');
         this.fetchShowDetails(this.titleId);
+        let posterJsx = this.state.posterPath !== null ?
+            <Image source={{uri: this.state.posterPath}}
+                style={styles.posterPath}
+                resizeMode="contain"/> : '';
+        let createdByJsx = this.state.createdBy.length !== 0 ?
+            <Text style={styles.createdBy}>
+                Created by
+                {' ' + this.state.createdBy.join(' | ')}
+            </Text> : null;
+        let genresJsx = this.state.genres.length !== 0 ?
+            <Text style={styles.genres}>
+                Genres:
+                {' ' + this.state.genres.join(' | ')}
+            </Text> : null;
+        let firstAirDateJsx = this.state.firstAirDate !== null ?
+            <Text style={styles.airDate}>
+                First aired on
+                {' ' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
+                {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
+            </Text> : null;
+        let lastAirDateJsx = this.state.lastAirDate !== null ?
+            <Text style={styles.airDate}>
+                Last aired on
+                {' ' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
+                {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
+            </Text> : null;
+        let overviewJsx = this.state.overview !== null ?
+            <Text style={styles.overview}>{this.state.overview}</Text>
+            : null;
+        let backdropPathJsx = this.state.backdropPath !== null ?
+            <Image source={{uri: this.state.backdropPath}}
+                style={styles.backdropPath}
+                resizeMode="contain"/> : null;
         let seasonsJsx = [];
         for (let i = 0; i < this.state.seasons.length; ++i) {
             seasonsJsx.push(
@@ -96,40 +129,24 @@ export default class ShowDetailsScreen extends Component {
         return (
             <ScrollView>
                 <View style={styles.container}>
-                    <Image source={{uri: this.state.posterPath}}
-                        style={styles.posterPath}
-                        resizeMode="contain"/>
+                    {posterJsx}
                     <Text style={styles.title}>{this.state.title}</Text>
                     <View style={styles.voteWrapper}>
                         <Text style={styles.text}>{this.state.voteAverage}</Text>
                         <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
                         <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                     </View>
-                    <Text style={styles.createdBy}>{this.state.createdBy.join(' | ')}</Text>
-                    <Text style={styles.genres}>
-                    {
-                        this.state.genres.join(' | ')
-                    }
-                    </Text>
+                    {createdByJsx}
+                    {genresJsx}
                     <TouchableOpacity style={styles.wishListBtn}><Text>Add to Wish-list</Text></TouchableOpacity>
                     <TouchableOpacity style={styles.watchedListBtn}><Text>Add to Watched-list</Text></TouchableOpacity>
                     <TouchableOpacity style={styles.watchingListBtn}><Text>Add to Watching-list</Text></TouchableOpacity>
                     <View style={styles.airDateWrapper}>
-                        <Text style={styles.airDate}>
-                            First aired on
-                            {' ' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
-                            {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
-                        </Text>
-                        <Text style={styles.airDate}>
-                            Last aired on
-                            {' ' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
-                            {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
-                        </Text>
+                        {firstAirDateJsx}
+                        {lastAirDateJsx}
                     </View>
-                    <Text style={styles.overview}>{this.state.overview}</Text>
-                    <Image source={{uri: this.state.backdropPath}}
-                        style={styles.backdropPath}
-                        resizeMode="contain"/>
+                    {overviewJsx}
+                    {backdropPathJsx}
                     {seasonsJsx}
                 </View>
             </ScrollView>
