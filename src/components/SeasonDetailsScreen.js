@@ -93,7 +93,7 @@ export default class SeasonDetailsScreen extends Component {
 			<Text style={styles.showName}>
 				{this.showName}
 			</Text> : null;
-			
+
 		let airDateJsx = this.state.airDate !== null ?
 			<Text style={styles.text}>
 				Aired on
@@ -110,13 +110,13 @@ export default class SeasonDetailsScreen extends Component {
 						Episode {i + 1}
 					</Text>
 					{
-						this.state.episodeNames.length !== 0 ?
+						this.state.episodeNames[i] !== null ?
 						<Text style={styles.episodeHeader}>
 							{this.state.episodeNames[i]}
 						</Text> : null
 					}
 					{
-						this.state.episodeAirDates.length !== 0 ?
+						this.state.episodeAirDates[i] !== null ?
 						<Text style={styles.text}>
 							Aired on
 							{' ' + this.monthNames[new Date(this.state.episodeAirDates[i]).getMonth()]}
@@ -124,7 +124,7 @@ export default class SeasonDetailsScreen extends Component {
 						</Text> : null
 					}
 					{
-						this.state.episodeOverviews.length !== 0 ?
+						this.state.episodeOverviews[i] !== null ?
 						<Text style={styles.overview}>
 							{this.state.episodeOverviews[i]}
 						</Text> : null
