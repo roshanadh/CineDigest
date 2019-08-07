@@ -11,6 +11,9 @@ import {
 import NetInfo from '@react-native-community/netinfo';
 import Snackbar from 'react-native-snackbar';
 
+import UsernameIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import KeyIcon from 'react-native-vector-icons/Feather';
+
 const {width, height, fontScale} = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
 const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
@@ -62,6 +65,11 @@ class SignInScreen extends Component {
             emailId: this.state.emailId,
         });
 	};
+
+	redirectToSignUp = () => {
+		alert('You will be redirected to the sign-up screen!');
+	}
+
 	render() {
 		this.checkNetConn();
 		return (
@@ -69,20 +77,26 @@ class SignInScreen extends Component {
 					<StatusBar barStyle="default" />
 					<View style={styles.signInForm}>
 						<Text style={styles.signInHeader}>Cine Digest</Text>
-
-						<TextInput placeholder="E-mail"
-							style={styles.textInput} name="emailIdTextInput"
-							onChangeText={this.emailTextChanged} />
-
-						<TextInput placeholder="Password"
-							secureTextEntry={true}
-							style={styles.textInput} name="passwordTextInput"
-							onChangeText={this.passwordTextChanged} />
-
+						<View style={styles.usernameWrapper}>
+							<TextInput placeholder="Username"
+								style={styles.textInput} name="emailIdTextInput"
+								onChangeText={this.emailTextChanged} />
+							<UsernameIcon name="format-text" size={25} color="#ddd"/>
+						</View>
+						<View style={styles.passwordWrapper}>
+							<TextInput placeholder="Password"
+								secureTextEntry={true}
+								style={styles.textInput} name="passwordTextInput"
+								onChangeText={this.passwordTextChanged} />
+								<KeyIcon name="key" size={25} color="#ddd" />
+						</View>
 						<TouchableOpacity style={styles.signInBtn}
 							onPress={this.signInBtnPressedHandler}>
 							<Text style={styles.btnText}>Sign-in</Text>
 						</TouchableOpacity>
+					</View>
+					<View style={styles.signUpRedirect}>
+						<TouchableOpacity onPress={() => this.redirectToSignUp()}><Text style={styles.signUpText}>Sign-up if you don't have an account</Text></TouchableOpacity>
 					</View>
 			</View>
 		);
@@ -91,7 +105,7 @@ class SignInScreen extends Component {
 
 const styles = StyleSheet.create({
 	container: {
-		padding: 50,
+		padding: 20,
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'center',
@@ -102,32 +116,62 @@ const styles = StyleSheet.create({
 		marginBottom: 25,
 	},
 	signInForm: {
+		flex: 6,
+		marginBottom: 40,
+		justifyContent: 'flex-end',
 	},
 	scrollView: {
-		backgroundColor: '#000000',
+		backgroundColor: '#fefefe',
 	},
-	textInput: {
+	usernameWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderWidth: 0.2,
 		borderColor: '#010101',
 		borderRadius: 5,
-		borderWidth: 1,
-		marginBottom: 10,
+		paddingLeft: 20,
+		paddingRight: 20,
+		marginBottom: 15,
+	},
+	textInput: {
+		marginRight: 10,
+		flex: 5,
+		minHeight: '6%',
+	},
+	passwordWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderWidth: 0.2,
+		borderColor: '#010101',
+		borderRadius: 5,
 		paddingLeft: 20,
 		paddingRight: 20,
 	},
 	signInBtn: {
 		marginTop: 20,
-		flex: 1,
-		flexDirection: 'row',
-		justifyContent: 'center',
 		alignItems: 'center',
 		alignSelf: 'center',
-		borderWidth: 1,
 		borderRadius: 50,
 		padding: 15,
 		minHeight: btnHeight,
 		width: btnWidth,
+		backgroundColor: '#22a7f0',
 	},
 	btnText: {
+		color: '#fff',
+	},
+	signUpRedirect: {
+		flex: 1,
+		flexDirection: 'row',
+		alignItems: 'center',
+		justifyContent: 'center',
+		textAlign: 'center',
+	},
+	signUpText: {
+		textAlign: 'center',
+		color: '#19b5fe',
 	},
 });
 
