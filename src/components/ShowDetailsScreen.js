@@ -302,7 +302,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         width: '100%',
-        borderWidth: 0.1,
+        borderWidth: 0.2,
         borderRadius: 50,
         padding: 20,
         marginBottom: 10,
