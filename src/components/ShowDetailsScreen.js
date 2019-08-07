@@ -98,35 +98,42 @@ export default class ShowDetailsScreen extends Component {
             <Image source={{uri: this.state.posterPath}}
                 style={styles.posterPath}
                 resizeMode="contain"/> : null;
+
         let createdByJsx = this.state.createdBy.length !== 0 ?
             <Text style={styles.createdBy}>
                 Created by
                 {' ' + this.state.createdBy.join(' | ')}
             </Text> : null;
+
         let genresJsx = this.state.genres.length !== 0 ?
             <Text style={styles.genres}>
                 Genres:
                 {' ' + this.state.genres.join(' | ')}
             </Text> : null;
+
         let firstAirDateJsx = this.state.firstAirDate !== null ?
             <Text style={styles.airDate}>
                 First aired on
                 {' ' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
                 {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
             </Text> : null;
+
         let lastAirDateJsx = this.state.lastAirDate !== null ?
             <Text style={styles.airDate}>
                 Last aired on
                 {' ' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
                 {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
             </Text> : null;
+
         let overviewJsx = this.state.overview !== null ?
             <Text style={styles.overview}>{this.state.overview}</Text>
             : null;
+
         let backdropPathJsx = this.noBackdrop === null ?
             <Image source={{uri: this.state.backdropPath}}
                 style={styles.backdropPath}
                 resizeMode="contain"/> : null;
+
         let seasonsJsx = [];
         for (let i = 0; i < this.state.seasons.length; ++i) {
             seasonsJsx.push(
