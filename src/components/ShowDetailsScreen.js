@@ -44,6 +44,11 @@ export default class ShowDetailsScreen extends Component {
         this.noPoster = false;
     }
 
+    controller = new AbortController();
+
+    componentWillUnmount() {
+        this.controller.abort();
+    }
     fetchShowDetails = (titleId) => {
         if (this.titleId !== 'null') {
             fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}`)
