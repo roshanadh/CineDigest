@@ -31,6 +31,7 @@ export default class SeasonDetailsScreen extends Component {
 			episodeVoteAverages: [],
 			episodeVoteCounts: [],
 		};
+        this.noPoster = false;
 		this.monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
             'July', 'August', 'September', 'October', 'November', 'December',
         ];
@@ -51,6 +52,7 @@ export default class SeasonDetailsScreen extends Component {
 				this.episodeOverviews = [];
 				this.episodeVoteAverages = [];
 				this.episodeVoteCounts = [];
+				this.noPoster = jsonResponse.poster_path !== null ? false : true;
 				for (let i = 0; i < jsonResponse.episodes.length; ++i) {
 					this.episodes.push(jsonResponse.episodes[i].episode_number);
 					this.episodeAirDates.push(jsonResponse.episodes[i].air_date);
@@ -77,18 +79,21 @@ export default class SeasonDetailsScreen extends Component {
 	};
 
 	render() {
-		let posterJsx = this.state.posterPath !== null ?
+		let posterJsx = this.noPoster === false ?
             <Image source={{uri: this.state.posterPath}}
                 style={styles.posterPath}
 				resizeMode="contain"/> : null;
+
 		let seasonNameJsx = this.seasonName !== null ?
 			<Text style={styles.seasonName}>
 				{this.seasonName}
 			</Text> : null;
+
 		let showNameJsx = this.showName !== '' ?
 			<Text style={styles.showName}>
 				{this.showName}
 			</Text> : null;
+			
 		let airDateJsx = this.state.airDate !== null ?
 			<Text style={styles.text}>
 				Aired on
