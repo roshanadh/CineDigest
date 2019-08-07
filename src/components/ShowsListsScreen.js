@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
 	View,
 	StyleSheet,
+	ScrollView,
 } from 'react-native';
 import SearchItem from './SearchItem';
 import ListContainer from './ListContainer';
@@ -49,6 +50,7 @@ export default class MoviesScreen extends Component {
     render() {
 		if (!this.state.isEmpty) {
 			return (
+				<ScrollView style={styles.scrollView}>
 				<View style={styles.container}>
 					<SearchItem onChangeText={this.searchFieldChangedHandler}
 						placeholder="Search a TV show"
@@ -60,6 +62,7 @@ export default class MoviesScreen extends Component {
 						onIdSelected={this.onIdSelected}
 					/>
 				</View>
+				</ScrollView>
 			);
 		}
 		return (
@@ -73,6 +76,9 @@ export default class MoviesScreen extends Component {
 }
 
 const styles = StyleSheet.create({
+	scrollView: {
+		backgroundColor: '#f2f1ef',
+	},
 	container: {
 		flex: 1,
 		flexDirection: 'column',
