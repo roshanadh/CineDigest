@@ -33,7 +33,7 @@ export default class ListContainer extends Component {
 
     render() {
         return (
-            <ScrollView>
+            <ScrollView style={styles.listContainer}>
                 <FlatList data={this.state.data}
                     renderItem={({item}) => (
                         <ListItem
@@ -56,13 +56,5 @@ export default class ListContainer extends Component {
 const styles = StyleSheet.create({
     listContainer: {
         margin: 5,
-        padding: 40,
-        backgroundColor: '#e4f1fe',
-        borderRadius: 15,
-        minWidth: '95%',
-        flexDirection: 'row',
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'center',
     },
 });
