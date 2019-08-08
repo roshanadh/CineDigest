@@ -6,11 +6,15 @@ import {
     Button,
 } from 'react-native';
 
-export default ({ navigation }) => (
-    <View style={{ paddingVertical: 20 }}>  
-        <Button
-          title="Sign In"
-          onPress={() => navigation.navigate("SignIn")}
-        />
-    </View>
-  );
+export default class SignUpScreen extends Component {
+    render() {
+        return (
+            <View style={{ paddingVertical: 20 }}>
+                <Button
+                    title="Sign In"
+                    onPress={() => this.props.navigation.navigate('SignIn')}
+                />
+            </View>
+        );
+    }
+}
