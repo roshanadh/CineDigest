@@ -7,13 +7,13 @@ import {
 
 import MoviesListsScreen from './MoviesListsScreen';
 import ShowsListsScreen from './ShowsListsScreen';
+import SettingsScreen from './SettingsScreen';
 
 const AppTabNavigator = createBottomTabNavigator(
     {
         MoviesListsScreen: {
             screen: MoviesListsScreen,
             navigationOptions: {
-                headerTtle: 'Movies Lists',
                 tabBarLabel: 'Movies',
                 tabBarIcon: ({tintColor}) => (
                     <Icon name="film" size={20} color={tintColor} />
@@ -29,6 +29,13 @@ const AppTabNavigator = createBottomTabNavigator(
                 ),
             },
         },
+        SettingsScreen: {
+            screen: SettingsScreen,
+            navigationOptions: {
+                tabBarLabel: 'Settings',
+            }
+        }
+
     },
     {
         // router config, navigationOptions {for whole tabBar},
