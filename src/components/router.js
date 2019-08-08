@@ -1,22 +1,42 @@
-import { createStackNavigator, createAppContainer } from 'react-navigation';
+import {
+    createSwitchNavigator,
+    createAppContainer,
+    createStackNavigator,
+} from 'react-navigation';
 
-import SignUpScreen from './SignUpScreen';
+import MainScreen from './MainScreen';
 import SignInScreen from './SignInScreen';
+import SignUpScreen from './SignUpScreen';
 
-const SignedOut = createStackNavigator({
-    SignUpScreen: {
-        screen: SignUpScreen,
-        navigationOptions: {
-            title: 'Sign Up',
-        },
-    },
-    SignInScreen: {
+export const SignedOut = createAppContainer(new createStackNavigator({
+    SignIn: {
         screen: SignInScreen,
         navigationOptions: {
             title: 'Sign In',
         },
     },
-});
+    SignUp: {
+        screen: SignUpScreen,
+        navigationOptions: {
+            title: 'Sign Up',
+        },
+    },
+}));
 
-const AppContainer = createAppContainer(SignedOut);
-export default AppContainer;
+export const SignedIn = MainScreen;
+
+export const createRootNavigator = (signedIn = false) => {
+    return createAppContainer(new createSwitchNavigator(
+        {
+            SignedIn: {
+                screen: SignedIn,
+            },
+            SignedOut: {
+                screen: SignedOut,
+            },
+        },
+        {
+            initialRouteName: signedIn ? 'SignedIn' : 'SignedOut',
+        }
+    ));
+};
