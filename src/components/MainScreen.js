@@ -1,5 +1,9 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome';
+
+import MovieIcon from 'react-native-vector-icons/FontAwesome';
+import TVIcon from 'react-native-vector-icons/FontAwesome';
+import SettingsIcon from 'react-native-vector-icons/SimpleLineIcons';
+
 import {
     createBottomTabNavigator,
     createAppContainer,
@@ -16,7 +20,7 @@ const AppTabNavigator = createBottomTabNavigator(
             navigationOptions: {
                 tabBarLabel: 'Movies',
                 tabBarIcon: ({tintColor}) => (
-                    <Icon name="film" size={20} color={tintColor} />
+                    <MovieIcon name="film" size={20} color={tintColor} />
                 ),
             },
         },
@@ -25,7 +29,7 @@ const AppTabNavigator = createBottomTabNavigator(
             navigationOptions: {
                 tabBarLabel: 'Shows',
                 tabBarIcon: ({tintColor}) => (
-                    <Icon name="television" size={20} color={tintColor} />
+                    <TVIcon name="television" size={20} color={tintColor} />
                 ),
             },
         },
@@ -33,8 +37,11 @@ const AppTabNavigator = createBottomTabNavigator(
             screen: SettingsScreen,
             navigationOptions: {
                 tabBarLabel: 'Settings',
-            }
-        }
+                tabBarIcon: ({tintColor}) => (
+                    <SettingsIcon name="settings" size={21} color={tintColor} />
+                ),
+            },
+        },
 
     },
     {
@@ -50,7 +57,7 @@ const AppTabNavigator = createBottomTabNavigator(
             style: {
                 // backgroundColor: '#e4f1fe',
                 height: 60,
-                padding: 5,
+                paddingTop: 5,
             },
         },
     },
