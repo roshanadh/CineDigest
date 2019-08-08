@@ -14,6 +14,8 @@ import Snackbar from 'react-native-snackbar';
 import UsernameIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
+import {onSignIn} from '../auth/auth';
+
 const {width, height, fontScale} = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
 const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
@@ -61,13 +63,11 @@ class SignInScreen extends Component {
     };
 
 	signInBtnPressedHandler = () => {
-		this.props.navigation.navigate('MainScreen', {
-            emailId: this.state.emailId,
-        });
+		onSignIn().then(() => this.props.navigation.navigate('SignedIn'));
 	};
 
 	redirectToSignUp = () => {
-		alert('You will be redirected to the sign-up screen!');
+		this.props.navigation.navigate('SignUp');
 	}
 
 	render() {
