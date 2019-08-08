@@ -5,7 +5,7 @@ import TVIcon from 'react-native-vector-icons/FontAwesome';
 import SettingsIcon from 'react-native-vector-icons/SimpleLineIcons';
 
 import {
-    createBottomTabNavigator,
+    createMaterialTopTabNavigator,
     createAppContainer,
 } from 'react-navigation';
 
@@ -13,7 +13,7 @@ import MoviesListsScreen from './MoviesListsScreen';
 import ShowsListsScreen from './ShowsListsScreen';
 import SettingsScreen from './SettingsScreen';
 
-const AppTabNavigator = createBottomTabNavigator(
+const AppTabNavigator = createMaterialTopTabNavigator(
     {
         MoviesListsScreen: {
             screen: MoviesListsScreen,
@@ -48,18 +48,26 @@ const AppTabNavigator = createBottomTabNavigator(
         // router config, navigationOptions {for whole tabBar},
         // tabBarOptions go here
         tabBarOptions: {
-            activeTintColor: '#cf000f',
             inactiveTintColor: '#24252a',
             labelStyle: {
-                fontSize: 14,
-                marginBottom: 5,
+                fontSize: 12,
             },
+            indicatorStyle: {
+                backgroundColor: '#fff',
+            },
+            showIcon: true,
+            showLabel: false,
             style: {
-                // backgroundColor: '#e4f1fe',
+                backgroundColor: '#22a7f0',
+                borderTopWidth: 1,
+                borderTopColor: '#bbb',
                 height: 60,
                 paddingTop: 5,
+                paddingBottom: 5,
             },
         },
+        tabBarPosition: 'bottom',
+        lazy: true,
     },
 );
 
