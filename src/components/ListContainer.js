@@ -3,6 +3,8 @@ import {
     StyleSheet,
     ScrollView,
     FlatList,
+    View,
+    Text,
 } from 'react-native';
 
 import ListItem from './ListItem';
@@ -11,9 +13,9 @@ export default class ListContainer extends Component {
     constructor(props) {
         super(props);
         let jsonResponse = props.source;
-        let dataLength = jsonResponse.totalResults;
+        this.dataLength = jsonResponse.totalResults;
         let data = [];
-        for (let i = 0; i < dataLength; ++i) {
+        for (let i = 0; i < this.dataLength; ++i) {
             data[i] = {
                 id: jsonResponse.titleIds[i],
                 title: jsonResponse.titles[i],
@@ -33,6 +35,7 @@ export default class ListContainer extends Component {
 
     render() {
         return (
+            <View>
             <ScrollView style={styles.listContainer}>
                 <FlatList data={this.state.data}
                     renderItem={({item}) => (
@@ -49,6 +52,10 @@ export default class ListContainer extends Component {
                     style={styles.listItem}
                 />
             </ScrollView>
+            <View style={styles.footer}>
+                <Text style={styles.footerText}>{this.dataLength} search results</Text>
+            </View>
+            </View>
         );
     }
 }
@@ -56,5 +63,16 @@ export default class ListContainer extends Component {
 const styles = StyleSheet.create({
     listContainer: {
         margin: 5,
+    },
+    footer: {
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        alignItems: 'center',
+        marginTop: 10,
+        marginBottom: 90,
+    },
+    footerText: {
+        fontSize: 15,
+        color: '#2b2b2b',
     },
 });
