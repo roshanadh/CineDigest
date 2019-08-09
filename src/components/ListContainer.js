@@ -14,9 +14,9 @@ export default class ListContainer extends Component {
         super(props);
         let jsonResponse = props.source;
         this.dataLength = jsonResponse.totalResults;
-        let data = [];
+        this.data = [];
         for (let i = 0; i < this.dataLength; ++i) {
-            data[i] = {
+            this.data[i] = {
                 id: jsonResponse.titleIds[i],
                 title: jsonResponse.titles[i],
                 // Limit overview to 150 letters or less
@@ -28,7 +28,7 @@ export default class ListContainer extends Component {
             };
         }
         this.state = {
-            data,
+            data: this.data,
         };
         this.titleIds = this.state.titleIds;
     }
@@ -36,25 +36,28 @@ export default class ListContainer extends Component {
     render() {
         return (
             <View>
-            <ScrollView style={styles.listContainer}>
-                <FlatList data={this.state.data}
-                    renderItem={({item}) => (
-                        <ListItem
-                            titleId={item.id}
-                            title={item.title}
-                            overview={item.overview}
-                            voteCount={item.voteCount}
-                            voteAverage={item.voteAverage}
-                            posterPath={item.posterPath}
-                            onItemPressed={() => this.props.onIdSelected(item.id, item.title)}
-                        />
-                    )}
-                    style={styles.listItem}
-                />
-            </ScrollView>
-            <View style={styles.footer}>
-                <Text style={styles.footerText}>{this.dataLength} search results</Text>
-            </View>
+                <ScrollView style={styles.listContainer}>
+                    <FlatList data={this.state.data}
+                        renderItem={({item}) => (
+                            <ListItem
+                                titleId={item.id}
+                                title={item.title}
+                                overview={item.overview}
+                                voteCount={item.voteCount}
+                                voteAverage={item.voteAverage}
+                                posterPath={item.posterPath}
+                                onItemPressed={() => this.props.onIdSelected(item.id, item.title)}
+                            />
+                        )}
+                        style={styles.listItem}
+                    />
+                </ScrollView>
+                {
+                    this.data.length !== 0 ?
+                    <View style={styles.footer}>
+                        <Text style={styles.footerText}>{this.dataLength} search results</Text>
+                    </View> : null
+                }
             </View>
         );
     }
