@@ -47,6 +47,7 @@ const TabNavigator = createMaterialTopTabNavigator(
         // router config, navigationOptions {for whole tabBar},
         // tabBarOptions go here
         tabBarOptions: {
+            activeTintColor: '#22a7f0',
             inactiveTintColor: '#24252a',
             labelStyle: {
                 fontSize: 12,
@@ -55,14 +56,10 @@ const TabNavigator = createMaterialTopTabNavigator(
                 backgroundColor: '#fff',
             },
             showIcon: true,
-            showLabel: false,
+            // showLabel: false,
             style: {
-                backgroundColor: '#22a7f0',
-                borderTopWidth: 1,
-                borderTopColor: '#bbb',
-                height: 55,
-                paddingTop: 2,
-                paddingBottom: 5,
+                backgroundColor: '#fefefe',
+                height: 62,
             },
         },
         tabBarPosition: 'bottom',
