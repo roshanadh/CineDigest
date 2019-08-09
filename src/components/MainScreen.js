@@ -1,52 +1,38 @@
 import React from 'react';
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {
-    createBottomTabNavigator,
+    TouchableOpacity,
+    Text,
+    StyleSheet,
+    View,
+} from 'react-native';
+
+import {
     createAppContainer,
+    createStackNavigator,
 } from 'react-navigation';
 
-import MoviesListsScreen from './MoviesListsScreen';
-import ShowsListsScreen from './ShowsListsScreen';
+import MovieDetailsScreen from './MovieDetailsScreen';
+import ShowDetailsScreen from './ShowDetailsScreen';
+import SeasonDetailsScreen from './SeasonDetailsScreen';
+import TabNavigator from './TabNavigator';
 
-const AppTabNavigator = createBottomTabNavigator(
-    {
-        MoviesListsScreen: {
-            screen: MoviesListsScreen,
-            navigationOptions: {
-                headerTtle: 'Movies Lists',
-                tabBarLabel: 'Movies',
-                tabBarIcon: ({tintColor}) => (
-                    <Icon name="film" size={20} color={tintColor} />
-                ),
-            },
-        },
-        ShowsListsScreen: {
-            screen: ShowsListsScreen,
-            navigationOptions: {
-                tabBarLabel: 'Shows',
-                tabBarIcon: ({tintColor}) => (
-                    <Icon name="television" size={20} color={tintColor} />
-                ),
-            },
+const StackNavigator = createAppContainer(new createStackNavigator({
+    TabNavigator: {
+        screen: TabNavigator,
+        navigationOptions: {
+            title: 'Cine Digest',
+            headerRight: (
+                <View>
+                <TouchableOpacity onPress={() => alert('This is a button!')} style={{marginRight: 20,}}>
+                    <Text>Click!</Text>
+                </TouchableOpacity>
+                </View>
+            ),
         },
     },
-    {
-        // router config, navigationOptions {for whole tabBar},
-        // tabBarOptions go here
-        tabBarOptions: {
-            activeTintColor: '#cf000f',
-            inactiveTintColor: '#24252a',
-            labelStyle: {
-                fontSize: 14,
-                marginBottom: 5,
-            },
-            style: {
-                // backgroundColor: '#e4f1fe',
-                height: 60,
-                padding: 5,
-            },
-        },
-    },
-);
+    MovieDetailsScreen,
+    ShowDetailsScreen,
+    SeasonDetailsScreen,
+}));
 
-export default createAppContainer(AppTabNavigator);
+export default StackNavigator;

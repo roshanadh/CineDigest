@@ -1,36 +1,32 @@
 import React, {Component} from 'react';
-import {
-	createAppContainer,
-	createStackNavigator,
-} from 'react-navigation';
+import { isSignedIn } from './src/auth/auth';
+import {createRootNavigator} from './src/components/router';
 
-import MainScreen from './src/components/MainScreen';
-import SignInScreen from './src/components/SignInScreen';
-import ShowDetailsScreen from './src/components/ShowDetailsScreen';
-import MovieDetailsScreen from './src/components/MovieDetailsScreen';
-import SeasonDetailsScreen from './src/components/SeasonDetailsScreen';
+export default class App extends Component {
+	constructor(props) {
+		super(props);
 
-const AppNavigator = createStackNavigator(
-	{
-		Home: SignInScreen,
-		MainScreen,
-		MovieDetailsScreen,
-		ShowDetailsScreen,
-		SeasonDetailsScreen,
-	},
-	{
-		initialRouteName: 'Home',
-	},
-);
+		this.state = {
+			signedIn: false,
+			checkedSignIn: false,
+		};
+	}
 
-class App extends Component {
+	componentDidMount() {
+	isSignedIn()
+		.then(res => this.setState({ signedIn: res, checkedSignIn: true }))
+		.catch(err => alert('An error occurred'));
+	}
+
 	render() {
-		return (
-			<AppContainer />
-		);
+		const { checkedSignIn, signedIn } = this.state;
+
+		// If we haven't checked AsyncStorage yet,
+		// don't render anything (better ways to do this)
+		if (!checkedSignIn) {
+			return null;
+		}
+		const Layout = createRootNavigator(signedIn);
+		return <Layout />;
 	}
 }
-
-const AppContainer = createAppContainer(AppNavigator);
-
-export default AppContainer;

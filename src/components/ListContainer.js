@@ -3,6 +3,8 @@ import {
     StyleSheet,
     ScrollView,
     FlatList,
+    View,
+    Text,
 } from 'react-native';
 
 import ListItem from './ListItem';
@@ -11,10 +13,10 @@ export default class ListContainer extends Component {
     constructor(props) {
         super(props);
         let jsonResponse = props.source;
-        let dataLength = jsonResponse.totalResults;
-        let data = [];
-        for (let i = 0; i < dataLength; ++i) {
-            data[i] = {
+        this.dataLength = jsonResponse.totalResults;
+        this.data = [];
+        for (let i = 0; i < this.dataLength; ++i) {
+            this.data[i] = {
                 id: jsonResponse.titleIds[i],
                 title: jsonResponse.titles[i],
                 // Limit overview to 150 letters or less
@@ -26,29 +28,37 @@ export default class ListContainer extends Component {
             };
         }
         this.state = {
-            data,
+            data: this.data,
         };
         this.titleIds = this.state.titleIds;
     }
 
     render() {
         return (
-            <ScrollView>
-                <FlatList data={this.state.data}
-                    renderItem={({item}) => (
-                        <ListItem
-                            titleId={item.id}
-                            title={item.title}
-                            overview={item.overview}
-                            voteCount={item.voteCount}
-                            voteAverage={item.voteAverage}
-                            posterPath={item.posterPath}
-                            onItemPressed={() => this.props.onIdSelected(item.id, item.title)}
-                        />
-                    )}
-                    style={styles.listItem}
-                />
-            </ScrollView>
+            <View>
+                <ScrollView style={styles.listContainer}>
+                    <FlatList data={this.state.data}
+                        renderItem={({item}) => (
+                            <ListItem
+                                titleId={item.id}
+                                title={item.title}
+                                overview={item.overview}
+                                voteCount={item.voteCount}
+                                voteAverage={item.voteAverage}
+                                posterPath={item.posterPath}
+                                onItemPressed={() => this.props.onIdSelected(item.id, item.title)}
+                            />
+                        )}
+                        style={styles.listItem}
+                    />
+                </ScrollView>
+                {
+                    this.data.length !== 0 ?
+                    <View style={styles.footer}>
+                        <Text style={styles.footerText}>{this.dataLength} search results</Text>
+                    </View> : null
+                }
+            </View>
         );
     }
 }
@@ -56,13 +66,16 @@ export default class ListContainer extends Component {
 const styles = StyleSheet.create({
     listContainer: {
         margin: 5,
-        padding: 40,
-        backgroundColor: '#e4f1fe',
-        borderRadius: 15,
-        minWidth: '95%',
-        flexDirection: 'row',
-        flex: 1,
+    },
+    footer: {
+        flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'center',
+        marginTop: 10,
+        marginBottom: 90,
+    },
+    footerText: {
+        fontSize: 15,
+        color: '#2b2b2b',
     },
 });
