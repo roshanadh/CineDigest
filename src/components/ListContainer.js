@@ -65,7 +65,7 @@ export default class ListContainer extends Component {
 const styles = StyleSheet.create({
     metaContainer: {},
     listContainer: {
-        paddingBottom: 50,
+        paddingBottom: 80,
     },
     searchInfo: {
         margin: 10,
