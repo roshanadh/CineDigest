@@ -27,10 +27,15 @@ export default class SearchScreen extends Component {
     }
 
     onIdSelected = (itemId, itemTitle) => {
-        this.props.navigation.navigate('MovieDetailsScreen', {
-            titleId: itemId,
-            screenName: itemTitle,
-        });
+        this.searchType === 'm' ?
+            this.props.navigation.navigate('MovieDetailsScreen', {
+                titleId: itemId,
+                screenName: itemTitle,
+            }) :
+            this.props.navigation.navigate('ShowDetailsScreen', {
+                screenName: itemTitle,
+                titleId: itemId,
+            });
     };
 
     componentDidMount() {
