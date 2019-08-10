@@ -148,7 +148,7 @@ export default class ShowDetailsScreen extends Component {
                 seasonsJsx.push(
                     <TouchableOpacity style={styles.seasonWrapper}
                         onPress={() => this.onSeasonSelected(i, this.state.seasons[i])}>
-                        <Text style={styles.text}>{this.state.seasons[i]}</Text>
+                        <Text style={styles.seasonTitle}>{this.state.seasons[i]}</Text>
                         <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
                     </TouchableOpacity>
                 );
@@ -158,7 +158,7 @@ export default class ShowDetailsScreen extends Component {
                 seasonsJsx.push(
                     <TouchableOpacity style={styles.seasonWrapper}
                         onPress={() => this.onSeasonSelected(i, this.state.seasons[i - 1])}>
-                        <Text style={styles.text}>{this.state.seasons[i - 1]}</Text>
+                        <Text style={styles.seasonTitle}>{this.state.seasons[i - 1]}</Text>
                         <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
                     </TouchableOpacity>
                 );
@@ -308,6 +308,10 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     rightIcon: {
-        marginLeft: 20,
+        flex: 1,
+    },
+    seasonTitle: {
+        fontSize: 15,
+        flex: 9,
     },
 });
