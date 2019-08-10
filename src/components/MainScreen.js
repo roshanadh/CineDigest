@@ -15,6 +15,7 @@ import MovieDetailsScreen from './MovieDetailsScreen';
 import ShowDetailsScreen from './ShowDetailsScreen';
 import SeasonDetailsScreen from './SeasonDetailsScreen';
 import TabNavigator from './TabNavigator';
+import SearchScreen from './SearchScreen';
 
 const StackNavigator = createAppContainer(new createStackNavigator({
     TabNavigator: {
@@ -33,6 +34,7 @@ const StackNavigator = createAppContainer(new createStackNavigator({
     MovieDetailsScreen,
     ShowDetailsScreen,
     SeasonDetailsScreen,
+    SearchScreen,
 }));
 
 export default StackNavigator;
