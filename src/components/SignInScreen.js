@@ -96,7 +96,11 @@ class SignInScreen extends Component {
 						</TouchableOpacity>
 					</View>
 					<View style={styles.signUpRedirect}>
-						<TouchableOpacity onPress={() => this.redirectToSignUp()}><Text style={styles.signUpText}>Sign-up if you don't have an account</Text></TouchableOpacity>
+						<TouchableOpacity onPress={() => this.redirectToSignUp()}>
+							<Text style={styles.signUpText}>
+								Sign-up if you don't have an account
+							</Text>
+						</TouchableOpacity>
 					</View>
 			</View>
 		);

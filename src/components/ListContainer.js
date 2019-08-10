@@ -21,7 +21,7 @@ export default class ListContainer extends Component {
                 title: jsonResponse.titles[i],
                 // Limit overview to 150 letters or less
                 overview: jsonResponse.overviews[i].length <= 100 ?
-                    jsonResponse.overviews[i] : jsonResponse.overviews[i].slice(0, 150) + "...",
+                    jsonResponse.overviews[i] : jsonResponse.overviews[i].slice(0, 150) + '...',
                 voteCount: jsonResponse.voteCounts[i],
                 voteAverage: jsonResponse.voteAverages[i],
                 posterPath: `https://image.tmdb.org/t/p/w185/${jsonResponse.posterPaths[i]}`,
