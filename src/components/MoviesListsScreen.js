@@ -5,7 +5,6 @@ import {
 	ScrollView,
 } from 'react-native';
 import SearchItem from './SearchItem';
-import ListContainer from './ListContainer';
 
 export default class MoviesListsScreen extends Component {
 	constructor(props, context) {
