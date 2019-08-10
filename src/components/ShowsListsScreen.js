@@ -5,39 +5,26 @@ import {
 	ScrollView,
 } from 'react-native';
 import SearchItem from './SearchItem';
-import ListContainer from './ListContainer';
 
 export default class MoviesScreen extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
 			searchQuery: '',
-			searchResponse: {},
 		};
 	}
 
 	searchFieldChangedHandler = (newQuery) => {
 		this.setState({
-			isEmpty: true,
 			searchQuery: newQuery,
-			searchResponse: {
-			},
 		});
 	};
 
 	searchBtnPressedHandler = () => {
-		fetch(`https://api-cine-digest.herokuapp.com/api/v1/searchs/${this.state.searchQuery}`)
-			.then(response => response.json())
-			.then(jsonResponse => { // TODO read full response, not just titles
-				this.setState({
-					isEmpty: false,
-					searchResponse: jsonResponse,
-				});
-			}) // TODO fix response status parsing
-			.catch(error => {
-				alert('Oops!\nPlease make sure your search query is correct!');
-				this.state.searchResponse = error.response.status;
-			});
+		this.props.navigation.navigate('SearchScreen', {
+			searchQuery: this.state.searchQuery,
+			searchType: 's',
+		});
 	};
 
 	onIdSelected = (itemId, itemTitle) => {
@@ -48,23 +35,6 @@ export default class MoviesScreen extends Component {
 	};
 
     render() {
-		if (!this.state.isEmpty) {
-			return (
-				<ScrollView style={styles.scrollView}>
-				<View style={styles.container}>
-					<SearchItem onChangeText={this.searchFieldChangedHandler}
-						placeholder="Search a TV show"
-						onPress={this.searchBtnPressedHandler}
-						style={styles.searchItem}
-					/>
-					<ListContainer
-						source={this.state.searchResponse}
-						onIdSelected={this.onIdSelected}
-					/>
-				</View>
-				</ScrollView>
-			);
-		}
 		return (
 			<ScrollView style={styles.scrollView}>
 				<View style={styles.container}>
