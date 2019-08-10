@@ -4,6 +4,7 @@ import {
     StyleSheet,
     Text,
     ScrollView,
+    ActivityIndicator,
 } from 'react-native';
 import SearchItem from './SearchItem';
 import ListContainer from './ListContainer';
@@ -65,7 +66,11 @@ export default class SearchScreen extends Component {
             </ScrollView>
         );
         } else {
-            return (null);
+            return (
+                <View style={styles.indicatorContainer}>
+                    <ActivityIndicator size="large" color="#22a7f0" />
+                </View>
+            );
         }
     }
 }
@@ -78,5 +83,12 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'center',
+    },
+    indicatorContainer: {
+        backgroundColor: '#f2f1ef',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flex: 1,
     },
 });
