@@ -35,8 +35,13 @@ export default class ListContainer extends Component {
 
     render() {
         return (
-            <View>
+            <View style={styles.metaContainer}>
                 <ScrollView style={styles.listContainer}>
+                    <View style={styles.searchInfo}>
+                        <Text>
+                            {this.dataLength}{this.dataLength > 1 ? ' search results' : ' search result'}
+                        </Text>
+                    </View>
                     <FlatList data={this.state.data}
                         renderItem={({item}) => (
                             <ListItem
@@ -52,30 +57,18 @@ export default class ListContainer extends Component {
                         style={styles.listItem}
                     />
                 </ScrollView>
-                {
-                    this.data.length !== 0 ?
-                    <View style={styles.footer}>
-                        <Text style={styles.footerText}>{this.dataLength} search results</Text>
-                    </View> : null
-                }
             </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
+    metaContainer: {},
     listContainer: {
-        margin: 5,
+        paddingBottom: 50,
     },
-    footer: {
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        alignItems: 'center',
-        marginTop: 10,
-        marginBottom: 90,
-    },
-    footerText: {
-        fontSize: 15,
-        color: '#2b2b2b',
+    searchInfo: {
+        margin: 10,
+        alignSelf: 'flex-end',
     },
 });
