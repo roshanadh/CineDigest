@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import {
     View,
     StyleSheet,
+    Alert,
     Text,
     ScrollView,
     ActivityIndicator,
@@ -49,8 +50,13 @@ export default class SearchScreen extends Component {
                 });
             }) // TODO fix response status parsing
             .catch(error => {
-                alert('Oops!\nPlease make sure your search query is correct!');
-                this.state.searchResponse = error.response.status;
+                Alert.alert('Invalid Request', `Your request couldn't be handled!`, [{
+                    text: 'OK',
+                    onPress:(
+                        () => this.searchType === 'm' ?
+                            this.props.navigation.navigate('MoviesListsScreen') :
+                            this.props.navigation.navigate('ShowsListsScreen') ),
+                }]);
             });
     }
     render() {
