@@ -22,6 +22,9 @@ const StackNavigator = createAppContainer(new createStackNavigator({
         screen: TabNavigator,
         navigationOptions: {
             title: 'Cine Digest',
+            headerTitleStyle: {
+                fontSize: 18,
+            },
             headerRight: (
                 <View>
                 <TouchableOpacity onPress={() => alert('This is a button!')} style={{marginRight: 20,}}>
