@@ -89,8 +89,8 @@ class SignInScreen extends Component {
 	render() {
 		this.checkNetConn();
 		let indicatorJsx = this.state.isLoading ?
-				<ActivityIndicator size="small" color="#fefefe"
-					style={styles.indicator} /> : null;
+			<ActivityIndicator size="small" color="#fefefe"
+				style={styles.indicator} /> : null;
 		return (
 			<View style={styles.container}>
 					<StatusBar barStyle="default" />
@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
 	signInHeader: {
 		fontSize: headerFontSize,
 		alignSelf: 'center',
-		marginBottom: 25,
+		marginBottom: 45,
 	},
 	signInForm: {
 		flex: 5,
@@ -155,7 +155,7 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		paddingLeft: 20,
 		paddingRight: 20,
-		marginBottom: 15,
+		marginBottom: 25,
 	},
 	textInput: {
 		marginRight: 10,
@@ -171,6 +171,7 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		paddingLeft: 20,
 		paddingRight: 20,
+		marginBottom: 40,
 	},
 	signInBtn: {
 		flexDirection: 'row',
@@ -182,7 +183,6 @@ const styles = StyleSheet.create({
 		minHeight: btnHeight,
 		width: btnWidth,
 		backgroundColor: '#22a7f0',
-		marginTop: 20,
 	},
 	btnText: {
 		color: '#fff',
