@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
 	View,
 	TouchableOpacity,
@@ -11,8 +11,10 @@ import {
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
+import db from '../db/db.js';
+
 export default class SignUpScreen extends Component {
-	constructor (props, context) {
+	constructor(props, context) {
 		super(props, context);
 		this.state = {
 			name: '',
@@ -51,7 +53,20 @@ export default class SignUpScreen extends Component {
 					text: 'okay',
 				}]);
 			} else {
-				this.props.navigation.navigate('SignIn');
+				let addPromise = db.addUser(this.state.username, this.state.password1, this.state.name);
+				addPromise.then(function (result) {
+					console.warn(result);
+					Alert.alert(
+						'Successful',
+						`${result.username} has been registered!`, [{
+							text: 'OK',
+							onPress: () => props.navigation.navigate('SignIn'),
+						}]
+					);
+				}, function (err) {
+					Alert.alert('Oops', `Username ${err.username} already exists!`);
+					console.warn(err);
+				});
 			}
 		};
 
