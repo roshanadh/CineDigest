@@ -45,6 +45,7 @@ class Database {
                                             });
                                         })
                                         .catch(error => {
+                                            db.close();
                                             console.warn('Error in INSERT: ' + error.message);
                                             reject({
                                                 status: 'not ok',
@@ -55,7 +56,65 @@ class Database {
                                         });
                                 });
                         })
-                        .catch(error => console.warn('Echo test error: ' + error.message));
+                        .catch(error => {
+                            db.close();
+                            console.warn('Echo test error: ' + error.message)
+                        });
+                });
+        });
+    }
+
+    verifyUser(username, password) {
+        return new Promise((resolve, reject) => {
+            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: 1 })
+                .then(DB => {
+                    let db = DB;
+                    db.transaction(tx => {
+                        // Check if user exists
+                        tx.executeSql(
+                            `SELECT name FROM users WHERE username='${username}'`, [], (tx, results) => {
+                                console.warn('SELECT completed');
+                                let len = results.rows.length;
+                                if (len > 0) {
+                                    console.warn('YES USER FOUND YAY!');
+
+                                    // Check if user exists for given password
+                                    tx.executeSql(
+                                        `SELECT name FROM users WHERE username='${username}'AND password='${password}'`,
+                                        [], (tx, results) => {
+                                            let len = results.rows.length;
+                                            if (len > 0) {
+                                                resolve({
+                                                    status: 'ok',
+                                                    username,
+                                                    password,
+                                                });
+                                            } else {
+                                                // User exists but incorrect password
+                                                reject({
+                                                    status: 'password mismatch',
+                                                    username,
+                                                    password,
+                                                });
+                                            }
+                                    });
+                                } else {
+                                    // User doesn't exist
+                                    reject({
+                                        status: 'user mismatch',
+                                        username,
+                                        password,
+                                    });
+                                }
+                            }
+                        )
+                            .catch(error => {
+                                Alert.alert('Error', error.message);
+                            });
+                    });
+                })
+                .catch(error => {
+                    Alert.alert('Error', 'Couldn\'t open database!' + error.message);
                 });
         });
     }
