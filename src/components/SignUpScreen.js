@@ -59,6 +59,29 @@ export default class SignUpScreen extends Component {
 				Alert.alert('Error', 'The passwords did not match!', [{
 					text: 'okay',
 				}]);
+			}
+			else if (this.state.username.includes('.') || this.state.username.includes('/') ||
+				this.state.username.includes('\\') || this.state.username.includes('|') ||
+				this.state.username.includes('~') || this.state.username.includes('`') ||
+				this.state.username.includes('!') || this.state.username.includes('@') ||
+				this.state.username.includes('+') || this.state.username.includes('-') ||
+				this.state.username.includes('*') || this.state.username.includes('=') ||
+				this.state.username.includes('#') || this.state.username.includes('$') ||
+				this.state.username.includes('%') || this.state.username.includes('^') ||
+				this.state.username.includes('&') || this.state.username.includes('(') ||
+				this.state.username.includes(')') || this.state.username.includes(';') ||
+				this.state.username.includes(':') || this.state.username.includes('{') ||
+				this.state.username.includes('}') || this.state.username.includes('[') ||
+				this.state.username.includes(']') || this.state.username.includes('\'') ||
+				this.state.username.includes('"') || this.state.username.includes('?') ||
+				this.state.username.includes('<') || this.state.username.includes('>') ||
+				this.state.username.includes(',') || this.state.username.includes(' ') ||
+				this.state.username.length < 6 || this.state.password1.length < 6) {
+
+				this.setState({isLoading: false})
+				Alert.alert('Error', 'Some fields may have errors!', [{
+					text: 'okay',
+				}]);
 			} else {
 				let addPromise = db.addUser(this.state.username, this.state.password1, this.state.name);
 				addPromise.then(result => {
@@ -83,6 +106,10 @@ export default class SignUpScreen extends Component {
 			this.setState({isLoading: true});
 			this.checkSignUp();
 		};
+		this.usernameLengthErrorTextJsx;
+		this.usernameCharErrorTextJsx;
+		this.passwordLengthErrorTextJsx;
+		this.confirmPasswordErrorTextJsx;
 	}
 
 	render() {
@@ -90,10 +117,10 @@ export default class SignUpScreen extends Component {
 			<ActivityIndicator size="small" color="#fefefe"
 				style={styles.indicator} /> : null;
 
-		let usernameLengthErrorTextJsx =
+		this.usernameLengthErrorTextJsx =
 			this.state.username.length > 0 && this.state.username.length < 6 ?
 				<Text style={styles.errorText}>Username must contain atleast 6 characters</Text> : null;
-		let usernameCharErrorTextJsx =
+		this.usernameCharErrorTextJsx =
 			this.state.username.includes('.') || this.state.username.includes('/') ||
 				this.state.username.includes('\\') || this.state.username.includes('|') ||
 				this.state.username.includes('~') || this.state.username.includes('`') ||
@@ -112,10 +139,10 @@ export default class SignUpScreen extends Component {
 				this.state.username.includes(',') || this.state.username.includes(' ') ?
 				<Text style={styles.errorText}>Username must not contain any special characters</Text> : null;
 
-		let passwordLengthErrorTextJsx =
+		this.passwordLengthErrorTextJsx =
 			this.state.password1.length > 0 && this.state.password1.length < 6 ?
 				<Text style={styles.errorText}>Password must contain atleast 6 characters</Text> : null;
-		let confirmPasswordErrorTextJsx =
+		this.confirmPasswordErrorTextJsx =
 			this.state.password2.length > 0 && (this.state.password1 !== this.state.password2) ?
 				<Text style={styles.errorText}>The passwords do not match</Text> : null;
 
@@ -132,11 +159,11 @@ export default class SignUpScreen extends Component {
 					</View>
 				</View>
 				<View style={styles.metaWrapper}>
-					{usernameLengthErrorTextJsx}
-					{usernameCharErrorTextJsx}
+					{this.usernameLengthErrorTextJsx}
+					{this.usernameCharErrorTextJsx}
 					<View style={
-						usernameLengthErrorTextJsx !== null ||
-						usernameCharErrorTextJsx !== null ?
+						this.usernameLengthErrorTextJsx !== null ||
+						this.usernameCharErrorTextJsx !== null ?
 							styles.errorWrapper :
 							styles.usernameWrapper}
 					>
@@ -148,9 +175,9 @@ export default class SignUpScreen extends Component {
 					</View>
 				</View>
 				<View style={styles.metaWrapper}>
-					{passwordLengthErrorTextJsx}
+					{this.passwordLengthErrorTextJsx}
 					<View style={
-						passwordLengthErrorTextJsx !== null ?
+						this.passwordLengthErrorTextJsx !== null ?
 							styles.errorWrapper : styles.passwordWrapper
 					}>
 						<TextInput
@@ -164,9 +191,9 @@ export default class SignUpScreen extends Component {
 				</View>
 
 				<View style={styles.metaWrapper}>
-					{confirmPasswordErrorTextJsx}
+					{this.confirmPasswordErrorTextJsx}
 					<View style={
-						confirmPasswordErrorTextJsx !== null ?
+						this.confirmPasswordErrorTextJsx !== null ?
 							styles.errorWrapper : styles.passwordWrapper
 					}>
 						<TextInput
