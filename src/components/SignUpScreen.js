@@ -109,7 +109,7 @@ export default class SignUpScreen extends Component {
 				this.state.username.includes(']') || this.state.username.includes('\'') ||
 				this.state.username.includes('"') || this.state.username.includes('?') ||
 				this.state.username.includes('<') || this.state.username.includes('>') ||
-				this.state.username.includes(',') ?
+				this.state.username.includes(',') || this.state.username.includes(' ') ?
 				<Text style={styles.errorText}>Username must not contain any special characters</Text> : null;
 
 		let passwordLengthErrorTextJsx =
