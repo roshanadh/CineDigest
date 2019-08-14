@@ -53,11 +53,20 @@ export default class SignUpScreen extends Component {
 					text: 'okay',
 				}]);
 			} else {
-				// this.initDb(this.state.name, this.state.username, this.state.password1);
-				const valid = db.addUser(this.state.username, this.state.password1, this.state.name);
-				// console.warn(valid.status);
-				// valid.status === 'ok' ?
-				// alert('ok mate') : null;
+				let addPromise = db.addUser(this.state.username, this.state.password1, this.state.name);
+				addPromise.then(function (result) {
+					console.warn(result);
+					Alert.alert(
+						'Successful',
+						`${result.username} has been registered!`, [{
+							text: 'OK',
+							onPress: () => props.navigation.navigate('SignIn'),
+						}]
+					);
+				}, function (err) {
+					Alert.alert('Oops', `Username ${err.username} already exists!`);
+					console.warn(err);
+				});
 			}
 		};
 
