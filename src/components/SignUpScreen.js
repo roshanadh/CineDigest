@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
 	View,
 	TouchableOpacity,
@@ -10,9 +10,18 @@ import {
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
+import SQLite from 'react-native-sqlite-storage';
+
+SQLite.DEBUG(true);
+SQLite.enablePromise(true);
+
+const database_name = "Reactoffline.db";
+const database_version = "1.0";
+const database_displayname = "SQLite React Offline Database";
+const database_size = 200000;
 
 export default class SignUpScreen extends Component {
-	constructor (props, context) {
+	constructor(props, context) {
 		super(props, context);
 		this.state = {
 			name: '',
@@ -51,12 +60,76 @@ export default class SignUpScreen extends Component {
 					text: 'okay',
 				}]);
 			} else {
-				this.props.navigation.navigate('SignIn');
+				// this.props.navigation.navigate('SignIn');
+				this.initDb(this.state.name, this.state.username, this.state.password1);
 			}
 		};
 
 		this.signUpHandler = () => {
 			this.checkSignUp();
+		};
+
+		this.initDb = (name, username, password) => {
+			alert('Okay, DB init!');
+			let db;
+			return new Promise((resolve) => {
+				console.warn("Plugin integrity check ...");
+				SQLite.echoTest()
+					.then(() => {
+						console.warn("Integrity check passed ...");
+						console.warn("Opening database ...");
+						SQLite.openDatabase(
+							database_name,
+							database_version,
+							database_displayname,
+							database_size
+						)
+							.then(DB => {
+								db = DB;
+								console.warn("Database OPEN");
+								console.warn("Received error: ");
+								console.warn("Database not yet ready ... creating table");
+								db.transaction((tx) => {
+									tx.executeSql('CREATE TABLE IF NOT EXISTS Users (name, username, password)');
+								});
+							})
+							.then(() => {
+								console.warn("Table created successfully");
+							})
+							.then(() => {
+								db.transaction((tx) => {
+									tx.executeSql(`INSERT INTO Users VALUES('${name}', '${username}', '${password}')`);
+								})
+									.then(() => {
+										console.warn('Values inserted into table!');
+									})
+									.catch(error => console.warn(error));
+							})
+							.then(() => {
+								db.transaction((tx) => {
+									tx.executeSql('SELECT u.name, u.username, u.password FROM Users u', [])
+										.then(([tx, results]) => {
+											console.log("Query completed");
+											var len = results.rows.length;
+											for (let i = 0; i < len; i++) {
+												let row = results.rows.item(i);
+												console.warn(
+													`Name: ${row.name}, Username: ${row.username},
+													Password: ${row.password},
+												`);
+												// const { prodId, prodName, prodImage } = row;
+											}
+										})
+										.catch(error => {
+											console.warn(error);
+										});
+								});
+							})
+							.catch(error => {
+								console.warn("echoTest failed - plugin not functional");
+							});
+					});
+			});
 		};
 	}
 
