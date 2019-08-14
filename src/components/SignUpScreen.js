@@ -10,15 +10,8 @@ import {
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
-import SQLite from 'react-native-sqlite-storage';
 
-SQLite.DEBUG(true);
-SQLite.enablePromise(true);
-
-const database_name = 'Reactoffline.db';
-const database_version = '1.0';
-const database_displayname = 'SQLite React Offline Database';
-const database_size = 200000;
+import db from '../db/db.js';
 
 export default class SignUpScreen extends Component {
 	constructor(props, context) {
@@ -60,68 +53,16 @@ export default class SignUpScreen extends Component {
 					text: 'okay',
 				}]);
 			} else {
-				// this.props.navigation.navigate('SignIn');
-				this.initDb(this.state.name, this.state.username, this.state.password1);
+				// this.initDb(this.state.name, this.state.username, this.state.password1);
+				const valid = db.addUser(this.state.username, this.state.password1, this.state.name);
+				// console.warn(valid.status);
+				// valid.status === 'ok' ?
+				// alert('ok mate') : null;
 			}
 		};
 
 		this.signUpHandler = () => {
 			this.checkSignUp();
-		};
-
-		this.initDb = (name, username, password) => {
-			let db;
-			return new Promise((resolve) => {
-				console.warn('Plugin integrity check ...');
-				SQLite.echoTest()
-					.then(() => {
-						console.warn('Integrity check passed ...');
-						console.warn('Opening database ...');
-
-						SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: 1})
-							.then(DB => {
-								db = DB;
-								console.warn('Database OPEN');
-								db.transaction((tx) => {
-									tx.executeSql(`CREATE TABLE "users" (
-										"username"	TEXT NOT NULL UNIQUE,
-										"password"	TEXT NOT NULL,
-										"name"	TEXT NOT NULL,
-										PRIMARY KEY("username")
-									)`);
-								})
-									.then(() => console.warn('Table users Created!'))
-									.catch((error) => console.warn('Table users was not created! ' + error.message))
-									.then(() => {
-										db.transaction((tx) => {
-											tx.executeSql(`INSERT INTO users VALUES ('${username}', '${password}', '${name}')`);
-											Alert.alert(`Successful`, `${username} has been registered!`);
-										})
-										.catch(error => {
-											console.warn('Error in INSERT: ' + error.message);
-											Alert.alert(`Oops`, `Username ${username} already exists!`);
-										});
-									})
-									.then(() => {
-										db.transaction((tx) => {
-											tx.executeSql('SELECT u.name, u.username, u.password FROM users u', [])
-												.then(([tx, results]) => {
-													console.log('Query completed');
-													var len = results.rows.length;
-													for (let i = 0; i < len; i++) {
-														let row = results.rows.item(i);
-														console.warn(
-															`Name: ${row.name}, Username: ${row.username},
-															Password: ${row.password}`);
-													}
-												})
-												.catch(error => console.warn('Error in SELECT, ' + error.message));
-										});
-									});
-							})
-							.catch(error => console.warn('Echo test error: ' + error.message));
-					});
-			});
 		};
 	}
 
