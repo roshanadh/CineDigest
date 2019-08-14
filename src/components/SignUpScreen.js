@@ -6,6 +6,8 @@ import {
 	Text,
 	StyleSheet,
 	Alert,
+	ActivityIndicator,
+	ImageBackground,
 } from 'react-native';
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,6 +19,7 @@ export default class SignUpScreen extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
+			isLoading: false,
 			name: '',
 			username: '',
 			password1: '',
@@ -31,30 +34,59 @@ export default class SignUpScreen extends Component {
 			} = this.state;
 
 			if (name === '') {
+				this.setState({isLoading: false});
 				Alert.alert('Error', 'Please fill up your name!', [{
 					text: 'okay',
 				}]);
 			} else if (username === '') {
+				this.setState({isLoading: false});
 				Alert.alert('Error', 'Please fill up your username!', [{
 					text: 'okay',
 				}]);
 			} else if (password1 === '') {
+				this.setState({isLoading: false});
 				// If password not entered
 				Alert.alert('Error', 'Please enter your password!', [{
 					text: 'okay',
 				}]);
 			} else if (password2 === '') {
+				this.setState({isLoading: false});
 				Alert.alert('Error', 'Please confirm your password!', [{
 					text: 'okay',
 				}]);
 			} else if (password1 !== password2) {
+				this.setState({isLoading: false});
 				// If Not same return False
 				Alert.alert('Error', 'The passwords did not match!', [{
 					text: 'okay',
 				}]);
+			}
+			else if (this.state.username.includes('.') || this.state.username.includes('/') ||
+				this.state.username.includes('\\') || this.state.username.includes('|') ||
+				this.state.username.includes('~') || this.state.username.includes('`') ||
+				this.state.username.includes('!') || this.state.username.includes('@') ||
+				this.state.username.includes('+') || this.state.username.includes('-') ||
+				this.state.username.includes('*') || this.state.username.includes('=') ||
+				this.state.username.includes('#') || this.state.username.includes('$') ||
+				this.state.username.includes('%') || this.state.username.includes('^') ||
+				this.state.username.includes('&') || this.state.username.includes('(') ||
+				this.state.username.includes(')') || this.state.username.includes(';') ||
+				this.state.username.includes(':') || this.state.username.includes('{') ||
+				this.state.username.includes('}') || this.state.username.includes('[') ||
+				this.state.username.includes(']') || this.state.username.includes('\'') ||
+				this.state.username.includes('"') || this.state.username.includes('?') ||
+				this.state.username.includes('<') || this.state.username.includes('>') ||
+				this.state.username.includes(',') || this.state.username.includes(' ') ||
+				this.state.username.length < 6 || this.state.password1.length < 6) {
+
+				this.setState({isLoading: false});
+				Alert.alert('Error', 'Some fields may have errors!', [{
+					text: 'okay',
+				}]);
 			} else {
 				let addPromise = db.addUser(this.state.username, this.state.password1, this.state.name);
-				addPromise.then(function (result) {
+				addPromise.then(result => {
+					this.setState({isLoading: false});
 					console.warn(result);
 					Alert.alert(
 						'Successful',
@@ -63,7 +95,8 @@ export default class SignUpScreen extends Component {
 							onPress: () => props.navigation.navigate('SignIn'),
 						}]
 					);
-				}, function (err) {
+				}, err => {
+					this.setState({isLoading: false});
 					Alert.alert('Oops', `Username ${err.username} already exists!`);
 					console.warn(err);
 				});
@@ -71,60 +104,127 @@ export default class SignUpScreen extends Component {
 		};
 
 		this.signUpHandler = () => {
+			this.setState({isLoading: true});
 			this.checkSignUp();
 		};
+		this.usernameLengthErrorTextJsx;
+		this.usernameCharErrorTextJsx;
+		this.passwordLengthErrorTextJsx;
+		this.confirmPasswordErrorTextJsx;
 	}
 
 	render() {
+		let indicatorJsx = this.state.isLoading ?
+			<ActivityIndicator size="small" color="#fefefe"
+				style={styles.indicator} /> : null;
+
+		this.usernameLengthErrorTextJsx =
+			this.state.username.length > 0 && this.state.username.length < 6 ?
+				<Text style={styles.errorText}>Username must contain atleast 6 characters</Text> : null;
+		this.usernameCharErrorTextJsx =
+			this.state.username.includes('.') || this.state.username.includes('/') ||
+				this.state.username.includes('\\') || this.state.username.includes('|') ||
+				this.state.username.includes('~') || this.state.username.includes('`') ||
+				this.state.username.includes('!') || this.state.username.includes('@') ||
+				this.state.username.includes('+') || this.state.username.includes('-') ||
+				this.state.username.includes('*') || this.state.username.includes('=') ||
+				this.state.username.includes('#') || this.state.username.includes('$') ||
+				this.state.username.includes('%') || this.state.username.includes('^') ||
+				this.state.username.includes('&') || this.state.username.includes('(') ||
+				this.state.username.includes(')') || this.state.username.includes(';') ||
+				this.state.username.includes(':') || this.state.username.includes('{') ||
+				this.state.username.includes('}') || this.state.username.includes('[') ||
+				this.state.username.includes(']') || this.state.username.includes('\'') ||
+				this.state.username.includes('"') || this.state.username.includes('?') ||
+				this.state.username.includes('<') || this.state.username.includes('>') ||
+				this.state.username.includes(',') || this.state.username.includes(' ') ?
+				<Text style={styles.errorText}>Username must not contain any special characters</Text> : null;
+
+		this.passwordLengthErrorTextJsx =
+			this.state.password1.length > 0 && this.state.password1.length < 6 ?
+				<Text style={styles.errorText}>Password must contain atleast 6 characters</Text> : null;
+		this.confirmPasswordErrorTextJsx =
+			this.state.password2.length > 0 && (this.state.password1 !== this.state.password2) ?
+				<Text style={styles.errorText}>The passwords do not match</Text> : null;
+
 		return (
-			<View style={styles.container}>
-				<Text style={styles.signInHeader}>Cine Digest</Text>
-				<View style={styles.usernameWrapper}>
-					<TextInput
-						style={styles.input}
-						placeholder="Firstname"
-						onChangeText={(name) => this.setState({ name })} />
-					<TextIcon name="format-text" size={25} color="#ddd" />
+			<ImageBackground blurRadius={1} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
+				<View style={styles.container}>
+					<Text style={styles.signInHeader}>Cine Digest</Text>
+					<View style={styles.metaWrapper}>
+						<View style={styles.usernameWrapper}>
+							<TextInput
+								style={styles.input}
+								placeholder="Name"
+								onChangeText={(name) => this.setState({ name })} />
+							<TextIcon name="format-text" size={25} color="#ddd" />
+						</View>
+					</View>
+					<View style={styles.metaWrapper}>
+						{this.usernameLengthErrorTextJsx}
+						{this.usernameCharErrorTextJsx}
+						<View style={
+							this.usernameLengthErrorTextJsx !== null ||
+							this.usernameCharErrorTextJsx !== null ?
+								styles.errorWrapper :
+								styles.usernameWrapper}
+						>
+							<TextInput
+								style={styles.input}
+								placeholder="Username"
+								onChangeText={(username) => this.setState({ username })} />
+							<TextIcon name="format-text" size={25} color="#ddd" />
+						</View>
+					</View>
+					<View style={styles.metaWrapper}>
+						{this.passwordLengthErrorTextJsx}
+						<View style={
+							this.passwordLengthErrorTextJsx !== null ?
+								styles.errorWrapper : styles.passwordWrapper
+						}>
+							<TextInput
+								style={styles.input}
+								placeholder="Password"
+								secureTextEntry={true}
+								onChangeText={(password1) => this.setState({ password1 })} />
+
+							<KeyIcon name="key" size={25} color="#ddd" />
+						</View>
+					</View>
+
+					<View style={styles.metaWrapper}>
+						{this.confirmPasswordErrorTextJsx}
+						<View style={
+							this.confirmPasswordErrorTextJsx !== null ?
+								styles.errorWrapper : styles.passwordWrapper
+						}>
+							<TextInput
+								style={styles.input}
+								placeholder="Confirm Password"
+								secureTextEntry={true}
+								onChangeText={(password2) => this.setState({ password2 })} />
+
+							<KeyIcon name="key" size={25} color="#ddd" />
+						</View>
+					</View>
+
+					<TouchableOpacity style={styles.signupBtn}
+						onPress={this.signUpHandler}>
+						<Text style={styles.btnText}>Sign-up</Text>
+						{indicatorJsx}
+					</TouchableOpacity>
 				</View>
-
-				<View style={styles.usernameWrapper}>
-					<TextInput
-						style={styles.input}
-						placeholder="Username"
-						onChangeText={(username) => this.setState({ username })} />
-					<TextIcon name="format-text" size={25} color="#ddd" />
-				</View>
-
-				<View style={styles.passwordWrapper}>
-					<TextInput
-						style={styles.input}
-						placeholder="Password"
-						secureTextEntry={true}
-						onChangeText={(password1) => this.setState({ password1 })} />
-
-					<KeyIcon name="key" size={25} color="#ddd" />
-				</View>
-
-				<View style={styles.passwordWrapper}>
-					<TextInput
-						style={styles.input}
-						placeholder="Confirm Password"
-						secureTextEntry={true}
-						onChangeText={(password2) => this.setState({ password2 })} />
-
-					<KeyIcon name="key" size={25} color="#ddd" />
-				</View>
-
-				<TouchableOpacity style={styles.signupBtn}
-					onPress={this.signUpHandler}>
-					<Text style={styles.btnText}>Sign-up</Text>
-				</TouchableOpacity>
-			</View>
+			</ImageBackground>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
+	bgImage: {
+		width: '100%',
+		height: '100%',
+		flex: 1,
+	},
 	container: {
 		flex: 1,
 		flexDirection: 'column',
@@ -133,8 +233,14 @@ const styles = StyleSheet.create({
 		padding: 25,
 	},
 	signInHeader: {
-		fontSize: 25,
+		fontSize: 30,
 		alignSelf: 'center',
+		marginBottom: 50,
+	},
+	metaWrapper: {
+		flexDirection: 'column',
+		justifyContent: 'flex-start',
+		alignItems: 'flex-start',
 		marginBottom: 25,
 	},
 	usernameWrapper: {
@@ -146,7 +252,22 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		paddingLeft: 20,
 		paddingRight: 20,
+	},
+	errorWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderWidth: 0.2,
+		borderColor: 'red',
+		borderRadius: 5,
+		paddingLeft: 20,
+		paddingRight: 20,
 		marginBottom: 15,
+	},
+	errorText: {
+		color: 'red',
+		fontSize: 14,
+		alignSelf: 'flex-end',
 	},
 	passwordWrapper: {
 		flexDirection: 'row',
@@ -157,7 +278,17 @@ const styles = StyleSheet.create({
 		borderRadius: 5,
 		paddingLeft: 20,
 		paddingRight: 20,
-		marginBottom: 15,
+	},
+	passwordErrorWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderWidth: 0.2,
+		borderColor: 'red',
+		borderRadius: 5,
+		paddingLeft: 20,
+		paddingRight: 20,
+		marginBottom: 40,
 	},
 	input: {
 		marginRight: 10,
@@ -165,15 +296,21 @@ const styles = StyleSheet.create({
 		minHeight: '6%',
 	},
 	signupBtn: {
-		marginTop: 5,
+		flexDirection: 'row',
+		justifyContent: 'center',
 		alignItems: 'center',
 		alignSelf: 'center',
 		borderRadius: 50,
 		padding: 15,
 		width: '35%',
 		backgroundColor: '#22a7f0',
+		marginTop: 25,
 	},
 	btnText: {
-		color: 'white',
+		color: '#fff',
+		fontSize: 15,
+	},
+	indicator: {
+		marginLeft: 20,
 	},
 });
