@@ -9,6 +9,7 @@ import {
 	Alert,
 	Dimensions,
 	ActivityIndicator,
+	ImageBackground,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import Snackbar from 'react-native-snackbar';
@@ -92,7 +93,8 @@ class SignInScreen extends Component {
 			<ActivityIndicator size="small" color="#fefefe"
 				style={styles.indicator} /> : null;
 		return (
-			<View style={styles.container}>
+			<ImageBackground blurRadius={1} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
+				<View style={styles.container}>
 					<StatusBar barStyle="default" />
 					<View style={styles.signInForm}>
 						<Text style={styles.signInHeader}>Cine Digest</Text>
@@ -122,12 +124,18 @@ class SignInScreen extends Component {
 							</Text>
 						</TouchableOpacity>
 					</View>
-			</View>
+				</View>
+			</ImageBackground>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
+	bgImage: {
+		width: '100%',
+		height: '100%',
+		flex: 1,
+	},
 	container: {
 		padding: 20,
 		flex: 1,

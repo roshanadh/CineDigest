@@ -7,6 +7,7 @@ import {
 	StyleSheet,
 	Alert,
 	ActivityIndicator,
+	ImageBackground,
 } from 'react-native';
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -147,76 +148,83 @@ export default class SignUpScreen extends Component {
 				<Text style={styles.errorText}>The passwords do not match</Text> : null;
 
 		return (
-			<View style={styles.container}>
-				<Text style={styles.signInHeader}>Cine Digest</Text>
-				<View style={styles.metaWrapper}>
-					<View style={styles.usernameWrapper}>
-						<TextInput
-							style={styles.input}
-							placeholder="Name"
-							onChangeText={(name) => this.setState({ name })} />
-						<TextIcon name="format-text" size={25} color="#ddd" />
+			<ImageBackground blurRadius={1} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
+				<View style={styles.container}>
+					<Text style={styles.signInHeader}>Cine Digest</Text>
+					<View style={styles.metaWrapper}>
+						<View style={styles.usernameWrapper}>
+							<TextInput
+								style={styles.input}
+								placeholder="Name"
+								onChangeText={(name) => this.setState({ name })} />
+							<TextIcon name="format-text" size={25} color="#ddd" />
+						</View>
 					</View>
-				</View>
-				<View style={styles.metaWrapper}>
-					{this.usernameLengthErrorTextJsx}
-					{this.usernameCharErrorTextJsx}
-					<View style={
-						this.usernameLengthErrorTextJsx !== null ||
-						this.usernameCharErrorTextJsx !== null ?
-							styles.errorWrapper :
-							styles.usernameWrapper}
-					>
-						<TextInput
-							style={styles.input}
-							placeholder="Username"
-							onChangeText={(username) => this.setState({ username })} />
-						<TextIcon name="format-text" size={25} color="#ddd" />
+					<View style={styles.metaWrapper}>
+						{this.usernameLengthErrorTextJsx}
+						{this.usernameCharErrorTextJsx}
+						<View style={
+							this.usernameLengthErrorTextJsx !== null ||
+							this.usernameCharErrorTextJsx !== null ?
+								styles.errorWrapper :
+								styles.usernameWrapper}
+						>
+							<TextInput
+								style={styles.input}
+								placeholder="Username"
+								onChangeText={(username) => this.setState({ username })} />
+							<TextIcon name="format-text" size={25} color="#ddd" />
+						</View>
 					</View>
-				</View>
-				<View style={styles.metaWrapper}>
-					{this.passwordLengthErrorTextJsx}
-					<View style={
-						this.passwordLengthErrorTextJsx !== null ?
-							styles.errorWrapper : styles.passwordWrapper
-					}>
-						<TextInput
-							style={styles.input}
-							placeholder="Password"
-							secureTextEntry={true}
-							onChangeText={(password1) => this.setState({ password1 })} />
+					<View style={styles.metaWrapper}>
+						{this.passwordLengthErrorTextJsx}
+						<View style={
+							this.passwordLengthErrorTextJsx !== null ?
+								styles.errorWrapper : styles.passwordWrapper
+						}>
+							<TextInput
+								style={styles.input}
+								placeholder="Password"
+								secureTextEntry={true}
+								onChangeText={(password1) => this.setState({ password1 })} />
 
-						<KeyIcon name="key" size={25} color="#ddd" />
+							<KeyIcon name="key" size={25} color="#ddd" />
+						</View>
 					</View>
-				</View>
 
-				<View style={styles.metaWrapper}>
-					{this.confirmPasswordErrorTextJsx}
-					<View style={
-						this.confirmPasswordErrorTextJsx !== null ?
-							styles.errorWrapper : styles.passwordWrapper
-					}>
-						<TextInput
-							style={styles.input}
-							placeholder="Confirm Password"
-							secureTextEntry={true}
-							onChangeText={(password2) => this.setState({ password2 })} />
+					<View style={styles.metaWrapper}>
+						{this.confirmPasswordErrorTextJsx}
+						<View style={
+							this.confirmPasswordErrorTextJsx !== null ?
+								styles.errorWrapper : styles.passwordWrapper
+						}>
+							<TextInput
+								style={styles.input}
+								placeholder="Confirm Password"
+								secureTextEntry={true}
+								onChangeText={(password2) => this.setState({ password2 })} />
 
-						<KeyIcon name="key" size={25} color="#ddd" />
+							<KeyIcon name="key" size={25} color="#ddd" />
+						</View>
 					</View>
-				</View>
 
-				<TouchableOpacity style={styles.signupBtn}
-					onPress={this.signUpHandler}>
-					<Text style={styles.btnText}>Sign-up</Text>
-					{indicatorJsx}
-				</TouchableOpacity>
-			</View>
+					<TouchableOpacity style={styles.signupBtn}
+						onPress={this.signUpHandler}>
+						<Text style={styles.btnText}>Sign-up</Text>
+						{indicatorJsx}
+					</TouchableOpacity>
+				</View>
+			</ImageBackground>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
+	bgImage: {
+		width: '100%',
+		height: '100%',
+		flex: 1,
+	},
 	container: {
 		flex: 1,
 		flexDirection: 'column',
