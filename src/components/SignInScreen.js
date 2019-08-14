@@ -6,7 +6,9 @@ import {
 	TouchableOpacity,
 	StatusBar,
 	TextInput,
+	Alert,
 	Dimensions,
+	ActivityIndicator,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import Snackbar from 'react-native-snackbar';
@@ -14,6 +16,7 @@ import Snackbar from 'react-native-snackbar';
 import UsernameIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
+import db from '../db/db';
 import {onSignIn} from '../auth/auth';
 
 const {width, height, fontScale} = Dimensions.get('window');
@@ -25,8 +28,25 @@ class SignInScreen extends Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
-            emailId: 'this is email',
-            password: 'this is password',
+			isLoading: false,
+            username: '',
+            password: '',
+		};
+
+		this.signInBtnPressedHandler = () => {
+			this.setState({
+				isLoading: true,
+			});
+
+			let verifyPromise = db.verifyUser(this.state.username, this.state.password);
+			verifyPromise.then(result => {
+				onSignIn().then(() => props.navigation.navigate('SignedIn'));
+			}, error => {
+					this.setState({isLoading: false});
+					error.status === 'password mismatch' ?
+						Alert.alert('Password Error', `Incorrect password for '${error.username}'!`) :
+						Alert.alert('Username Error', `'${error.username}' is not a registered user!`);
+			});
 		};
     }
     static navigationOptions = {
@@ -54,17 +74,13 @@ class SignInScreen extends Component {
 		});
 	};
 
-    emailTextChanged = newEmail => {
-        this.setState({emailId: newEmail});
+    usernameTextChanged = newUsername => {
+        this.setState({username: newUsername});
     };
 
     passwordTextChanged = newPassword => {
         this.setState({password: newPassword});
     };
-
-	signInBtnPressedHandler = () => {
-		onSignIn().then(() => this.props.navigation.navigate('SignedIn'));
-	};
 
 	redirectToSignUp = () => {
 		this.props.navigation.navigate('SignUp');
@@ -72,6 +88,9 @@ class SignInScreen extends Component {
 
 	render() {
 		this.checkNetConn();
+		let indicatorJsx = this.state.isLoading ?
+				<ActivityIndicator size="small" color="#fefefe"
+					style={styles.indicator} /> : null;
 		return (
 			<View style={styles.container}>
 					<StatusBar barStyle="default" />
@@ -80,7 +99,7 @@ class SignInScreen extends Component {
 						<View style={styles.usernameWrapper}>
 							<TextInput placeholder="Username"
 								style={styles.textInput} name="emailIdTextInput"
-								onChangeText={this.emailTextChanged} />
+								onChangeText={this.usernameTextChanged} />
 							<UsernameIcon name="format-text" size={25} color="#ddd"/>
 						</View>
 						<View style={styles.passwordWrapper}>
@@ -93,6 +112,7 @@ class SignInScreen extends Component {
 						<TouchableOpacity style={styles.signInBtn}
 							onPress={this.signInBtnPressedHandler}>
 							<Text style={styles.btnText}>Sign-in</Text>
+							{indicatorJsx}
 						</TouchableOpacity>
 					</View>
 					<View style={styles.signUpRedirect}>
@@ -120,8 +140,7 @@ const styles = StyleSheet.create({
 		marginBottom: 25,
 	},
 	signInForm: {
-		flex: 6,
-		marginBottom: 40,
+		flex: 5,
 		justifyContent: 'flex-end',
 	},
 	scrollView: {
@@ -154,7 +173,8 @@ const styles = StyleSheet.create({
 		paddingRight: 20,
 	},
 	signInBtn: {
-		marginTop: 20,
+		flexDirection: 'row',
+		justifyContent: 'center',
 		alignItems: 'center',
 		alignSelf: 'center',
 		borderRadius: 50,
@@ -162,9 +182,14 @@ const styles = StyleSheet.create({
 		minHeight: btnHeight,
 		width: btnWidth,
 		backgroundColor: '#22a7f0',
+		marginTop: 20,
 	},
 	btnText: {
 		color: '#fff',
+		fontSize: 15,
+	},
+	indicator: {
+		marginLeft: 20,
 	},
 	signUpRedirect: {
 		flex: 1,
