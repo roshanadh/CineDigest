@@ -78,7 +78,7 @@ export default class SignUpScreen extends Component {
 				this.state.username.includes(',') || this.state.username.includes(' ') ||
 				this.state.username.length < 6 || this.state.password1.length < 6) {
 
-				this.setState({isLoading: false})
+				this.setState({isLoading: false});
 				Alert.alert('Error', 'Some fields may have errors!', [{
 					text: 'okay',
 				}]);
