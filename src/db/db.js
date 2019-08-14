@@ -9,7 +9,7 @@ SQLite.enablePromise(true);
 class Database {
     addUser(username, password, name) {
         let db;
-        return new Promise((resolve) => {
+        return new Promise((resolve, reject) => {
             console.warn('Plugin integrity check ...');
             SQLite.echoTest()
                 .then(() => {
@@ -26,45 +26,33 @@ class Database {
 										"password"	TEXT NOT NULL,
 										"name"	TEXT NOT NULL,
 										PRIMARY KEY("username")
-									)`);
+                                    )`);
+                                console.warn('Table users Created!');
                             })
-                                .then(() => console.warn('Table users Created!'))
                                 .catch((error) => console.warn('Table users was not created! ' + error.message))
                                 .then(() => {
                                     db.transaction((tx) => {
                                         tx.executeSql(`INSERT INTO users VALUES ('${username}', '${password}', '${name}')`);
-                                        // Alert.alert(`Successful`, `${username} has been registered!`);
-                                        Alert.alert(
-                                            'Successful',
-                                            `${username} has been registered!`,
-                                        );
                                     })
+                                        .then(() =>
+                                        {
+                                            db.close();
+                                            resolve({
+                                                status: 'ok',
+                                                username,
+                                                password,
+                                                name,
+                                            });
+                                        })
                                         .catch(error => {
                                             console.warn('Error in INSERT: ' + error.message);
-                                            Alert.alert(`Oops`, `Username ${username} already exists!`);
+                                            reject({
+                                                status: 'not ok',
+                                                username,
+                                                password,
+                                                name,
+                                            });
                                         });
-                                })
-                                .then(() => {
-                                    db.transaction((tx) => {
-                                        tx.executeSql('SELECT u.name, u.username, u.password FROM users u', [])
-                                            .then(([tx, results]) => {
-                                                console.log('Query completed');
-                                                var len = results.rows.length;
-                                                for (let i = 0; i < len; i++) {
-                                                    let row = results.rows.item(i);
-                                                    console.warn(
-                                                        `Name: ${row.name}, Username: ${row.username},
-															Password: ${row.password}`);
-                                                }
-                                                resolve({
-                                                    status: 'ok',
-                                                    name,
-                                                    username,
-                                                    password,
-                                                });
-                                            })
-                                            .catch(error => console.warn('Error in SELECT, ' + error.message));
-                                    });
                                 });
                         })
                         .catch(error => console.warn('Echo test error: ' + error.message));
