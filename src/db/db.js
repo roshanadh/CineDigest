@@ -36,7 +36,7 @@ class Database {
                     console.warn('Integrity check passed ...');
                     console.warn('Opening database ...');
 
-                    SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: 1 })
+                    SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library'})
                         .then(DB => {
                             db = DB;
                             console.warn('Database OPEN');
@@ -86,7 +86,7 @@ class Database {
 
     verifyUser(username, password) {
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: 1 })
+            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library'})
                 .then(DB => {
                     let db = DB;
                     db.transaction(tx => {
@@ -135,6 +135,64 @@ class Database {
                 })
                 .catch(error => {
                     Alert.alert('Error', 'Couldn\'t open database!' + error.message);
+                });
+        });
+    }
+
+    addToWishList(request) {
+    // Inserts into 'History' Table
+        return new Promise((resolve, reject) => {
+            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library'})
+                .then(DB => {
+                    let db = DB;
+                    db.transaction(tx => {
+                        tx.executeSql(`CREATE TABLE IF NOT EXISTS "history" (
+                            "id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+                            "titleId"	TEXT NOT NULL,
+                            "titleType"	INTEGER NOT NULL,
+                            "username"	TEXT NOT NULL,
+                            "listType"	TEXT NOT NULL
+                        )`)
+                        .catch(error => Alert.alert('Error', error.message));
+                    })
+                    .then(() => {
+                        db.transaction(tx => {
+                            tx.executeSql(
+                                `INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)`,
+                                [request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
+                                (tx, results) => {
+                                    resolve(true);
+                                })
+                            .catch(error => resolve(false));
+                        });
+                    });
+                });
+            });
+    }
+
+    getHistory(username) {
+        let db;
+        // console.warn(username);
+        return new Promise((resolve, reject) => {
+            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+                .then(DB => {
+                    db = DB;
+                    console.warn('Database OPEN');
+                    db.transaction((tx) => {
+                        console.warn('Transaction started..');
+                        tx.executeSql(`SELECT * FROM 'history' WHERE username='${username}'`, [], (tx, results) => {
+                            console.warn('SQL executed..');
+                            let len = results.rows.length;
+                            let rows = [];
+                            // console.warn('Results row length' + len);
+                            for (let i = 0; i < len; i++)
+                                rows.push(results.rows.item(i));
+                            resolve(rows);
+                        });
+                    })
+                    .catch(error => {
+                        reject(error);
+                    });
                 });
         });
     }
