@@ -5,6 +5,7 @@ import {
 	ScrollView,
 	StyleSheet,
 	Image,
+	ImageBackground,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -141,28 +142,36 @@ export default class SeasonDetailsScreen extends Component {
 		}
 
 		return (
-			<ScrollView style={styles.container}>
-				<ScrollView>
-					<View style={styles.seasonContainer}>
-						{posterJsx}
-						{seasonNameJsx}
-						{showNameJsx}
-						{airDateJsx}
-					</View>
-				</ScrollView>
+			<ImageBackground blurRadius={1.3}
+				source={require('../assets/lilypads.png')}
+				resizeMode="cover" style={styles.bgImage}>
+				<ScrollView style={styles.container}>
+					<ScrollView>
+						<View style={styles.seasonContainer}>
+							{posterJsx}
+							{seasonNameJsx}
+							{showNameJsx}
+							{airDateJsx}
+						</View>
+					</ScrollView>
 
-				<ScrollView horizontal={true}>
-					{episodesJsx}
+					<ScrollView horizontal={true}>
+						{episodesJsx}
+					</ScrollView>
 				</ScrollView>
-			</ScrollView>
+			</ImageBackground>
 		);
 	}
 }
 
 const styles = StyleSheet.create(
 {
+	bgImage: {
+		width: '100%',
+		height: '100%',
+		flex: 1,
+	},
 	container: {
-		backgroundColor: '#f2f1ef',
 		height: '100%',
 		flex: 1,
 		padding: 10,

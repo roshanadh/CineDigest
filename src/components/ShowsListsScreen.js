@@ -3,6 +3,7 @@ import {
 	View,
 	StyleSheet,
 	ScrollView,
+	ImageBackground,
 } from 'react-native';
 import SearchItem from './SearchItem';
 
@@ -36,20 +37,26 @@ export default class MoviesScreen extends Component {
 
     render() {
 		return (
-			<ScrollView style={styles.scrollView}>
-				<View style={styles.container}>
-					<SearchItem onChangeText={this.searchFieldChangedHandler}
-						placeholder="Search a TV show"
-						onSubmitEditing={this.searchBtnPressedHandler} />
-				</View>
-			</ScrollView>
+			<ImageBackground blurRadius={1.3}
+				source={require('../assets/lilypads.png')}
+				resizeMode="cover" style={styles.bgImage}>
+				<ScrollView style={styles.scrollView}>
+					<View style={styles.container}>
+						<SearchItem onChangeText={this.searchFieldChangedHandler}
+							placeholder="Search a TV show"
+							onSubmitEditing={this.searchBtnPressedHandler} />
+					</View>
+				</ScrollView>
+			</ImageBackground>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	scrollView: {
-		backgroundColor: '#f2f1ef',
+	bgImage: {
+		width: '100%',
+		height: '100%',
+		flex: 1,
 	},
 	container: {
 		flex: 1,

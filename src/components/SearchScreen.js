@@ -3,11 +3,11 @@ import {
     View,
     StyleSheet,
     Alert,
-    Text,
+    ImageBackground,
     ScrollView,
     ActivityIndicator,
 } from 'react-native';
-import SearchItem from './SearchItem';
+
 import ListContainer from './ListContainer';
 
 export default class SearchScreen extends Component {
@@ -62,27 +62,37 @@ export default class SearchScreen extends Component {
     render() {
         if (!this.state.isEmpty) {
         return (
-            <ScrollView style={styles.scrollView}>
-                <View style={styles.container}>
-                    <ListContainer
-                        source={this.state.searchResponse}
-                        onIdSelected={this.onIdSelected}
-                    />
-                </View>
-            </ScrollView>
+            <ImageBackground blurRadius={1.3}
+                source={require('../assets/lilypads.png')}
+                resizeMode="cover" style={styles.bgImage}>
+                <ScrollView style={styles.scrollView}>
+                    <View style={styles.container}>
+                        <ListContainer
+                            source={this.state.searchResponse}
+                            onIdSelected={this.onIdSelected}
+                        />
+                    </View>
+                </ScrollView>
+            </ImageBackground>
         );
         } else {
             return (
-                <View style={styles.indicatorContainer}>
-                    <ActivityIndicator size="large" color="#22a7f0" />
-                </View>
+                <ImageBackground blurRadius={1.3}
+                    source={require('../assets/lilypads.png')}
+                    resizeMode="cover" style={styles.bgImage}>
+                    <View style={styles.indicatorContainer}>
+                        <ActivityIndicator size="large" color="#22a7f0" />
+                    </View>
+                </ImageBackground>
             );
         }
     }
 }
 const styles = StyleSheet.create({
-    scrollView: {
-        backgroundColor: '#f2f1ef',
+    bgImage: {
+        width: '100%',
+        height: '100%',
+        flex: 1,
     },
     container: {
         flex: 1,
@@ -91,7 +101,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     indicatorContainer: {
-        backgroundColor: '#f2f1ef',
         flexDirection: 'column',
         justifyContent: 'center',
         alignItems: 'center',

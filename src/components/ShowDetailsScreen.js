@@ -6,6 +6,7 @@ import {
     Image,
     TouchableOpacity,
     StyleSheet,
+    ImageBackground,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -165,36 +166,42 @@ export default class ShowDetailsScreen extends Component {
             }
         }
         return (
-            <ScrollView style={styles.scrollView}>
-                <View style={styles.container}>
-                    {posterJsx}
-                    <Text style={styles.title}>{this.state.title}</Text>
-                    <View style={styles.voteWrapper}>
-                        <Text style={styles.text}>{this.state.voteAverage}</Text>
-                        <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
-                        <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
+            <ImageBackground blurRadius={1.3}
+                source={require('../assets/lilypads.png')}
+                resizeMode="cover" style={styles.bgImage}>
+                <ScrollView style={styles.scrollView}>
+                    <View style={styles.container}>
+                        {posterJsx}
+                        <Text style={styles.title}>{this.state.title}</Text>
+                        <View style={styles.voteWrapper}>
+                            <Text style={styles.text}>{this.state.voteAverage}</Text>
+                            <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
+                            <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
+                        </View>
+                        {createdByJsx}
+                        {genresJsx}
+                        <TouchableOpacity style={styles.wishListBtn}><Text>Add to Wish-list</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.watchedListBtn}><Text>Add to Watched-list</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.watchingListBtn}><Text>Add to Watching-list</Text></TouchableOpacity>
+                        <View style={styles.airDateWrapper}>
+                            {firstAirDateJsx}
+                            {lastAirDateJsx}
+                        </View>
+                        {overviewJsx}
+                        {backdropPathJsx}
+                        {seasonsJsx}
                     </View>
-                    {createdByJsx}
-                    {genresJsx}
-                    <TouchableOpacity style={styles.wishListBtn}><Text>Add to Wish-list</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.watchedListBtn}><Text>Add to Watched-list</Text></TouchableOpacity>
-                    <TouchableOpacity style={styles.watchingListBtn}><Text>Add to Watching-list</Text></TouchableOpacity>
-                    <View style={styles.airDateWrapper}>
-                        {firstAirDateJsx}
-                        {lastAirDateJsx}
-                    </View>
-                    {overviewJsx}
-                    {backdropPathJsx}
-                    {seasonsJsx}
-                </View>
-            </ScrollView>
+                </ScrollView>
+            </ImageBackground>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    scrollView: {
-        backgroundColor: '#f2f1ef',
+    bgImage: {
+        width: '100%',
+        height: '100%',
+        flex: 1,
     },
     container: {
         margin: 10,
