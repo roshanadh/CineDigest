@@ -24,6 +24,7 @@ export default class MovieDetails extends Component {
             'July', 'August', 'September', 'October', 'November', 'December',
         ];
         this.state = {
+            username: '',
             titleId: '',
             title: '',
             tagline: '',
@@ -45,8 +46,20 @@ export default class MovieDetails extends Component {
         };
         this.noBackdrop = false;
         this.noPoster = false;
+
+        this.addToWishList = () => {
+            alert("Added to Wish List, senyor " + this.state.username);
+        };
+
+        this.addToWatchedList = () => {
+            alert("Added to Watched List, senyor " + this.state.username);
+        };
     }
 
+    componentDidMount() {
+        let username = this.props.navigation.getParam('username', null);
+        this.setState({username});
+    }
     fetchMovieDetails = (titleId) => {
         if (this.titleId !== 'null') {
             fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
@@ -138,8 +151,12 @@ export default class MovieDetails extends Component {
                         </View>
                         {taglineJsx}
                         {genresJsx}
-                        <TouchableOpacity style={styles.wishListBtn}><Text>Add to Wish-list</Text></TouchableOpacity>
-                        <TouchableOpacity style={styles.watchedListBtn}><Text>Add to Watched-list</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.wishListBtn}
+                            onPress={this.addToWishList}>
+                            <Text>Add to Wish-list</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.watchedListBtn}
+                            onPress={this.addToWatchedList}>
+                            <Text>Add to Watched-list</Text></TouchableOpacity>
                         {releaseDateJsx}
                         {overviewJsx}
                         {backdropPathJsx}
