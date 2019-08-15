@@ -36,19 +36,25 @@ class SignInScreen extends Component {
 		};
 
 		this.signInBtnPressedHandler = () => {
-			this.setState({
-				isLoading: true,
-			});
+			if (this.state.username.trim() === '') {
+				Alert.alert('Sign-in Error', 'Username cannot be blank!');
+			} else if (this.state.password.trim() === '') {
+				Alert.alert('Sign-in Error', 'Password cannot be blank!');
+			} else {
+				this.setState({
+					isLoading: true,
+				});
 
-			let verifyPromise = db.verifyUser(this.state.username, this.state.password);
-			verifyPromise.then(result => {
-				onSignIn().then(() => props.navigation.navigate('SignedIn'));
-			}, error => {
-					this.setState({isLoading: false});
-					error.status === 'password mismatch' ?
-						Alert.alert('Password Error', `Incorrect password for '${error.username}'!`) :
-						Alert.alert('Username Error', `'${error.username}' is not a registered user!`);
-			});
+				let verifyPromise = db.verifyUser(this.state.username, this.state.password);
+				verifyPromise.then(result => {
+					onSignIn().then(() => props.navigation.navigate('SignedIn'));
+				}, error => {
+						this.setState({isLoading: false});
+						error.status === 'password mismatch' ?
+							Alert.alert('Password Error', `Incorrect password for '${error.username}'!`) :
+							Alert.alert('Username Error', `'${error.username}' is not a registered user!`);
+				});
+			}
 		};
     }
     static navigationOptions = {
