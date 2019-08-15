@@ -120,7 +120,7 @@ export default class MoviesListsScreen extends Component {
 							placeholder="Search a movie"
 							onSubmitEditing={this.searchBtnPressedHandler} />
 					</View>
-					<View style={styles.wishListHeader}>
+					<View style={styles.listHeader}>
 						<Text>
 							Wish List
 							</Text>
@@ -131,6 +131,19 @@ export default class MoviesListsScreen extends Component {
 						</TouchableOpacity>
 					</View>
 					<View style={styles.wishListContainer}>
+						{this.state.wishListJsx}
+					</View>
+					<View style={styles.listHeader}>
+						<Text>
+							Watched List
+							</Text>
+						<TouchableOpacity style={styles.viewAll}>
+							<Text style={styles.viewAllText}>
+								View All
+							</Text>
+						</TouchableOpacity>
+					</View>
+					<View style={styles.watchedListContainer}>
 						{this.state.wishListJsx}
 					</View>
 				</ScrollView>
@@ -160,7 +173,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		flex: 1,
 	},
-	wishListHeader: {
+	listHeader: {
 		paddingLeft: 25,
 		paddingRight: 25,
 		marginTop: 20,
