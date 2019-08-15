@@ -23,6 +23,7 @@ export default class SearchScreen extends Component {
             isEmpty: true,
             searchQuery: this.props.navigation.getParam('searchQuery', null),
             searchResponse: {},
+            username: this.props.navigation.getParam('username', null),
         };
         this.searchQuery = this.props.navigation.getParam('searchQuery', null);
         this.searchType = this.props.navigation.getParam('searchType', null);
@@ -33,10 +34,12 @@ export default class SearchScreen extends Component {
             this.props.navigation.navigate('MovieDetailsScreen', {
                 titleId: itemId,
                 screenName: itemTitle,
+                username: this.state.username,
             }) :
             this.props.navigation.navigate('ShowDetailsScreen', {
                 screenName: itemTitle,
                 titleId: itemId,
+                username: this.state.username,
             });
     };
 
