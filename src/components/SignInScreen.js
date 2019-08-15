@@ -88,10 +88,6 @@ class SignInScreen extends Component {
 		this.props.navigation.navigate('SignUp');
 	}
 
-	componentDidMount() {
-		db.getGenresTable();
-	}
-
 	render() {
 		this.checkNetConn();
 		let indicatorJsx = this.state.isLoading ?
