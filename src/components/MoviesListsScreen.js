@@ -49,20 +49,16 @@ export default class MoviesListsScreen extends Component {
 				db.getHistory(result)
 					.then(result => {
 						let len = result.length;
-						console.warn('Result len: ' + len);
-						// for (let i = 0; i < len; i++) {
-						// 	console.warn(result[i].titleName);
-						// 	console.warn(result[i].titleId);
-						// 	console.warn(result[i].titleOverview);
-						// 	console.warn(result[i].titleVoteCount);
-						// 	console.warn(result[i].titleVoteAverage);
-						// 	console.warn(result[i].titlePosterPath);
-						// }
+						let fullOverview = result[len - 1].titleOverview;
+						// Limit overview to 150 characters or less
+						let partialOverview =  fullOverview.length <= 100 ? fullOverview :
+							fullOverview.slice(0, 150) + '...';
+						// Set latest addition to state
 						this.setState({
 							wishList: {
 								titleId: result[len - 1].titleId,
 								title: result[len - 1].titleName,
-								overview: result[len - 1].titleOverview,
+								overview: partialOverview,
 								voteCount: result[len - 1].titleVoteCount,
 								voteAverage: result[len - 1].titleVoteAverage,
 								posterPath: result[len - 1].titlePosterPath,
@@ -71,7 +67,7 @@ export default class MoviesListsScreen extends Component {
 								<ListItem
 									titleId={result[len - 1].titleId}
 									title={result[len - 1].titleName}
-									overview={result[len - 1].titleOverview}
+									overview={partialOverview}
 									voteCount={result[len - 1].titleVoteCount}
 									voteAverage={result[len - 1].titleVoteAverage}
 									posterPath={result[len - 1].titlePosterPath}
