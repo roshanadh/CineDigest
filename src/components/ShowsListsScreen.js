@@ -5,12 +5,14 @@ import {
 	ScrollView,
 	ImageBackground,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import SearchItem from './SearchItem';
 
 export default class MoviesScreen extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
+			username: '',
 			searchQuery: '',
 		};
 	}
@@ -25,6 +27,7 @@ export default class MoviesScreen extends Component {
 		this.props.navigation.navigate('SearchScreen', {
 			searchQuery: this.state.searchQuery,
 			searchType: 's',
+			username: this.state.username,
 		});
 	};
 
@@ -34,6 +37,15 @@ export default class MoviesScreen extends Component {
 			titleId: itemId,
 		});
 	};
+
+	getUsername = async () => {
+		let username = await AsyncStorage.getItem('USER_KEY');
+		this.setState({ username });
+	}
+
+	componentDidMount() {
+		this.getUsername();
+	}
 
     render() {
 		return (
