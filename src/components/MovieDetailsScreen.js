@@ -47,6 +47,11 @@ export default class MovieDetails extends Component {
         this.noBackdrop = false;
         this.noPoster = false;
 
+        this.getUsername = () => {
+            let username = this.props.navigation.getParam('username', null);
+            this.setState({ username });
+        };
+
         this.addToWishList = () => {
             alert("Added to Wish List, senyor " + this.state.username);
         };
@@ -57,9 +62,9 @@ export default class MovieDetails extends Component {
     }
 
     componentDidMount() {
-        let username = this.props.navigation.getParam('username', null);
-        this.setState({username});
+        this.getUsername();
     }
+
     fetchMovieDetails = (titleId) => {
         if (this.titleId !== 'null') {
             fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
