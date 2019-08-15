@@ -62,13 +62,13 @@ export default class MovieDetails extends Component {
                             wishListBtnJsx:
                                 <TouchableOpacity style={styles.removeFromWishListBtn}
                                     onPress={this.removeFromWishList}>
-                                    <Text style={styles.removeBtnText}>Remove Wish-list</Text>
+                                    <Text style={styles.btnText}>Remove from Wish-list</Text>
                                 </TouchableOpacity>,
                             // If movie is in Wish-list, it cannot be in Watched-list
                             watchedListBtnJsx:
                                 <TouchableOpacity style={styles.watchedListBtn}
                                     onPress={this.addToWatchedList}>
-                                    <Text>Add to Watched-list</Text>
+                                    <Text style={styles.btnText}>Add to Watched-list</Text>
                                 </TouchableOpacity>,
                         });
                     }, error => {
@@ -82,12 +82,12 @@ export default class MovieDetails extends Component {
                                     wishListBtnJsx:
                                         <TouchableOpacity style={styles.wishListBtn}
                                             onPress={this.addToWishList}>
-                                            <Text>Add to Wish-list</Text>
+                                            <Text style={styles.btnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchedListBtnJsx:
                                         <TouchableOpacity style = { styles.removeFromWatchedListBtn }
                                             onPress = { this.removeFromWatchedList } >
-                                            <Text style={styles.removeBtnText}>Remove Watched-list</Text>
+                                            <Text style={styles.btnText}>Remove Watched-list</Text>
                                         </TouchableOpacity >,
                                 });
                             }, error => {
@@ -96,12 +96,12 @@ export default class MovieDetails extends Component {
                                     wishListBtnJsx:
                                         <TouchableOpacity style={styles.wishListBtn}
                                             onPress={this.addToWishList}>
-                                            <Text>Add to Wish-list</Text>
+                                            <Text style={styles.btnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchedListBtnJsx:
                                         <TouchableOpacity style={styles.watchedListBtn}
                                             onPress={this.addToWatchedList}>
-                                            <Text>Add to Watched-list</Text>
+                                            <Text style={styles.btnText}>Add to Watched-list</Text>
                                         </TouchableOpacity>,
                                 });
                             });
@@ -306,7 +306,7 @@ const styles = StyleSheet.create({
 		padding: 15,
         width: '70%',
         marginBottom: 10,
-        backgroundColor: '#7befb2',
+        backgroundColor: '#019875',
     },
     removeFromWishListBtn: {
         alignSelf: 'center',
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#e74c3c',
         marginBottom: 30,
     },
-    removeBtnText: {
+    btnText: {
         color: '#fefefe',
     },
     watchedListBtn: {
