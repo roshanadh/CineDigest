@@ -6,11 +6,13 @@ import {
 	ImageBackground,
 } from 'react-native';
 import SearchItem from './SearchItem';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export default class MoviesListsScreen extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
+			username: '',
 			searchQuery: '',
 		};
 	}
@@ -27,6 +29,15 @@ export default class MoviesListsScreen extends Component {
 			searchType: 'm',
 		});
 	};
+
+	getUsername = async() => {
+		let username = await AsyncStorage.getItem('USER_KEY');
+		this.setState({username});
+	}
+
+	componentDidMount() {
+		this.getUsername();
+	}
 
     render() {
 		return (
