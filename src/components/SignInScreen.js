@@ -111,14 +111,14 @@ class SignInScreen extends Component {
 							resizeMode="contain" style={styles.logo} />
 						<View style={styles.usernameWrapper}>
 							<TextInput placeholder="Username"
-								style={styles.textInput} name="emailIdTextInput"
+								style={styles.textInput} autoCapitalize="none"
 								onChangeText={this.usernameTextChanged} />
 							<UsernameIcon name="format-text" size={25} color="#ddd"/>
 						</View>
 						<View style={styles.passwordWrapper}>
 							<TextInput placeholder="Password"
 								secureTextEntry={true}
-								style={styles.textInput} name="passwordTextInput"
+								style={styles.textInput} autoCapitalize="none"
 								onChangeText={this.passwordTextChanged} />
 								<KeyIcon name="key" size={25} color="#ddd" />
 						</View>

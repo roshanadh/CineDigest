@@ -182,6 +182,7 @@ export default class SignUpScreen extends Component {
 								<TextInput
 									style={styles.input}
 									placeholder="Username"
+									autoCapitalize="none"
 									onChangeText={(username) => this.setState({ username })} />
 								<TextIcon name="format-text" size={25} color="#ddd" />
 							</View>
@@ -194,6 +195,7 @@ export default class SignUpScreen extends Component {
 								<TextInput
 									style={styles.input}
 									placeholder="Password"
+									autoCapitalize="none"
 									secureTextEntry={true}
 									onChangeText={(password1) => this.setState({ password1 })} />
 
@@ -210,6 +212,7 @@ export default class SignUpScreen extends Component {
 									style={styles.input}
 									placeholder="Confirm Password"
 									secureTextEntry={true}
+									autoCapitalize="none"
 									onChangeText={(password2) => this.setState({ password2 })} />
 
 								<KeyIcon name="key" size={25} color="#ddd" />
