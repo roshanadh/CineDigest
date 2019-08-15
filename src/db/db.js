@@ -15,7 +15,7 @@ class Database {
                     db = DB;
                     console.warn('Database OPEN');
                     db.transaction((tx) => {
-                        tx.executeSql(`SELECT * FROM 'genres'`, [], (tx, results) => {
+                        tx.executeSql('SELECT * FROM \'genres\'', [], (tx, results) => {
                             let len = results.rows.length;
                             for (let i = 0; i < len; i++) {
                                 let row = results.rows.item(i);
@@ -78,7 +78,7 @@ class Database {
                         })
                         .catch(error => {
                             db.close();
-                            console.warn('Echo test error: ' + error.message)
+                            console.warn('Echo test error: ' + error.message);
                         });
                 });
         });
@@ -158,7 +158,7 @@ class Database {
                     .then(() => {
                         db.transaction(tx => {
                             tx.executeSql(
-                                `INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)`,
+                                'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
                                 [request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
                                 (tx, results) => {
                                     resolve(true);
@@ -186,7 +186,7 @@ class Database {
                             let rows = [];
                             // console.warn('Results row length' + len);
                             for (let i = 0; i < len; i++)
-                                rows.push(results.rows.item(i));
+                                {rows.push(results.rows.item(i));}
                             resolve(rows);
                         });
                     })
@@ -196,6 +196,32 @@ class Database {
                 });
         });
     }
+
+    isInList(listType, titleId, username) {
+        return new Promise((resolve, reject) => {
+            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+                .then(DB => {
+                    let db = DB;
+                    console.warn('Database OPEN');
+                    db.transaction((tx) => {
+                        console.warn('Transaction started..');
+                        tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND listType=? AND titleId=?', [username, listType, titleId], (tx, results) => {
+                            console.warn('SQL executed..');
+                            let len = results.rows.length;
+                            console.warn('Check if is in list len: ' + len);
+                            for (let i = 0; i < len; i++) {
+                                let row = results.rows.item(i);
+                                console.warn(row + ' is here!');
+                            }
+                            len > 0 ? resolve(true) : reject(false);
+                        });
+                    })
+                    .catch(error => {
+                        console.log(error.message);
+                    });
+                });
+            });
+        }
 }
 
 const db = new Database();
