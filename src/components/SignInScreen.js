@@ -10,6 +10,7 @@ import {
 	Dimensions,
 	ActivityIndicator,
 	ImageBackground,
+	Image,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import Snackbar from 'react-native-snackbar';
@@ -93,11 +94,15 @@ class SignInScreen extends Component {
 			<ActivityIndicator size="small" color="#fefefe"
 				style={styles.indicator} /> : null;
 		return (
-			<ImageBackground blurRadius={1} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
+			<ImageBackground blurRadius={1.3}
+				source={require('../assets/lilypads.png')}
+				resizeMode="cover" style={styles.bgImage}>
+
 				<View style={styles.container}>
 					<StatusBar barStyle="default" />
 					<View style={styles.signInForm}>
-						<Text style={styles.signInHeader}>Cine Digest</Text>
+						<Image source={require('../assets/mainLogoWText.png')}
+							resizeMode="contain" style={styles.logo} />
 						<View style={styles.usernameWrapper}>
 							<TextInput placeholder="Username"
 								style={styles.textInput} name="emailIdTextInput"
@@ -142,10 +147,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center',
 	},
-	signInHeader: {
-		fontSize: headerFontSize,
+	logo: {
+		width: 300,
+		height: 60,
+		flex: 1,
 		alignSelf: 'center',
-		marginBottom: 45,
 	},
 	signInForm: {
 		flex: 5,
@@ -158,28 +164,29 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 0.2,
-		borderColor: '#010101',
-		borderRadius: 5,
+		borderBottomWidth: 1,
+		borderColor: '#22a7f0',
 		paddingLeft: 20,
 		paddingRight: 20,
 		marginBottom: 25,
+		backgroundColor: 'rgba(255,255,255,0.3)',
 	},
 	textInput: {
 		marginRight: 10,
 		flex: 5,
 		minHeight: '6%',
+		opacity: 1,
 	},
 	passwordWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 0.2,
-		borderColor: '#010101',
-		borderRadius: 5,
+		borderBottomWidth: 1,
+		borderColor: '#22a7f0',
 		paddingLeft: 20,
 		paddingRight: 20,
 		marginBottom: 40,
+		backgroundColor: 'rgba(255,255,255,0.3)',
 	},
 	signInBtn: {
 		flexDirection: 'row',

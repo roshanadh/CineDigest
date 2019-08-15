@@ -8,6 +8,8 @@ import {
 	Alert,
 	ActivityIndicator,
 	ImageBackground,
+	ScrollView,
+	Image,
 } from 'react-native';
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -145,75 +147,89 @@ export default class SignUpScreen extends Component {
 				<Text style={styles.errorText}>Password must contain atleast 6 characters</Text> : null;
 		this.confirmPasswordErrorTextJsx =
 			this.state.password2.length > 0 && (this.state.password1 !== this.state.password2) ?
-				<Text style={styles.errorText}>The passwords do not match</Text> : null;
+				<Text style={styles.errorText}>Passwords do not match</Text> : null;
+
+		this.noErrorTextJsx = this.usernameCharErrorTextJsx === null && this.usernameLengthErrorTextJsx === null 
+			&& this.passwordLengthErrorTextJsx === null && this.confirmPasswordErrorTextJsx === null ?
+			<Text style={styles.footerText}>
+				By signing up, you can begin making watch-lists for your favourite
+				movies and television titles, and also be on a look-out for more.
+			</Text>
+			: null;
 
 		return (
-			<ImageBackground blurRadius={1} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
-				<View style={styles.container}>
-					<Text style={styles.signInHeader}>Cine Digest</Text>
-					<View style={styles.metaWrapper}>
-						<View style={styles.usernameWrapper}>
-							<TextInput
-								style={styles.input}
-								placeholder="Name"
-								onChangeText={(name) => this.setState({ name })} />
-							<TextIcon name="format-text" size={25} color="#ddd" />
+			<ImageBackground blurRadius={1.3} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
+				<ScrollView style={styles.metaContainer}>
+					<View style={styles.container}>
+						<Image source={require('../assets/mainLogoWText.png')}
+							resizeMode="contain" style={styles.logo} />
+						<View style={styles.metaWrapper}>
+							<View style={styles.usernameWrapper}>
+								<TextInput
+									style={styles.input}
+									placeholder="Name"
+									onChangeText={(name) => this.setState({ name })} />
+								<TextIcon name="format-text" size={25} color="#ddd" />
+							</View>
+						</View>
+						<View style={styles.metaWrapper}>
+							<View style={
+								this.usernameLengthErrorTextJsx !== null ||
+								this.usernameCharErrorTextJsx !== null ?
+									styles.errorWrapper :
+									styles.usernameWrapper}
+							>
+								<TextInput
+									style={styles.input}
+									placeholder="Username"
+									onChangeText={(username) => this.setState({ username })} />
+								<TextIcon name="format-text" size={25} color="#ddd" />
+							</View>
+						</View>
+						<View style={styles.metaWrapper}>
+							<View style={
+								this.passwordLengthErrorTextJsx !== null ?
+									styles.errorWrapper : styles.passwordWrapper
+							}>
+								<TextInput
+									style={styles.input}
+									placeholder="Password"
+									secureTextEntry={true}
+									onChangeText={(password1) => this.setState({ password1 })} />
+
+								<KeyIcon name="key" size={25} color="#ddd" />
+							</View>
+						</View>
+
+						<View style={styles.metaWrapper}>
+							<View style={
+								this.confirmPasswordErrorTextJsx !== null ?
+									styles.errorWrapper : styles.passwordWrapper
+							}>
+								<TextInput
+									style={styles.input}
+									placeholder="Confirm Password"
+									secureTextEntry={true}
+									onChangeText={(password2) => this.setState({ password2 })} />
+
+								<KeyIcon name="key" size={25} color="#ddd" />
+							</View>
+						</View>
+
+						<TouchableOpacity style={styles.signupBtn}
+							onPress={this.signUpHandler}>
+							<Text style={styles.btnText}>Sign-up</Text>
+							{indicatorJsx}
+						</TouchableOpacity>
+						<View style={styles.footer}>
+							{this.usernameLengthErrorTextJsx}
+							{this.usernameCharErrorTextJsx}
+							{this.passwordLengthErrorTextJsx}
+							{this.confirmPasswordErrorTextJsx}
+							{this.noErrorTextJsx}
 						</View>
 					</View>
-					<View style={styles.metaWrapper}>
-						{this.usernameLengthErrorTextJsx}
-						{this.usernameCharErrorTextJsx}
-						<View style={
-							this.usernameLengthErrorTextJsx !== null ||
-							this.usernameCharErrorTextJsx !== null ?
-								styles.errorWrapper :
-								styles.usernameWrapper}
-						>
-							<TextInput
-								style={styles.input}
-								placeholder="Username"
-								onChangeText={(username) => this.setState({ username })} />
-							<TextIcon name="format-text" size={25} color="#ddd" />
-						</View>
-					</View>
-					<View style={styles.metaWrapper}>
-						{this.passwordLengthErrorTextJsx}
-						<View style={
-							this.passwordLengthErrorTextJsx !== null ?
-								styles.errorWrapper : styles.passwordWrapper
-						}>
-							<TextInput
-								style={styles.input}
-								placeholder="Password"
-								secureTextEntry={true}
-								onChangeText={(password1) => this.setState({ password1 })} />
-
-							<KeyIcon name="key" size={25} color="#ddd" />
-						</View>
-					</View>
-
-					<View style={styles.metaWrapper}>
-						{this.confirmPasswordErrorTextJsx}
-						<View style={
-							this.confirmPasswordErrorTextJsx !== null ?
-								styles.errorWrapper : styles.passwordWrapper
-						}>
-							<TextInput
-								style={styles.input}
-								placeholder="Confirm Password"
-								secureTextEntry={true}
-								onChangeText={(password2) => this.setState({ password2 })} />
-
-							<KeyIcon name="key" size={25} color="#ddd" />
-						</View>
-					</View>
-
-					<TouchableOpacity style={styles.signupBtn}
-						onPress={this.signUpHandler}>
-						<Text style={styles.btnText}>Sign-up</Text>
-						{indicatorJsx}
-					</TouchableOpacity>
-				</View>
+				</ScrollView>
 			</ImageBackground>
 		);
 	}
@@ -232,10 +248,12 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		padding: 25,
 	},
-	signInHeader: {
-		fontSize: 30,
+	logo: {
+		width: 300,
+		height: 150,
+		flex: 1,
+		marginBottom: 20,
 		alignSelf: 'center',
-		marginBottom: 50,
 	},
 	metaWrapper: {
 		flexDirection: 'column',
@@ -247,37 +265,38 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 0.2,
-		borderColor: '#010101',
-		borderRadius: 5,
+		borderBottomWidth: 1,
+		borderColor: '#22a7f0',
 		paddingLeft: 20,
 		paddingRight: 20,
+		backgroundColor: 'rgba(255,255,255,0.3)',
 	},
 	errorWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 0.2,
-		borderColor: 'red',
-		borderRadius: 5,
+		borderBottomWidth: 1,
+		borderColor: '#e74c3c',
 		paddingLeft: 20,
 		paddingRight: 20,
-		marginBottom: 15,
+		backgroundColor: 'rgba(255,255,255,0.3)',
 	},
 	errorText: {
-		color: 'red',
+		color: '#e74c3c',
 		fontSize: 14,
-		alignSelf: 'flex-end',
+		alignSelf: 'center',
+		textAlign: 'center',
+		marginBottom: 10,
 	},
 	passwordWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 0.2,
-		borderColor: '#010101',
-		borderRadius: 5,
+		borderBottomWidth: 1,
+		borderColor: '#22a7f0',
 		paddingLeft: 20,
 		paddingRight: 20,
+		backgroundColor: 'rgba(255,255,255,0.3)',
 	},
 	passwordErrorWrapper: {
 		flexDirection: 'row',
@@ -312,5 +331,13 @@ const styles = StyleSheet.create({
 	},
 	indicator: {
 		marginLeft: 20,
+	},
+	footer: {
+		marginTop: 30,
+	},
+	footerText: {
+		marginBottom: 5,
+		textAlign: 'center',
+		color: '#336e7b',
 	},
 });

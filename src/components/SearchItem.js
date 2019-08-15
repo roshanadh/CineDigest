@@ -23,16 +23,15 @@ export default function searchItem(props) {
 
 const styles = StyleSheet.create({
     searchWrapper: {
-		backgroundColor: '#fefefa',
 		margin: 10,
-        flexDirection: 'row',
+		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 0.2,
-		borderColor: '#010101',
-		borderRadius: 5,
+		borderBottomWidth: 1,
+		borderColor: '#22a7f0',
 		paddingLeft: 20,
 		paddingRight: 20,
+		backgroundColor: 'rgba(255,255,255,0.3)',
 	},
 	searchTextInput: {
 		marginRight: 10,
