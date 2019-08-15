@@ -7,6 +7,7 @@ import {
     ScrollView,
     TouchableOpacity,
     ImageBackground,
+    Alert,
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -54,8 +55,7 @@ export default class MovieDetails extends Component {
         };
 
         this.addToWishList = () => {
-            // alert("Added to Wish List, senyor " + this.state.username);
-            let addPromise = db.addToWishList({
+            db.addToWishList({
                 listType: 'wishList',
                 titleId: this.state.titleId,
                 titleName: this.state.title,
@@ -65,8 +65,12 @@ export default class MovieDetails extends Component {
                 titlePosterPath: this.state.posterPath,
                 titleType: 'movie',
                 username: this.state.username,
-            });
-            alert(addPromise);
+            })
+            .then(result => {
+                Alert.alert('Success', this.state.title + ' has been added to your wish-list!');
+            }, error => {
+                Alert.alert('Ooops', 'There was a problem. Please try again later!');
+            })
         };
 
         this.addToWatchedList = () => {
