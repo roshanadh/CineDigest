@@ -7,6 +7,26 @@ SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
 class Database {
+    getGenresTable() {
+        let db;
+        return new Promise((resolve, reject) =>{
+            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library'})
+                .then(DB => {
+                    db = DB;
+                    console.warn('Database OPEN');
+                    db.transaction((tx) => {
+                        tx.executeSql(`SELECT * FROM 'genres'`, [], (tx, results) => {
+                            let len = results.rows.length;
+                            for (let i = 0; i < len; i++) {
+                                let row = results.rows.item(i);
+                                console.warn(row.genre);
+                            }
+                        });
+                    });
+                });
+        });
+    }
+
     addUser(username, password, name) {
         let db;
         return new Promise((resolve, reject) => {
