@@ -119,6 +119,12 @@ export default class ShowDetailsScreen extends Component {
                 {' ' + this.state.genres.join(' | ')}
             </Text> : null;
 
+        let networksJsx = this.state.networks.length !== 0 ?
+            <Text style={styles.networks}>
+                Networks:
+                {' ' + this.state.networks.join(' | ')}
+            </Text> : null;
+
         let firstAirDateJsx = this.state.firstAirDate !== null ?
             <Text style={styles.airDate}>
                 First aired on
@@ -180,6 +186,7 @@ export default class ShowDetailsScreen extends Component {
                         </View>
                         {createdByJsx}
                         {genresJsx}
+                        {networksJsx}
                         <TouchableOpacity style={styles.wishListBtn}><Text>Add to Wish-list</Text></TouchableOpacity>
                         <TouchableOpacity style={styles.watchedListBtn}><Text>Add to Watched-list</Text></TouchableOpacity>
                         <TouchableOpacity style={styles.watchingListBtn}><Text>Add to Watching-list</Text></TouchableOpacity>
@@ -233,6 +240,11 @@ const styles = StyleSheet.create({
         fontSize: 15,
     },
     genres: {
+        marginBottom: 15,
+        fontSize: 15,
+        textAlign: 'justify',
+    },
+    networks: {
         marginBottom: 30,
         fontSize: 15,
         textAlign: 'justify',
