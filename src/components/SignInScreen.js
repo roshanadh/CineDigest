@@ -10,6 +10,7 @@ import {
 	Dimensions,
 	ActivityIndicator,
 	ImageBackground,
+	Image,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
 import Snackbar from 'react-native-snackbar';
@@ -100,7 +101,8 @@ class SignInScreen extends Component {
 				<View style={styles.container}>
 					<StatusBar barStyle="default" />
 					<View style={styles.signInForm}>
-						<Text style={styles.signInHeader}>Cine Digest</Text>
+						<Image source={require('../assets/mainLogoWText.png')}
+							resizeMode="contain" style={styles.logo} />
 						<View style={styles.usernameWrapper}>
 							<TextInput placeholder="Username"
 								style={styles.textInput} name="emailIdTextInput"
@@ -145,10 +147,11 @@ const styles = StyleSheet.create({
 		flexDirection: 'column',
 		justifyContent: 'center',
 	},
-	signInHeader: {
-		fontSize: headerFontSize,
+	logo: {
+		width: 300,
+		height: 60,
+		flex: 1,
 		alignSelf: 'center',
-		marginBottom: 45,
 	},
 	signInForm: {
 		flex: 5,
