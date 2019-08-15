@@ -93,7 +93,10 @@ class SignInScreen extends Component {
 			<ActivityIndicator size="small" color="#fefefe"
 				style={styles.indicator} /> : null;
 		return (
-			<ImageBackground blurRadius={1} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
+			<ImageBackground blurRadius={1.3}
+				source={require('../assets/lilypads.png')}
+				resizeMode="cover" style={styles.bgImage}>
+
 				<View style={styles.container}>
 					<StatusBar barStyle="default" />
 					<View style={styles.signInForm}>
@@ -158,28 +161,29 @@ const styles = StyleSheet.create({
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 0.2,
-		borderColor: '#010101',
-		borderRadius: 5,
+		borderBottomWidth: 1,
+		borderColor: '#22a7f0',
 		paddingLeft: 20,
 		paddingRight: 20,
 		marginBottom: 25,
+		backgroundColor: 'rgba(255,255,255,0.3)',
 	},
 	textInput: {
 		marginRight: 10,
 		flex: 5,
 		minHeight: '6%',
+		opacity: 1,
 	},
 	passwordWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
-		borderWidth: 0.2,
-		borderColor: '#010101',
-		borderRadius: 5,
+		borderBottomWidth: 1,
+		borderColor: '#22a7f0',
 		paddingLeft: 20,
 		paddingRight: 20,
 		marginBottom: 40,
+		backgroundColor: 'rgba(255,255,255,0.3)',
 	},
 	signInBtn: {
 		flexDirection: 'row',
