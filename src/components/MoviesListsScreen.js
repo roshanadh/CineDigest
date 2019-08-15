@@ -27,6 +27,7 @@ export default class MoviesListsScreen extends Component {
 		this.props.navigation.navigate('SearchScreen', {
 			searchQuery: this.state.searchQuery,
 			searchType: 'm',
+			username: this.state.username,
 		});
 	};
 
