@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import db from '../db/db';
 
 export default class MovieDetails extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -53,7 +54,19 @@ export default class MovieDetails extends Component {
         };
 
         this.addToWishList = () => {
-            alert("Added to Wish List, senyor " + this.state.username);
+            // alert("Added to Wish List, senyor " + this.state.username);
+            let addPromise = db.addToWishList({
+                listType: 'wishList',
+                titleId: this.state.titleId,
+                titleName: this.state.title,
+                titleOverview: this.state.overview,
+                titleVoteCount: this.state.voteCount,
+                titleVoteAverage: this.state.voteAverage,
+                titlePosterPath: this.state.posterPath,
+                titleType: 'movie',
+                username: this.state.username,
+            });
+            alert(addPromise);
         };
 
         this.addToWatchedList = () => {
