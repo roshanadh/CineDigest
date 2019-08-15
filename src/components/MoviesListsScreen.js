@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import SearchItem from './SearchItem';
 import AsyncStorage from '@react-native-community/async-storage';
+import db from '../db/db';
 
 export default class MoviesListsScreen extends Component {
 	constructor(props, context) {
@@ -41,6 +42,20 @@ export default class MoviesListsScreen extends Component {
 	}
 
     render() {
+		db.getHistory(this.state.username)
+		.then(result => {
+			// alert(result[0].titleId);
+			let len = result.length;
+			console.warn('Result len: ' + len);
+			for (let i = 0; i < len; i++) {
+				console.warn(result[i].titleName);
+				console.warn(result[i].titleId);
+				console.warn(result[i].titleOverview);
+				console.warn(result[i].titleVoteCount);
+				console.warn(result[i].titleVoteAverage);
+				console.warn(result[i].titlePosterPath);
+			}
+		}, error => alert(error));
 		return (
 			<ImageBackground blurRadius={1.3}
 				source={require('../assets/lilypads.png')}
