@@ -139,7 +139,7 @@ class Database {
         });
     }
 
-    addToWishList(request) {
+    addToList(request) {
     // Inserts into 'History' Table
         return new Promise((resolve, reject) => {
             SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library'})
@@ -156,35 +156,65 @@ class Database {
                         .catch(error => Alert.alert('Error', error.message));
                     })
                     .then(() => {
-                        db.transaction(tx => {
-                            tx.executeSql(
-                                'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
-                                [request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
-                                (tx, results) => {
-                                    resolve(true);
-                                })
-                            .catch(error => resolve(false));
-                        });
+                        // If requested listType is watchedList, remove movie from wishList as well
+                        if (request.listType === 'watchedList') {
+                            db.transaction(tx => {
+                                tx.executeSql(
+                                    'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
+                                    [request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
+                                    (tx, results) => {
+                                        // Added to watchedList, now check of movie is present in wishList
+                                        this.isInList('wishList', request.titleId, request.username)
+                                        .then(result => {
+                                            // Movie is present in wishList, proceed to removing from wishList
+                                            db.transaction(tx => {
+                                                // Remove from wishList
+                                                tx.executeSql(
+                                                    'DELETE FROM history WHERE listType=? AND titleId=? AND username=?',
+                                                    ['wishList', request.titleId, request.username],
+                                                    (tx, results) => {
+                                                        // Removed from wishList, added to watchedList
+                                                        resolve(true);
+                                                    });
+                                            },
+                                            error => {
+                                                // Movie was not present in wishList,
+                                                // no need to remove. Added to watchedList
+                                                resolve(true);
+                                            })
+                                            .catch(error => resolve(false));
+                                        });
+                                    })
+                                    .catch(error => resolve(false));
+                            });
+                        } else {
+                            // If requested listType is wishList, just add movie to wishList
+                            db.transaction(tx => {
+                                tx.executeSql(
+                                    'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
+                                    [request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
+                                    (tx, results) => {
+                                        resolve(true);
+                                    })
+                                    .catch(error => resolve(false));
+                            });
+                        }
                     });
                 });
             });
     }
 
-    getHistory(username) {
+    getHistory(username, listType) {
         let db;
-        // console.warn(username);
         return new Promise((resolve, reject) => {
             SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
                 .then(DB => {
                     db = DB;
-                    console.warn('Database OPEN');
                     db.transaction((tx) => {
-                        console.warn('Transaction started..');
-                        tx.executeSql(`SELECT * FROM 'history' WHERE username='${username}'`, [], (tx, results) => {
+                        tx.executeSql(`SELECT * FROM 'history' WHERE username=? AND listType=?`, [username, listType], (tx, results) => {
                             console.warn('SQL executed..');
                             let len = results.rows.length;
                             let rows = [];
-                            // console.warn('Results row length' + len);
                             for (let i = 0; i < len; i++)
                                 {rows.push(results.rows.item(i));}
                             resolve(rows);
@@ -208,10 +238,8 @@ class Database {
                         tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND listType=? AND titleId=?', [username, listType, titleId], (tx, results) => {
                             console.warn('SQL executed..');
                             let len = results.rows.length;
-                            console.warn('Check if is in list len: ' + len);
                             for (let i = 0; i < len; i++) {
                                 let row = results.rows.item(i);
-                                console.warn(row + ' is here!');
                             }
                             len > 0 ? resolve(true) : reject(false);
                         });
