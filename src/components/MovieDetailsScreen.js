@@ -130,11 +130,16 @@ export default class MovieDetails extends Component {
                 username: this.state.username,
             })
             .then(result => {
-                Alert.alert('Success', this.state.title + ' has been added to your wish-list!');
                 // Re-render this Screen
+                Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
+                [{
+                    text: 'OK',
+                    onPress: () => this.initButtons(this.state.username, this.titleId),
+                }]
+                );
             }, error => {
                 Alert.alert('Ooops', 'There was a problem. Please try again later!');
-            })
+            });
         };
 
         this.addToWatchedList = () => {
