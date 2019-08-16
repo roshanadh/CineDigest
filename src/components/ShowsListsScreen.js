@@ -6,6 +6,7 @@ import {
 	ImageBackground,
 	TouchableOpacity,
 	ActivityIndicator,
+	RefreshControl,
 	Text,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -18,6 +19,7 @@ export default class MoviesScreen extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
+			refreshing: false,
 			username: '',
 			searchQuery: '',
 			wishList: {
@@ -247,6 +249,20 @@ export default class MoviesScreen extends Component {
 		};
 	}
 
+	_onRefresh = () => {
+		this.setState({
+			refreshing: true,
+			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+			watchingListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
+		});
+		this.initLists().then((result) => {
+			this.setState({
+				refreshing: false,
+			});
+		});
+	}
+
 	searchFieldChangedHandler = (newQuery) => {
 		this.setState({
 			searchQuery: newQuery,
@@ -290,7 +306,12 @@ export default class MoviesScreen extends Component {
 			<ImageBackground blurRadius={1.3}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
-				<ScrollView style={styles.scrollView}>
+				<ScrollView style={styles.scrollView} 
+					refreshControl={
+						<RefreshControl
+							refreshing={this.state.refreshing}
+							onRefresh={this._onRefresh}
+						/> }>
 					<View style={styles.container}>
 						<SearchItem onChangeText={this.searchFieldChangedHandler}
 							placeholder="Search a TV show"
