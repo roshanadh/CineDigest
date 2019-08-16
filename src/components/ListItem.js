@@ -32,7 +32,7 @@ export default class ListItem extends Component {
                     onPress={this.props.onItemPressed}>
                     <Text style={styles.title}>{listType} is empty!</Text>
                     <View style={styles.infoWrapper}>
-                        <Text style={styles.overview}>Try adding some titles to your {listType}!</Text>
+                        <Text style={styles.emptyMessage}>Try adding some titles to your {listType}!</Text>
                     </View>
                 </TouchableOpacity>
             );
@@ -117,6 +117,10 @@ const styles = StyleSheet.create({
     overview: {
         fontSize: 15,
         textAlign: 'justify',
+    },
+    emptyMessage: {
+        fontSize: 15,
+        textAlign: 'left',
     },
     footerWrapper: {
         flexDirection: 'row',
