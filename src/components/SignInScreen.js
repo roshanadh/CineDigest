@@ -47,7 +47,7 @@ class SignInScreen extends Component {
 
 				let verifyPromise = db.verifyUser(this.state.username, this.state.password);
 				verifyPromise.then(result => {
-					onSignIn().then(() => props.navigation.navigate('SignedIn'));
+					onSignIn(this.state.username).then(() => props.navigation.navigate('SignedIn'));
 				}, error => {
 						this.setState({isLoading: false});
 						error.status === 'password mismatch' ?

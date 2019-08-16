@@ -23,6 +23,7 @@ export default class ShowDetailsScreen extends Component {
             'July', 'August', 'September', 'October', 'November', 'December',
         ];
         this.state = {
+            username: '',
             titleId: '',
             title: '',
             backdropPath: '',
@@ -43,6 +44,23 @@ export default class ShowDetailsScreen extends Component {
         };
         this.noBackdrop = false;
         this.noPoster = false;
+
+        this.getUsername = () => {
+            let username = this.props.navigation.getParam('username', null);
+            this.setState({username});
+        }
+
+        this.addToWishList = () => {
+            alert("Added to Wish List, senyor " + this.state.username);
+        };
+
+        this.addToWatchedList = () => {
+            alert("Added to Watched List, senyor " + this.state.username);
+        };
+
+        this.addToWatchingList = () => {
+            alert("Added to Watching List, senyor " + this.state.username);
+        };
     }
 
     controller = new AbortController();
@@ -97,6 +115,10 @@ export default class ShowDetailsScreen extends Component {
             seasonNo,
             seasonName,
         });
+    }
+
+    componentDidMount() {
+        this.getUsername();
     }
 
     render() {
@@ -187,9 +209,18 @@ export default class ShowDetailsScreen extends Component {
                         {createdByJsx}
                         {genresJsx}
                         {networksJsx}
-                        <TouchableOpacity style={styles.wishListBtn}><Text>Add to Wish-list</Text></TouchableOpacity>
-                        <TouchableOpacity style={styles.watchedListBtn}><Text>Add to Watched-list</Text></TouchableOpacity>
-                        <TouchableOpacity style={styles.watchingListBtn}><Text>Add to Watching-list</Text></TouchableOpacity>
+                        <TouchableOpacity style={styles.wishListBtn}
+                            onPress={this.addToWishList}>
+                            <Text>Add to Wish-list</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.watchedListBtn}
+                            onPress={this.addToWatchedList}>
+                            <Text>Add to Watched-list</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.watchingListBtn}
+                            onPress={this.addToWatchingList}>
+                            <Text>Add to Watching-list</Text>
+                        </TouchableOpacity>
                         <View style={styles.airDateWrapper}>
                             {firstAirDateJsx}
                             {lastAirDateJsx}
