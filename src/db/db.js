@@ -139,6 +139,129 @@ class Database {
 		});
 	}
 
+	addMovieToWishList(request) {
+		// Inserts into 'History' Table
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					db.transaction(tx => {
+						tx.executeSql(`CREATE TABLE IF NOT EXISTS "history" (
+							"id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+							"titleId"	TEXT NOT NULL,
+							"titleType"	INTEGER NOT NULL,
+							"username"	TEXT NOT NULL,
+							"listType"	TEXT NOT NULL,
+							"titleOverview"	TEXT,
+							"titleName"	TEXT NOT NULL,
+							"titleVoteCount"	INTEGER NOT NULL,
+							"titleVoteAverage"	REAL NOT NULL,
+							"titlePosterPath"	INTEGER
+						)`)
+							.catch(error => Alert.alert('Error', error.message));
+					})
+						.then(() => {
+							db.transaction(tx => {
+								tx.executeSql(
+									'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
+									[request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
+									(tx, results) => {
+										resolve(true);
+									})
+									.catch(error => {
+										console.warn(error + ' at db.js/206');
+										resolve(false);
+									});
+							});
+
+						});
+				});
+		});
+	}
+
+	addMovieToWatchedList(request) {
+		// Inserts into 'History' Table
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					db.transaction(tx => {
+						tx.executeSql(`CREATE TABLE IF NOT EXISTS "history" (
+							"id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+							"titleId"	TEXT NOT NULL,
+							"titleType"	INTEGER NOT NULL,
+							"username"	TEXT NOT NULL,
+							"listType"	TEXT NOT NULL,
+							"titleOverview"	TEXT,
+							"titleName"	TEXT NOT NULL,
+							"titleVoteCount"	INTEGER NOT NULL,
+							"titleVoteAverage"	REAL NOT NULL,
+							"titlePosterPath"	INTEGER
+						)`)
+							.catch(error => Alert.alert('Error', error.message));
+					})
+						.then(() => {
+							db.transaction(tx => {
+								tx.executeSql(
+									'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
+									[request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
+									(tx, results) => {
+										// Added to watchedList, now check of movie is present in wishList
+										this.isInList('wishList', request.titleId, request.username, request.titleType)
+											.then(result => {
+												console.warn('Movie was in wishList, so deletion needed')
+												// Movie is present in wishList, proceed to removing from wishList
+												db.transaction(tx => {
+													// Remove from wishList
+													tx.executeSql(
+														'DELETE FROM history WHERE listType=? AND titleId=? AND username=? AND titleType=?',
+														['wishList', request.titleId, request.username, request.titleType],
+														(tx, results) => {
+
+															// Removed from wishList, and added to watchedList
+															db.transaction(tx => {
+																tx.executeSql(
+																	'SELECT * FROM history WHERE listType=? AND titleId=? AND username=?',
+																	['wishList', request.titleId, request.username],
+																	(tx, results) => {
+																		let len = results.rows.length;
+																		console.warn('IS IT REMAINING IN WISHLIST? len: ' + len);
+																	});
+															});
+															resolve(true);
+														});
+												});
+											}, error => {
+												// Movie was not present in wishList,
+												// no need to remove. Added to watchedList
+												console.warn('Movie was not in wishList, so only added to watchedList')
+												db.transaction(tx => {
+													tx.executeSql(
+														'SELECT * FROM history WHERE listType=? AND titleId=? AND username=?',
+														['watchedList', request.titleId, request.username],
+														(tx, results) => {
+															let len = results.rows.length;
+															console.warn('OH OH len: ' + len);
+														});
+												});
+												resolve(true);
+											})
+											.catch(error => {
+												reject(error);
+											});
+									})
+									.catch(error => {
+										reject(error);
+									});
+							})
+							.catch(error => {
+								reject(error);
+							});
+						});
+				});
+		});
+	}
+
 	addToList(request) {
 	// Inserts into 'History' Table
 		return new Promise((resolve, reject) => {
@@ -161,7 +284,8 @@ class Database {
 						.catch(error => Alert.alert('Error', error.message));
 					})
 					.then(() => {
-						// If requested listType is watchedList, remove movie from wishList as well
+						// If requested listType is watchedList,
+						// remove title from wishList as well
 						if (request.listType === 'watchedList') {
 							db.transaction(tx => {
 								tx.executeSql(
@@ -289,7 +413,7 @@ class Database {
 		});
 	}
 
-	isInList(listType, titleId, username) {
+	isInList(listType, titleId, username, titleType) {
 		return new Promise((resolve, reject) => {
 			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
 				.then(DB => {
@@ -297,7 +421,7 @@ class Database {
 					console.warn('Database OPEN');
 					db.transaction((tx) => {
 						console.warn('Transaction started..');
-						tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND listType=? AND titleId=?', [username, listType, titleId], (tx, results) => {
+						tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND listType=? AND titleId=? AND titleType=?', [username, listType, titleId, titleType], (tx, results) => {
 							console.warn('SQL executed..');
 							let len = results.rows.length;
 							for (let i = 0; i < len; i++) {
@@ -310,6 +434,22 @@ class Database {
 						console.log(error.message);
 					});
 				});
+			});
+		}
+
+		deleteAll() {
+			return new Promise((resolve, reject) => {
+				SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+					.then(DB => {
+						let db = DB;
+						console.warn('Database OPEN');
+						db.transaction((tx) => {
+							console.warn('Transaction started..');
+							tx.executeSql('DELETE FROM history WHERE 1', [], (tx, results) => {
+								console.warn('SQL executed..');
+							});
+						});
+					});
 			});
 		}
 }
