@@ -14,7 +14,6 @@ import AsyncStorage from '@react-native-community/async-storage';
 
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
-
 import db from '../db/db';
 
 export default class MoviesListsScreen extends Component {
@@ -59,7 +58,7 @@ export default class MoviesListsScreen extends Component {
 					.then(result => {
 						this.setState({ username: result });
 						console.warn(result);
-						db.getHistory(result, 'wishList')
+						db.getHistory(result, 'wishList', 'movie')
 							.then(result => {
 								let len = result.length;
 								if (len > 0) {
@@ -110,7 +109,7 @@ export default class MoviesListsScreen extends Component {
 								}
 							}, error => console.warn(error));
 
-						db.getHistory(result, 'watchedList')
+						db.getHistory(result, 'watchedList', 'movie')
 							.then(result => {
 								let len = result.length;
 								let titleIds = [];
@@ -232,7 +231,6 @@ export default class MoviesListsScreen extends Component {
 	};
 
     render() {
-		// setTimeout(() => this.initLists(), 5000);
 		let {wishListJsx, watchedListJsx} = this.state;
 		return (
 			<ImageBackground blurRadius={1.3}

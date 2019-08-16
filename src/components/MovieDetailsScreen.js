@@ -55,7 +55,7 @@ export default class MovieDetails extends Component {
         this.initButtons = (username, titleId) => {
             return new Promise((resolve, reject) => {
                 // Check if movie is in Wish-list
-                db.isInList('wishList', this.titleId, username)
+                db.isInList('wishList', this.titleId, username, 'movie')
                     .then(result => {
                         // Movie is already in Wish-list
                         this.setState({
@@ -67,14 +67,14 @@ export default class MovieDetails extends Component {
                             // If movie is in Wish-list, it cannot be already in Watched-list
                             watchedListBtnJsx:
                                 <TouchableOpacity style={styles.watchedListBtn}
-                                    onPress={() => this.addToList('watchedList')}>
+                                    onPress={() => this.addToWatchedList()}>
                                     <Text style={styles.btnText}>Add to Watched-list</Text>
                                 </TouchableOpacity>,
                         });
                     }, error => {
                         // Movie is not in Wish-list
                         // Check if it is in Watched-list
-                        db.isInList('watchedList', this.titleId, username)
+                        db.isInList('watchedList', this.titleId, username, 'movie')
                             .then(result => {
                                 // Movie is in Wish-list
                                 this.setState({
@@ -94,12 +94,12 @@ export default class MovieDetails extends Component {
                                 this.setState({
                                     wishListBtnJsx:
                                         <TouchableOpacity style={styles.wishListBtn}
-                                            onPress={() => this.addToList('wishList')}>
+                                            onPress={() => this.addToWishList()}>
                                             <Text style={styles.btnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchedListBtnJsx:
                                         <TouchableOpacity style={styles.watchedListBtn}
-                                            onPress={() => this.addToList('watchedList')}>
+                                            onPress={() => this.addToWatchedList()}>
                                             <Text style={styles.btnText}>Add to Watched-list</Text>
                                         </TouchableOpacity>,
                                 });
@@ -116,9 +116,9 @@ export default class MovieDetails extends Component {
             });
         };
 
-        this.addToList = (listType) => {
-            db.addToList({
-                listType: listType,
+        this.addToWishList = () => {
+            db.addMovieToWishList({
+                listType: 'wishList',
                 titleId: this.state.titleId,
                 titleName: this.state.title,
                 titleOverview: this.state.overview,
@@ -128,40 +128,8 @@ export default class MovieDetails extends Component {
                 titleType: 'movie',
                 username: this.state.username,
             })
-            .then(result => {
-                let message = '';
-                // Re-render this Screen
-                message = listType === 'wishList' ? this.state.title + ' has been added to your wish-list!' :
-                    this.state.title + ' has been added to your watched-list!';
-                Alert.alert('Success', message,
-                [{
-                    text: 'OK',
-                    onPress: () => this.initButtons(this.state.username, this.titleId),
-                }]
-                );
-            }, error => {
-                Alert.alert('Ooops', 'There was a problem. Please try again later!');
-            });
-        };
-
-        this.removeFromList = (listType) => {
-            db.removeFromList({
-                listType,
-                titleId: this.state.titleId,
-                titleName: this.state.title,
-                titleOverview: this.state.overview,
-                titleVoteCount: this.state.voteCount,
-                titleVoteAverage: this.state.voteAverage,
-                titlePosterPath: this.state.posterPath,
-                titleType: 'movie',
-                username: this.state.username,
-            })
-            .then(result => {
-                let message = '';
-                // Re-render this Screen
-                message = listType === 'wishList' ? this.state.title + ' has been removed from your wish-list!' :
-                        this.state.title + ' has been removed from your watched-list!';
-                    Alert.alert('Success', message,
+                .then(result => {
+                    Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
                         [{
                             text: 'OK',
                             onPress: () => this.initButtons(this.state.username, this.titleId),
@@ -170,6 +138,63 @@ export default class MovieDetails extends Component {
                 }, error => {
                     Alert.alert('Ooops', 'There was a problem. Please try again later!');
                 });
+        };
+
+        this.addToWatchedList = () => {
+            db.addMovieToWatchedList({
+                listType: 'watchedList',
+                titleId: this.state.titleId,
+                titleName: this.state.title,
+                titleOverview: this.state.overview,
+                titleVoteCount: this.state.voteCount,
+                titleVoteAverage: this.state.voteAverage,
+                titlePosterPath: this.state.posterPath,
+                titleType: 'movie',
+                username: this.state.username,
+            })
+                .then(result => {
+                    Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
+                        [{
+                            text: 'OK',
+                            onPress: () => this.initButtons(this.state.username, this.titleId),
+                        }]
+                    );
+                }, error => {
+                    Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                });
+        };
+
+        this.removeFromList = (listType) => {
+            if (this.state.titleId === '') {
+                // Movie has not been loaded yet
+                Alert.alert('Oops', 'Please try again!');
+            } else {
+                db.removeFromList({
+                    listType,
+                    titleId: this.state.titleId,
+                    titleName: this.state.title,
+                    titleOverview: this.state.overview,
+                    titleVoteCount: this.state.voteCount,
+                    titleVoteAverage: this.state.voteAverage,
+                    titlePosterPath: this.state.posterPath,
+                    titleType: 'movie',
+                    username: this.state.username,
+                })
+                    .then(result => {
+                        let message = '';
+                        // Re-render this Screen
+                        message = listType === 'wishList' ? this.state.title + ' has been removed from your wish-list!' :
+                            this.state.title + ' has been removed from your watched-list!';
+                        Alert.alert('Success', message,
+                            [{
+                                text: 'OK',
+                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                            }]
+                        );
+                    }, error => {
+                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                    });
+            }
         };
 
         this.displayAlreadyInList = (listType, title) => {
