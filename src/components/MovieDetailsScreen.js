@@ -76,7 +76,6 @@ export default class MovieDetails extends Component {
                         // Check if it is in Watched-list
                         db.isInList('watchedList', this.titleId, username)
                             .then(result => {
-                                alert('Check for watched list!');
                                 // Movie is in Wish-list
                                 this.setState({
                                     wishListBtnJsx:
@@ -130,7 +129,6 @@ export default class MovieDetails extends Component {
                 username: this.state.username,
             })
             .then(result => {
-                alert('added to ' + listType + 'senyor');
                 let message = '';
                 // Re-render this Screen
                 message = listType === 'wish' ? this.state.title + ' has been added to your wish-list!' :
