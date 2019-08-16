@@ -9,7 +9,7 @@ import {
 	Image,
 	ActivityIndicator,
 } from 'react-native';
-import Icon from 'react-native-vector-icons/FontAwesome';
+
 import AsyncStorage from '@react-native-community/async-storage';
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
