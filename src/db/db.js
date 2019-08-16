@@ -262,10 +262,10 @@ class Database {
 		});
 	}
 
-	addToList(request) {
-	// Inserts into 'History' Table
+	addShowToWishList(request) {
+		// Inserts into 'History' Table
 		return new Promise((resolve, reject) => {
-			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library'})
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
 				.then(DB => {
 					let db = DB;
 					db.transaction(tx => {
@@ -281,69 +281,9 @@ class Database {
 							"titleVoteAverage"	REAL NOT NULL,
 							"titlePosterPath"	INTEGER
 						)`)
-						.catch(error => Alert.alert('Error', error.message));
+							.catch(error => Alert.alert('Error', error.message));
 					})
-					.then(() => {
-						// If requested listType is watchedList,
-						// remove title from wishList as well
-						if (request.listType === 'watchedList') {
-							db.transaction(tx => {
-								tx.executeSql(
-									'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
-									[request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
-									(tx, results) => {
-										// Added to watchedList, now check of movie is present in wishList
-										this.isInList('wishList', request.titleId, request.username)
-										.then(result => {
-											console.warn('Movie was in wishList, so deletion needed')
-											// Movie is present in wishList, proceed to removing from wishList
-											db.transaction(tx => {
-												// Remove from wishList
-												tx.executeSql(
-													'DELETE FROM history WHERE listType=? AND titleId=? AND username=?',
-													['wishList', request.titleId, request.username],
-													(tx, results) => {
-
-														// Removed from wishList, added to watchedList
-														db.transaction(tx => {
-															tx.executeSql(
-																'SELECT * FROM history WHERE listType=? AND titleId=? AND username=?',
-																['wishList', request.titleId, request.username],
-																(tx, results) => {
-																	let len = results.rows.length;
-																	console.warn('IS IT REMAINING IN WISHLIST? len: ' + len);
-																});
-														});
-														resolve(true);
-													});
-											});
-										}, error => {
-											// Movie was not present in wishList,
-											// no need to remove. Added to watchedList
-											console.warn('Movie was not in wishList, so only added to watchedList')
-											db.transaction(tx => {
-												tx.executeSql(
-													'SELECT * FROM history WHERE listType=? AND titleId=? AND username=?',
-													['watchedList', request.titleId, request.username],
-													(tx, results) => {
-														let len = results.rows.length;
-														console.warn('OH OH len: ' + len);
-													});
-											});
-											resolve(true);
-										})
-										.catch(error => {
-											console.warn(error.message + ' at db.js/186');
-											resolve(false);
-										});
-									})
-									.catch(error => {
-										console.warn(error + ' at db.js/194')
-										resolve(false);
-									});
-							});
-						} else {
-							// If requested listType is wishList, just add movie to wishList
+						.then(() => {
 							db.transaction(tx => {
 								tx.executeSql(
 									'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
@@ -352,14 +292,136 @@ class Database {
 										resolve(true);
 									})
 									.catch(error => {
-										console.warn(error + ' at db.js/206');
-										resolve(false);
+										reject(error);
 									});
 							});
-						}
+
+						});
+				});
+		});
+	}
+
+	addShowToWatchingList(request) {
+		// Inserts into 'History' Table
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					db.transaction(tx => {
+						tx.executeSql(`CREATE TABLE IF NOT EXISTS "history" (
+							"id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+							"titleId"	TEXT NOT NULL,
+							"titleType"	INTEGER NOT NULL,
+							"username"	TEXT NOT NULL,
+							"listType"	TEXT NOT NULL,
+							"titleOverview"	TEXT,
+							"titleName"	TEXT NOT NULL,
+							"titleVoteCount"	INTEGER NOT NULL,
+							"titleVoteAverage"	REAL NOT NULL,
+							"titlePosterPath"	INTEGER
+						)`)
+							.catch(error => Alert.alert('Error', error.message));
+					})
+						.then(() => {
+							// Insert into watching list
+							db.transaction(tx => {
+								tx.executeSql(
+									'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
+									[request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
+									(tx, results) => {
+										// Check if it is in wish-list to remove it
+										this.isInList('wishList', request.titleId, request.username, request.titleType)
+											.then(result => {
+												console.warn('Show was in wishList, so deletion needed')
+												// Show is present in wishList, proceed to removing from wishList
+												db.transaction(tx => {
+													// Remove from wishList
+													tx.executeSql(
+														'DELETE FROM history WHERE listType=? AND titleId=? AND username=? AND titleType=?',
+														['wishList', request.titleId, request.username, request.titleType],
+														(tx, results) => {
+															resolve(true);
+														});
+												});
+											});
+								});
+							});
+						})
+						.catch(error => {
+							reject(error);
+						});
+				});
+		});
+	}
+
+	addShowToWatchedList(request) {
+		// Inserts into 'History' Table
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					db.transaction(tx => {
+						tx.executeSql(`CREATE TABLE IF NOT EXISTS "history" (
+							"id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
+							"titleId"	TEXT NOT NULL,
+							"titleType"	INTEGER NOT NULL,
+							"username"	TEXT NOT NULL,
+							"listType"	TEXT NOT NULL,
+							"titleOverview"	TEXT,
+							"titleName"	TEXT NOT NULL,
+							"titleVoteCount"	INTEGER NOT NULL,
+							"titleVoteAverage"	REAL NOT NULL,
+							"titlePosterPath"	INTEGER
+						)`)
+							.catch(error => Alert.alert('Error', error.message));
+					})
+						.then(() => {
+							// Insert into watched list
+							db.transaction(tx => {
+								tx.executeSql(
+									'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?)',
+									[request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
+									(tx, results) => {
+										// Check if it is in wish-list to remove it
+										this.isInList('wishList', request.titleId, request.username, request.titleType)
+											.then(result => {
+												console.warn('Show was in wishList, so deletion needed')
+												// Show is present in wishList, proceed to removing from wishList
+												db.transaction(tx => {
+													// Remove from wishList
+													tx.executeSql(
+														'DELETE FROM history WHERE listType=? AND titleId=? AND username=? AND titleType=?',
+														['wishList', request.titleId, request.username, request.titleType],
+														(tx, results) => {
+															resolve(true);
+														});
+												});
+											}, error => {
+												// Show is not in wishList, check to see if it is in watchingList
+												// to remove it
+													this.isInList('watchingList', request.titleId, request.username, request.titleType)
+														.then(result => {
+															console.warn('Show was in watchingList, so deletion needed')
+															// Show is present in watchingList, proceed to removing from watchingList
+															db.transaction(tx => {
+																// Remove from watchingList
+																tx.executeSql(
+																	'DELETE FROM history WHERE listType=? AND titleId=? AND username=? AND titleType=?',
+																	['wishList', request.titleId, request.username, request.titleType],
+																	(tx, results) => {
+																		resolve(true);
+																	});
+															});
+														});
+											});
+								});
+							})
+							.catch(error => {
+								reject(error);
+							});
 					});
 				});
-			});
+		});
 	}
 
 	removeFromList(request) {
