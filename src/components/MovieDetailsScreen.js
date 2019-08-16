@@ -153,7 +153,7 @@ export default class MovieDetails extends Component {
                 username: this.state.username,
             })
                 .then(result => {
-                    Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
+                    Alert.alert('Success', this.state.title + ' has been added to your watched-list!',
                         [{
                             text: 'OK',
                             onPress: () => this.initButtons(this.state.username, this.titleId),
