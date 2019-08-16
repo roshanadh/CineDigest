@@ -41,7 +41,7 @@ export default class MoviesListsScreen extends Component {
 				voteCounts: [],
 			},
 			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
-		watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,],
+		watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 		};
 
 		this.getUsername = () => {
@@ -99,44 +99,71 @@ export default class MoviesListsScreen extends Component {
 						let partialOverviews = [];
 						let newWatchedListJsx = [];
 
-						for (let i = len - 3; i < len; i++) {
-							titleIds.push(result[i].titleId);
-							titles.push(result[i].titles);
+						// If len >= 3, display latest 3 Watched-list titles
+						// If len < 3, display as many Watched-list titles
+						let safeMinus = '';
+						if (len >= 4) {safeMinus = 3;}
+						else {safeMinus = len;}
+						console.warn('HAS: ' + len);
 
-							let fullOverview = result[i].titleOverview;
-							// Limit overview to 150 characters or less
+						if	(len > 0) {
+							// If atleast one movie is listed in watchedList display it
+							for (let i = len - 1; i >= len - safeMinus; i--) {
+								console.warn('TO be displayed :' + i);
+								titleIds.push(result[i].titleId);
+								titles.push(result[i].titles);
 
-							let partialOverview = fullOverview.length <= 100 ? fullOverview :
-								fullOverview.slice(0, 150) + '...';
+								let fullOverview = result[i].titleOverview;
+								// Limit overview to 150 characters or less
 
-							partialOverviews.push(partialOverview);
-							voteCounts.push(result[i].voteCount);
-							voteAverages.push(result[i].voteAverage);
-							posterPaths.push(result[i].posterPath);
+								let partialOverview = fullOverview.length <= 100 ? fullOverview :
+									fullOverview.slice(0, 150) + '...';
 
-							newWatchedListJsx.push(<ListItem
-								titleId={result[i].titleId}
-								title={result[i].titleName}
-								overview={partialOverview}
-								voteCount={result[i].titleVoteCount}
-								voteAverage={result[i].titleVoteAverage}
-								posterPath={result[i].titlePosterPath}
-								onItemPressed={() => this.onListItemSelected(result[i].titleId, result[i].titleName)}
-							/>);
+								partialOverviews.push(partialOverview);
+								voteCounts.push(result[i].voteCount);
+								voteAverages.push(result[i].voteAverage);
+								posterPaths.push(result[i].posterPath);
+
+								newWatchedListJsx.push(<ListItem
+									titleId={result[i].titleId}
+									title={result[i].titleName}
+									overview={partialOverview}
+									voteCount={result[i].titleVoteCount}
+									voteAverage={result[i].titleVoteAverage}
+									posterPath={result[i].titlePosterPath}
+									onItemPressed={() => this.onListItemSelected(result[i].titleId, result[i].titleName)}
+								/>);
+							}
+
+							// Set latest addition to state
+							this.setState({
+								watchedList: {
+									titleIds,
+									titles,
+									overviews: partialOverviews,
+									voteCounts,
+									voteAverages,
+									posterPaths,
+								},
+								watchedListJsx: newWatchedListJsx,
+							});
+						} else {
+							// If there are no movies in WatchedList, display empty box
+							this.setState({
+								watchedListJsx: [
+									<ListItem
+										titleId=""
+										title=""
+										overview=""
+										voteCount=""
+										voteAverage=""
+										posterPath=""
+										onItemPressed=""
+										listType="Watched-list"
+									/>,
+								],
+							});
 						}
-
-						// Set latest addition to state
-						this.setState({
-							watchedList: {
-								titleIds,
-								titles,
-								overviews: partialOverviews,
-								voteCounts,
-								voteAverages,
-								posterPaths,
-							},
-							watchedListJsx: newWatchedListJsx,
-						});
 					}, error => console.warn(error));
 			}, error => console.warn(error));
 		};
