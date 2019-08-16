@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
+
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
 
@@ -31,7 +32,16 @@ export default class MoviesListsScreen extends Component {
 				voteAverage: '',
 				voteCount: '',
 			},
+			watchedList: {
+				titleIds: [],
+				titles: [],
+				overviews: [],
+				posterPaths: [],
+				voteAverages: [],
+				voteCounts: [],
+			},
 			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+		watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,],
 		};
 
 		this.getUsername = () => {
@@ -42,7 +52,7 @@ export default class MoviesListsScreen extends Component {
 			});
 		};
 
-		this.initWishList = () => {
+		this.initLists = () => {
 			this.getUsername()
 			.then(result => {
 				this.setState({username: result});
@@ -51,7 +61,7 @@ export default class MoviesListsScreen extends Component {
 						let len = result.length;
 						let fullOverview = result[len - 1].titleOverview;
 						// Limit overview to 150 characters or less
-						let partialOverview =  fullOverview.length <= 100 ? fullOverview :
+						let partialOverview = fullOverview.length <= 100 ? fullOverview :
 							fullOverview.slice(0, 150) + '...';
 						// Set latest addition to state
 
@@ -73,8 +83,59 @@ export default class MoviesListsScreen extends Component {
 									voteCount={result[len - 1].titleVoteCount}
 									voteAverage={result[len - 1].titleVoteAverage}
 									posterPath={result[len - 1].titlePosterPath}
-									onItemPressed={() => this.onWishListItemSelected(result[len - 1].titleId, result[len - 1].titleName)}
+									onItemPressed={() => this.onListItemSelected(result[len - 1].titleId, result[len - 1].titleName)}
 								/>,
+						});
+					}, error => console.warn(error));
+
+				db.getHistory(result, 'watchedList')
+					.then(result => {
+						let len = result.length;
+						let titleIds = [];
+						let titles = [];
+						let voteCounts = [];
+						let voteAverages = [];
+						let posterPaths = [];
+						let partialOverviews = [];
+						let newWatchedListJsx = [];
+
+						for (let i = len - 3; i < len; i++) {
+							titleIds.push(result[i].titleId);
+							titles.push(result[i].titles);
+
+							let fullOverview = result[i].titleOverview;
+							// Limit overview to 150 characters or less
+
+							let partialOverview = fullOverview.length <= 100 ? fullOverview :
+								fullOverview.slice(0, 150) + '...';
+
+							partialOverviews.push(partialOverview);
+							voteCounts.push(result[i].voteCount);
+							voteAverages.push(result[i].voteAverage);
+							posterPaths.push(result[i].posterPath);
+
+							newWatchedListJsx.push(<ListItem
+								titleId={result[i].titleId}
+								title={result[i].titleName}
+								overview={partialOverview}
+								voteCount={result[i].titleVoteCount}
+								voteAverage={result[i].titleVoteAverage}
+								posterPath={result[i].titlePosterPath}
+								onItemPressed={() => this.onListItemSelected(result[i].titleId, result[i].titleName)}
+							/>);
+						}
+
+						// Set latest addition to state
+						this.setState({
+							watchedList: {
+								titleIds,
+								titles,
+								overviews: partialOverviews,
+								voteCounts,
+								voteAverages,
+								posterPaths,
+							},
+							watchedListJsx: newWatchedListJsx,
 						});
 					}, error => console.warn(error));
 			}, error => console.warn(error));
@@ -96,10 +157,10 @@ export default class MoviesListsScreen extends Component {
 	};
 
 	componentDidMount() {
-		this.initWishList();
+		this.initLists();
 	}
 
-	onWishListItemSelected = (itemId, itemTitle) => {
+	onListItemSelected = (itemId, itemTitle) => {
 		this.props.navigation.navigate('MovieDetailsScreen', {
 				titleId: itemId,
 				screenName: itemTitle,
@@ -142,7 +203,7 @@ export default class MoviesListsScreen extends Component {
 						</TouchableOpacity>
 					</View>
 					<View style={styles.watchedListContainer}>
-						{this.state.wishListJsx}
+						{this.state.watchedListJsx}
 					</View>
 				</ScrollView>
 			</ImageBackground>
@@ -163,6 +224,15 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	wishListContainer: {
+		marginLeft: 10,
+		marginRight: 10,
+		marginTop: 5,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center',
+		flex: 1,
+	},
+	watchedListContainer: {
 		marginLeft: 10,
 		marginRight: 10,
 		marginTop: 5,
