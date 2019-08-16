@@ -339,14 +339,13 @@ class Database {
 													tx.executeSql(
 														'DELETE FROM history WHERE listType=? AND titleId=? AND username=? AND titleType=?',
 														['wishList', request.titleId, request.username, request.titleType],
-														(tx, results) => {
-															resolve(true);
-														});
+														(tx, results) => {});
 												});
 											});
 								});
 							});
 						})
+						.then(() => resolve(true))
 						.catch(error => {
 							reject(error);
 						});
@@ -392,9 +391,7 @@ class Database {
 													tx.executeSql(
 														'DELETE FROM history WHERE listType=? AND titleId=? AND username=? AND titleType=?',
 														['wishList', request.titleId, request.username, request.titleType],
-														(tx, results) => {
-															resolve(true);
-														});
+														(tx, results) => {});
 												});
 											}, error => {
 												// Show is not in wishList, check to see if it is in watchingList
@@ -407,15 +404,14 @@ class Database {
 																// Remove from watchingList
 																tx.executeSql(
 																	'DELETE FROM history WHERE listType=? AND titleId=? AND username=? AND titleType=?',
-																	['wishList', request.titleId, request.username, request.titleType],
-																	(tx, results) => {
-																		resolve(true);
-																	});
+																	['watchingList', request.titleId, request.username, request.titleType],
+																	(tx, results) => {});
 															});
 														});
 											});
 								});
 							})
+							.then(() => resolve(true))
 							.catch(error => {
 								reject(error);
 							});
