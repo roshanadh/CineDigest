@@ -117,7 +117,7 @@ export default class MovieDetails extends Component {
         };
 
         this.addToWishList = () => {
-            db.addToList({
+            db.addMovieToWishList({
                 listType: 'wishList',
                 titleId: this.state.titleId,
                 titleName: this.state.title,
