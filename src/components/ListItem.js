@@ -24,19 +24,31 @@ export default class ListItem extends Component {
     }
 
     render() {
-        return (
-            <TouchableOpacity style={styles.listItem}
-                onPress={this.props.onItemPressed}>
-                <Text style={styles.title}>{this.state.title}</Text>
+        if (this.state.titleId === '') {
+            // If the props are all empty, display an empty box
+            return (
+                <TouchableOpacity style={styles.listItem}
+                    onPress={this.props.onItemPressed}>
+                    <Text style={styles.title}>Wish-list is empty!</Text>
+                    <View style={styles.infoWrapper}>
+                        <Text style={styles.overview}>Try adding some titles to your wish-list!</Text>
+                    </View>
+                </TouchableOpacity>
+            );
+        } else {
+            return (
+                <TouchableOpacity style={styles.listItem}
+                    onPress={this.props.onItemPressed}>
+                    <Text style={styles.title}>{this.state.title}</Text>
                     <View style={styles.infoWrapper}>
                         <View style={styles.aboutItemWrapper}>
                             <Image
                                 style={styles.posterImage}
                                 source={
                                     this.state.posterPath.slice(-4) === 'null' ?
-                                    // Fallback poster incase API responds with null
-                                    require('../assets/oops.png') :
-                                    {uri: this.state.posterPath}
+                                        // Fallback poster incase API responds with null
+                                        require('../assets/oops.png') :
+                                        { uri: this.state.posterPath }
                                 }
                             />
                             <View style={styles.textWrapper}>
@@ -46,14 +58,15 @@ export default class ListItem extends Component {
                         <View style={styles.footerWrapper}>
                             <View style={styles.voteWrapper}>
                                 <Text>{this.state.voteAverage}</Text>
-                                <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
+                                <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
                                 <Text>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                             </View>
-                            <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
+                            <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon} />
                         </View>
                     </View>
-            </TouchableOpacity>
-        );
+                </TouchableOpacity>
+            );
+        }
     }
 }
 
