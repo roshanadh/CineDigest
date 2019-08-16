@@ -6,7 +6,7 @@ import {
 	ImageBackground,
 	Text,
 	TouchableOpacity,
-	Image,
+	RefreshControl,
 	ActivityIndicator,
 } from 'react-native';
 
@@ -22,6 +22,7 @@ export default class MoviesListsScreen extends Component {
 		super(props, context);
 
 		this.state = {
+			refreshing: false,
 			username: '',
 			searchQuery: '',
 			wishList: {
@@ -41,7 +42,7 @@ export default class MoviesListsScreen extends Component {
 				voteCounts: [],
 			},
 			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
-		watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
+			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 		};
 
 		this.getUsername = () => {
@@ -53,120 +54,155 @@ export default class MoviesListsScreen extends Component {
 		};
 
 		this.initLists = () => {
-			this.getUsername()
-			.then(result => {
-				this.setState({username: result});
-				db.getHistory(result, 'wishList')
+			return new Promise((resolve, reject) => {
+				this.getUsername()
 					.then(result => {
-						let len = result.length;
-						let fullOverview = result[len - 1].titleOverview;
-						// Limit overview to 150 characters or less
-						let partialOverview = fullOverview.length <= 100 ? fullOverview :
-							fullOverview.slice(0, 150) + '...';
-						// Set latest addition to state
+						this.setState({ username: result });
+						console.warn(result);
+						db.getHistory(result, 'wishList')
+							.then(result => {
+								let len = result.length;
+								if (len > 0) {
+									// If there's atleast one title in the wishList, display it
+									let fullOverview = result[len - 1].titleOverview;
+									// Limit overview to 150 characters or less
+									let partialOverview = fullOverview.length <= 100 ? fullOverview :
+										fullOverview.slice(0, 150) + '...';
+									// Set latest addition to state
 
-						console.warn('LENGTH: ' + result.length);
-						this.setState({
-							wishList: {
-								titleId: result[len - 1].titleId,
-								title: result[len - 1].titleName,
-								overview: partialOverview,
-								voteCount: result[len - 1].titleVoteCount,
-								voteAverage: result[len - 1].titleVoteAverage,
-								posterPath: result[len - 1].titlePosterPath,
-							},
-							wishListJsx:
-								<ListItem
-									titleId={result[len - 1].titleId}
-									title={result[len - 1].titleName}
-									overview={partialOverview}
-									voteCount={result[len - 1].titleVoteCount}
-									voteAverage={result[len - 1].titleVoteAverage}
-									posterPath={result[len - 1].titlePosterPath}
-									onItemPressed={() => this.onListItemSelected(result[len - 1].titleId, result[len - 1].titleName)}
-								/>,
-						});
+									console.warn('LENGTH: ' + result.length);
+									this.setState({
+										wishList: {
+											titleId: result[len - 1].titleId,
+											title: result[len - 1].titleName,
+											overview: partialOverview,
+											voteCount: result[len - 1].titleVoteCount,
+											voteAverage: result[len - 1].titleVoteAverage,
+											posterPath: result[len - 1].titlePosterPath,
+										},
+										wishListJsx:
+											<ListItem
+												titleId={result[len - 1].titleId}
+												title={result[len - 1].titleName}
+												overview={partialOverview}
+												voteCount={result[len - 1].titleVoteCount}
+												voteAverage={result[len - 1].titleVoteAverage}
+												posterPath={result[len - 1].titlePosterPath}
+												onItemPressed={() => this.onListItemSelected(result[len - 1].titleId, result[len - 1].titleName)}
+											/>,
+									});
+								} else {
+									// If there are no titles in wishList, display an empty box
+									this.setState({
+										wishListJsx: [
+											<ListItem
+												titleId=""
+												title=""
+												overview=""
+												voteCount=""
+												voteAverage=""
+												posterPath=""
+												onItemPressed=""
+												listType="Wish-list"
+											/>,
+										],
+									});
+								}
+							}, error => console.warn(error));
+
+						db.getHistory(result, 'watchedList')
+							.then(result => {
+								let len = result.length;
+								let titleIds = [];
+								let titles = [];
+								let voteCounts = [];
+								let voteAverages = [];
+								let posterPaths = [];
+								let partialOverviews = [];
+								let newWatchedListJsx = [];
+
+								// If len >= 3, display latest 3 Watched-list titles
+								// If len < 3, display as many Watched-list titles
+								let safeMinus = '';
+								if (len >= 4) { safeMinus = 3; }
+								else { safeMinus = len; }
+
+								if (len > 0) {
+									// If atleast one movie is listed in watchedList display it
+									for (let i = len - 1; i >= len - safeMinus; i--) {
+										titleIds.push(result[i].titleId);
+										titles.push(result[i].titles);
+
+										let fullOverview = result[i].titleOverview;
+										// Limit overview to 150 characters or less
+
+										let partialOverview = fullOverview.length <= 100 ? fullOverview :
+											fullOverview.slice(0, 150) + '...';
+
+										partialOverviews.push(partialOverview);
+										voteCounts.push(result[i].voteCount);
+										voteAverages.push(result[i].voteAverage);
+										posterPaths.push(result[i].posterPath);
+
+										newWatchedListJsx.push(<ListItem
+											titleId={result[i].titleId}
+											title={result[i].titleName}
+											overview={partialOverview}
+											voteCount={result[i].titleVoteCount}
+											voteAverage={result[i].titleVoteAverage}
+											posterPath={result[i].titlePosterPath}
+											onItemPressed={() => this.onListItemSelected(result[i].titleId, result[i].titleName)}
+										/>);
+									}
+
+									// Set latest addition to state
+									this.setState({
+										watchedList: {
+											titleIds,
+											titles,
+											overviews: partialOverviews,
+											voteCounts,
+											voteAverages,
+											posterPaths,
+										},
+										watchedListJsx: newWatchedListJsx,
+									});
+									resolve(true);
+								} else {
+									// If there are no movies in WatchedList, display empty box
+									this.setState({
+										watchedListJsx: [
+											<ListItem
+												titleId=""
+												title=""
+												overview=""
+												voteCount=""
+												voteAverage=""
+												posterPath=""
+												onItemPressed=""
+												listType="Watched-list"
+											/>,
+										],
+									});
+									resolve(true);
+								}
+							}, error => console.warn(error));
 					}, error => console.warn(error));
-
-				db.getHistory(result, 'watchedList')
-					.then(result => {
-						let len = result.length;
-						let titleIds = [];
-						let titles = [];
-						let voteCounts = [];
-						let voteAverages = [];
-						let posterPaths = [];
-						let partialOverviews = [];
-						let newWatchedListJsx = [];
-
-						// If len >= 3, display latest 3 Watched-list titles
-						// If len < 3, display as many Watched-list titles
-						let safeMinus = '';
-						if (len >= 4) {safeMinus = 3;}
-						else {safeMinus = len;}
-						console.warn('HAS: ' + len);
-
-						if	(len > 0) {
-							// If atleast one movie is listed in watchedList display it
-							for (let i = len - 1; i >= len - safeMinus; i--) {
-								console.warn('TO be displayed :' + i);
-								titleIds.push(result[i].titleId);
-								titles.push(result[i].titles);
-
-								let fullOverview = result[i].titleOverview;
-								// Limit overview to 150 characters or less
-
-								let partialOverview = fullOverview.length <= 100 ? fullOverview :
-									fullOverview.slice(0, 150) + '...';
-
-								partialOverviews.push(partialOverview);
-								voteCounts.push(result[i].voteCount);
-								voteAverages.push(result[i].voteAverage);
-								posterPaths.push(result[i].posterPath);
-
-								newWatchedListJsx.push(<ListItem
-									titleId={result[i].titleId}
-									title={result[i].titleName}
-									overview={partialOverview}
-									voteCount={result[i].titleVoteCount}
-									voteAverage={result[i].titleVoteAverage}
-									posterPath={result[i].titlePosterPath}
-									onItemPressed={() => this.onListItemSelected(result[i].titleId, result[i].titleName)}
-								/>);
-							}
-
-							// Set latest addition to state
-							this.setState({
-								watchedList: {
-									titleIds,
-									titles,
-									overviews: partialOverviews,
-									voteCounts,
-									voteAverages,
-									posterPaths,
-								},
-								watchedListJsx: newWatchedListJsx,
-							});
-						} else {
-							// If there are no movies in WatchedList, display empty box
-							this.setState({
-								watchedListJsx: [
-									<ListItem
-										titleId=""
-										title=""
-										overview=""
-										voteCount=""
-										voteAverage=""
-										posterPath=""
-										onItemPressed=""
-										listType="Watched-list"
-									/>,
-								],
-							});
-						}
-					}, error => console.warn(error));
-			}, error => console.warn(error));
+			});
 		};
+	}
+
+	_onRefresh = () => {
+		this.setState({
+			refreshing: true,
+			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
+		});
+		this.initLists().then((result) => {
+			this.setState({
+				refreshing: false,
+			});
+		});
 	}
 
 	searchFieldChangedHandler = (newQuery) => {
@@ -196,11 +232,18 @@ export default class MoviesListsScreen extends Component {
 	};
 
     render() {
+		// setTimeout(() => this.initLists(), 5000);
+		let {wishListJsx, watchedListJsx} = this.state;
 		return (
 			<ImageBackground blurRadius={1.3}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
-				<ScrollView style={styles.scrollView}>
+				<ScrollView style={styles.scrollView}
+					refreshControl={
+						<RefreshControl
+							refreshing={this.state.refreshing}
+							onRefresh={this._onRefresh}
+						/> }>
 					<View style={styles.container}>
 						<SearchItem onChangeText={this.searchFieldChangedHandler}
 							placeholder="Search a movie"
@@ -217,7 +260,7 @@ export default class MoviesListsScreen extends Component {
 						</TouchableOpacity>
 					</View>
 					<View style={styles.wishListContainer}>
-						{this.state.wishListJsx}
+						{wishListJsx}
 					</View>
 					<View style={styles.listHeader}>
 						<Text>
@@ -230,7 +273,7 @@ export default class MoviesListsScreen extends Component {
 						</TouchableOpacity>
 					</View>
 					<View style={styles.watchedListContainer}>
-						{this.state.watchedListJsx}
+						{watchedListJsx}
 					</View>
 				</ScrollView>
 			</ImageBackground>
