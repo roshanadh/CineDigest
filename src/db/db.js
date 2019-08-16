@@ -266,14 +266,14 @@ class Database {
 		});
 	}
 
-	getHistory(username, listType) {
+	getHistory(username, listType, titleType) {
 		let db;
 		return new Promise((resolve, reject) => {
 			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
 				.then(DB => {
 					db = DB;
 					db.transaction((tx) => {
-						tx.executeSql(`SELECT * FROM 'history' WHERE username=? AND listType=?`, [username, listType], (tx, results) => {
+						tx.executeSql(`SELECT * FROM 'history' WHERE username=? AND listType=? AND titleType=?`, [username, listType, titleType], (tx, results) => {
 							console.warn('SQL executed..');
 							let len = results.rows.length;
 							let rows = [];
