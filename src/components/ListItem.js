@@ -26,7 +26,7 @@ export default class ListItem extends Component {
     render() {
         if (this.state.titleId === '') {
             // If the props are all empty, display an empty box
-            let listType = this.props.listType === 'Watched-list' ? this.props.listType : 'Wish-list';
+            let listType = this.props.listType;
             return (
                 <TouchableOpacity style={styles.listItem}
                     onPress={this.props.onItemPressed}>
