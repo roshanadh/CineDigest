@@ -46,7 +46,7 @@ export default class MoviesListsScreen extends Component {
 			this.getUsername()
 			.then(result => {
 				this.setState({username: result});
-				db.getHistory(result)
+				db.getHistory(result, 'wishList')
 					.then(result => {
 						let len = result.length;
 						let fullOverview = result[len - 1].titleOverview;
@@ -54,6 +54,8 @@ export default class MoviesListsScreen extends Component {
 						let partialOverview =  fullOverview.length <= 100 ? fullOverview :
 							fullOverview.slice(0, 150) + '...';
 						// Set latest addition to state
+
+						console.warn('LENGTH: ' + result.length);
 						this.setState({
 							wishList: {
 								titleId: result[len - 1].titleId,
