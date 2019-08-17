@@ -340,7 +340,7 @@ export default class MoviesScreen extends Component {
 							</Text>
 						</TouchableOpacity>
 					</View>
-					<View style={styles.wishListContainer}>
+					<View style={styles.watchingListContainer}>
 						{this.state.watchingListJsx}
 					</View>
 					<View style={styles.listHeader}>
@@ -375,8 +375,13 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	wishListContainer: {
-		marginLeft: 10,
-		marginRight: 10,
+		marginTop: 5,
+		flexDirection: 'column',
+		justifyContent: 'center',
+		alignItems: 'center',
+		flex: 1,
+	},
+	watchingListContainer: {
 		marginTop: 5,
 		flexDirection: 'column',
 		justifyContent: 'center',
@@ -384,8 +389,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	watchedListContainer: {
-		marginLeft: 10,
-		marginRight: 10,
 		marginTop: 5,
 		flexDirection: 'column',
 		justifyContent: 'center',

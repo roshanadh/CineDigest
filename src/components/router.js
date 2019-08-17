@@ -4,24 +4,32 @@ import {
     createStackNavigator,
 } from 'react-navigation';
 
+import {StatusBar, Platform} from 'react-native';
 import MainScreen from './MainScreen';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 
-export const SignedOut = createAppContainer(new createStackNavigator({
-    SignIn: {
-        screen: SignInScreen,
-        navigationOptions: {
-            title: 'Sign In',
+export const SignedOut = createAppContainer(new createStackNavigator(
+    {
+        SignIn: {
+            screen: SignInScreen,
+            navigationOptions: {
+                title: 'Sign In',
+            },
+        },
+        SignUp: {
+            screen: SignUpScreen,
+            navigationOptions: {
+                title: 'Sign Up',
+            },
         },
     },
-    SignUp: {
-        screen: SignUpScreen,
-        navigationOptions: {
-            title: 'Sign Up',
+    {
+        cardStyle: {
+            paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         },
     },
-}));
+));
 
 export const SignedIn = MainScreen;
 
