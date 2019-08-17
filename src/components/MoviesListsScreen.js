@@ -8,6 +8,7 @@ import {
 	TouchableOpacity,
 	RefreshControl,
 	ActivityIndicator,
+	StatusBar,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -236,6 +237,10 @@ export default class MoviesListsScreen extends Component {
 			<ImageBackground blurRadius={1.3}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
+				<StatusBar barStyle="dark-content"
+					translucent={true}
+					backgroundColor="rgba(238, 238, 238, 0)"
+				/>
 				<ScrollView style={styles.scrollView}
 					refreshControl={
 						<RefreshControl
