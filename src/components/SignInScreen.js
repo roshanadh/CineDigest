@@ -105,7 +105,10 @@ class SignInScreen extends Component {
 				resizeMode="cover" style={styles.bgImage}>
 
 				<View style={styles.container}>
-					<StatusBar barStyle="default" />
+					<StatusBar barStyle="dark-content"
+					translucent={true}
+						backgroundColor="rgba(238, 238, 238, 0)"
+					/>
 					<View style={styles.signInForm}>
 						<Image source={require('../assets/mainLogoWText.png')}
 							resizeMode="contain" style={styles.logo} />
