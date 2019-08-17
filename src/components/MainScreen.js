@@ -3,6 +3,8 @@ import {
     TouchableOpacity,
     Text,
     View,
+    Platform,
+    StatusBar,
 } from 'react-native';
 
 import {
@@ -16,27 +18,34 @@ import SeasonDetailsScreen from './SeasonDetailsScreen';
 import TabNavigator from './TabNavigator';
 import SearchScreen from './SearchScreen';
 
-const StackNavigator = createAppContainer(new createStackNavigator({
-    TabNavigator: {
-        screen: TabNavigator,
-        navigationOptions: {
-            title: 'Cine Digest',
-            headerTitleStyle: {
-                fontSize: 18,
+const StackNavigator = createAppContainer(new createStackNavigator(
+    {
+        TabNavigator: {
+            screen: TabNavigator,
+            navigationOptions: {
+                title: 'Cine Digest',
+                headerTitleStyle: {
+                    fontSize: 18,
+                },
+                headerRight: (
+                    <View>
+                        <TouchableOpacity onPress={() => alert('This is a button!')} style={{marginRight: 20,}}>
+                            <Text>Click!</Text>
+                        </TouchableOpacity>
+                    </View>
+                ),
             },
-            headerRight: (
-                <View>
-                <TouchableOpacity onPress={() => alert('This is a button!')} style={{marginRight: 20,}}>
-                    <Text>Click!</Text>
-                </TouchableOpacity>
-                </View>
-            ),
+        },
+        MovieDetailsScreen,
+        ShowDetailsScreen,
+        SeasonDetailsScreen,
+        SearchScreen,
+    },
+    {
+        cardStyle: {
+            paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         },
     },
-    MovieDetailsScreen,
-    ShowDetailsScreen,
-    SeasonDetailsScreen,
-    SearchScreen,
-}));
+));
 
 export default StackNavigator;
