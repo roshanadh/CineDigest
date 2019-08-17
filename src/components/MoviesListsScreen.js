@@ -297,8 +297,6 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	wishListContainer: {
-		marginLeft: 10,
-		marginRight: 10,
 		marginTop: 5,
 		flexDirection: 'column',
 		justifyContent: 'center',
@@ -306,8 +304,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 	},
 	watchedListContainer: {
-		marginLeft: 10,
-		marginRight: 10,
 		marginTop: 5,
 		flexDirection: 'column',
 		justifyContent: 'center',
