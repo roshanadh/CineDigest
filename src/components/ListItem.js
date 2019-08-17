@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
+        elevation: 0.5,
     },
     title: {
         color: '#19b5fe',
