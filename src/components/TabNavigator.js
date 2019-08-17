@@ -51,15 +51,17 @@ const TabNavigator = createMaterialTopTabNavigator(
             inactiveTintColor: '#24252a',
             labelStyle: {
                 fontSize: 12,
+                marginTop: 3,
             },
             indicatorStyle: {
                 backgroundColor: '#fff',
             },
             showIcon: true,
-            // showLabel: false,
             style: {
                 backgroundColor: '#fefefe',
-                height: 62,
+                height: 60,
+                borderTopColor: 'rgba(171, 183, 183, 0.2)',
+                borderTopWidth: 0.8,
             },
         },
         tabBarPosition: 'bottom',
