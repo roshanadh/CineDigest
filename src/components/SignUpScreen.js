@@ -10,6 +10,7 @@ import {
 	ImageBackground,
 	ScrollView,
 	Image,
+	StatusBar,
 } from 'react-native';
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -159,6 +160,10 @@ export default class SignUpScreen extends Component {
 
 		return (
 			<ImageBackground blurRadius={1.3} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
+				<StatusBar barStyle="dark-content"
+					translucent={true}
+					backgroundColor="rgba(255, 255, 255, 1)"
+				/>
 				<ScrollView style={styles.metaContainer}>
 					<View style={styles.container}>
 						<Image source={require('../assets/mainLogoWText.png')}
