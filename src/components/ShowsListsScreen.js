@@ -188,7 +188,7 @@ export default class MoviesScreen extends Component {
 									// If atleast one movie is listed in watchedList display it
 									for (let i = len - 1; i >= len - safeMinus; i--) {
 										titleIds.push(result[i].titleId);
-										titles.push(result[i].titles);
+										titles.push(result[i].titleName);
 
 										let fullOverview = result[i].titleOverview;
 										// Limit overview to 150 characters or less
@@ -197,9 +197,9 @@ export default class MoviesScreen extends Component {
 											fullOverview.slice(0, 150) + '...';
 
 										partialOverviews.push(partialOverview);
-										voteCounts.push(result[i].voteCount);
-										voteAverages.push(result[i].voteAverage);
-										posterPaths.push(result[i].posterPath);
+										voteCounts.push(result[i].titleVoteCount);
+										voteAverages.push(result[i].titleVoteAverage);
+										posterPaths.push(result[i].titlePosterPath);
 
 										newWatchedListJsx.push(<ListItem
 											titleId={result[i].titleId}
