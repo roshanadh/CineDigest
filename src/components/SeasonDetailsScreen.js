@@ -118,11 +118,18 @@ export default class SeasonDetailsScreen extends Component {
 					}
 					{
 						this.state.episodeAirDates[i] !== null ?
-						<Text style={styles.text}>
-							Aired on
-							{' ' + this.monthNames[new Date(this.state.episodeAirDates[i]).getMonth()]}
-							{' ' + this.state.episodeAirDates[i].slice(-2)}, {' ' + this.state.episodeAirDates[i].slice(0, 4)}
-						</Text> : null
+							( new Date(this.state.episodeAirDates[i]) > new Date() ?
+								<Text style={styles.text}>
+									Airs on
+									{' ' + this.monthNames[new Date(this.state.episodeAirDates[i]).getMonth()]}
+									{' ' + this.state.episodeAirDates[i].slice(-2)}, {' ' + this.state.episodeAirDates[i].slice(0, 4)}
+								</Text> :
+								<Text style={styles.airDate}>
+									Aired on
+									{' ' + this.monthNames[new Date(this.state.episodeAirDates[i]).getMonth()]}
+									{' ' + this.state.episodeAirDates[i].slice(-2)}, {' ' + this.state.episodeAirDates[i].slice(0, 4)}
+								</Text>
+							) : null
 					}
 					{
 						this.state.episodeOverviews[i] !== null ?
