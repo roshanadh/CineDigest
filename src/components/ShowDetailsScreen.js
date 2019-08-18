@@ -458,16 +458,13 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     container: {
-        margin: 10,
         padding: 25,
-        backgroundColor: '#fefefa',
-        borderRadius: 15,
+        backgroundColor: '#fff',
         minWidth: '95%',
         flexDirection: 'column',
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        fontSize: 19,
     },
     posterPath: {
         width: 400,
