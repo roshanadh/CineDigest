@@ -196,7 +196,7 @@ export default class FullListScreen extends Component {
                     resizeMode="cover" style={styles.bgImage}>
                     <ScrollView style={styles.scrollView}>
                         <View style={styles.container}>
-                           {listContainerJsx}
+                            {listContainerJsx}
                         </View>
                     </ScrollView>
                 </ImageBackground>
@@ -224,7 +224,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        alignItems: 'center',
     },
     indicatorContainer: {
         flexDirection: 'column',
