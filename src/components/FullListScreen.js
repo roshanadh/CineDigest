@@ -13,7 +13,7 @@ import db from '../db/db';
 
 export default class FullListScreen extends Component {
     static navigationOptions = ({navigation}) => {
-        const titleType = navigation.getParam('titleType') === 'movie' ? 'Movie\'s' : 'Show\'s';
+        const titleType = navigation.getParam('titleType') === 'movie' ? 'Movies\'' : 'Shows\'';
         let listType = '';
         switch (navigation.getParam('listType')) {
             case 'wishList':
@@ -129,7 +129,6 @@ export default class FullListScreen extends Component {
                                 },
                                 listLength: len,
                             });
-                            // console.warn('poster in screen ' + this.state.wishList.posterPaths[0]);
                             resolve(true);
                         }
                         resolve(true);
