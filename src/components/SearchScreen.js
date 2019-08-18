@@ -101,7 +101,6 @@ const styles = StyleSheet.create({
         flex: 1,
         flexDirection: 'column',
         justifyContent: 'flex-start',
-        alignItems: 'center',
     },
     indicatorContainer: {
         flexDirection: 'column',
