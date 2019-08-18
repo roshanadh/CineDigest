@@ -75,14 +75,14 @@ const styles = StyleSheet.create({
     listItem: {
         margin: 5,
         padding: 25,
-        backgroundColor: '#fefefa',
+        backgroundColor: '#fff',
         borderRadius: 15,
         minWidth: '95%',
         flexDirection: 'column',
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        elevation: 0.5,
+        elevation: 1,
     },
     title: {
         color: '#19b5fe',
