@@ -226,7 +226,7 @@ export default class MoviesListsScreen extends Component {
 				if (this.state.wishList.titleId === '') { isListEmpty = true; }
 				break;
 			case 'watchedList':
-				if (this.state.watchedList.titleId === '') { isListEmpty = true; }
+				if (this.state.watchedList.titleIds.length === 0) { isListEmpty = true; }
 				break;
 			default: null;
 		}
