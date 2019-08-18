@@ -131,7 +131,7 @@ export default class MoviesListsScreen extends Component {
 									// If atleast one movie is listed in watchedList display it
 									for (let i = len - 1; i >= len - safeMinus; i--) {
 										titleIds.push(result[i].titleId);
-										titles.push(result[i].titles);
+										titles.push(result[i].titleName);
 
 										let fullOverview = result[i].titleOverview;
 										// Limit overview to 150 characters or less
@@ -140,9 +140,9 @@ export default class MoviesListsScreen extends Component {
 											fullOverview.slice(0, 150) + '...';
 
 										partialOverviews.push(partialOverview);
-										voteCounts.push(result[i].voteCount);
-										voteAverages.push(result[i].voteAverage);
-										posterPaths.push(result[i].posterPath);
+										voteCounts.push(result[i].titleVoteCount);
+										voteAverages.push(result[i].titleVoteAverage);
+										posterPaths.push(result[i].titlePosterPath);
 
 										newWatchedListJsx.push(<ListItem
 											titleId={result[i].titleId}
@@ -219,6 +219,27 @@ export default class MoviesListsScreen extends Component {
 		});
 	};
 
+	viewAllPressedHandler = (listType) => {
+		let isListEmpty = false;
+		switch (listType) {
+			case 'wishList':
+				if (this.state.wishList.titleId === '') { isListEmpty = true; }
+				break;
+			case 'watchedList':
+				if (this.state.watchedList.titleIds.length === 0) { isListEmpty = true; }
+				break;
+			default: null;
+		}
+		if (!isListEmpty) {
+			// Handle button press only is list isn't empty
+			this.props.navigation.navigate('FullListScreen', {
+				listType,
+				titleType: 'movie',
+				username: this.state.username,
+			});
+		}
+	}
+
 	componentDidMount() {
 		this.initLists();
 	}
@@ -256,7 +277,7 @@ export default class MoviesListsScreen extends Component {
 						<Text>
 							Wish List
 							</Text>
-						<TouchableOpacity style={styles.viewAll}>
+						<TouchableOpacity style={styles.viewAll} onPress={() => this.viewAllPressedHandler('wishList')}>
 							<Text style={styles.viewAllText}>
 								View All
 							</Text>
@@ -269,7 +290,7 @@ export default class MoviesListsScreen extends Component {
 						<Text>
 							Watched List
 							</Text>
-						<TouchableOpacity style={styles.viewAll}>
+						<TouchableOpacity style={styles.viewAll} onPress={() => this.viewAllPressedHandler('watchedList')}>
 							<Text style={styles.viewAllText}>
 								View All
 							</Text>
