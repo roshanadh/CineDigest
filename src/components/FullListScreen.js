@@ -160,7 +160,6 @@ export default class FullListScreen extends Component {
 
     render() {
         let listContainerJsx = '';
-        // alert(this.state.wishList.titles[0])
         switch (this.state.listType) {
             case 'wishList':
                 listContainerJsx =
