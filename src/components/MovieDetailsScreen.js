@@ -293,7 +293,7 @@ export default class MovieDetails extends Component {
                 </Text>
             </View> : null;
         return (
-            <ImageBackground blurRadius={1.3}
+            <ImageBackground blurRadius={1.5}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
                 <ScrollView style={styles.scrollView}>
@@ -327,16 +327,12 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     container: {
-        margin: 10,
         padding: 25,
-        backgroundColor: '#fefefa',
-        borderRadius: 15,
         minWidth: '95%',
         flexDirection: 'column',
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        fontSize: 19,
     },
     posterPath: {
         width: 400,

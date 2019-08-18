@@ -142,7 +142,7 @@ export default class SeasonDetailsScreen extends Component {
 		}
 
 		return (
-			<ImageBackground blurRadius={1.3}
+			<ImageBackground blurRadius={1.5}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
 				<ScrollView style={styles.container}>
@@ -178,23 +178,19 @@ const styles = StyleSheet.create(
 		flexDirection: 'column',
 	},
     seasonContainer: {
-        margin: 10,
-        padding: 25,
-        backgroundColor: '#fefefa',
-        borderRadius: 15,
-        minWidth: '95%',
-        flexDirection: 'column',
-        flex: 1,
-        justifyContent: 'flex-start',
-        alignItems: 'flex-start',
-        fontSize: 19,
+		padding: 25,
+		minWidth: '95%',
+		flexDirection: 'column',
+		flex: 1,
+		justifyContent: 'flex-start',
+		alignItems: 'flex-start',
 	},
 	episodeContainer: {
 		margin: 10,
+		marginLeft: 0,
 		marginBottom: 20,
 		padding: 25,
-        backgroundColor: '#fefefa',
-        borderRadius: 15,
+        backgroundColor: '#fff',
 		width: 300,
         flexDirection: 'column',
         justifyContent: 'flex-start',
