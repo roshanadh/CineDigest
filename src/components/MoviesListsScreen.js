@@ -220,11 +220,24 @@ export default class MoviesListsScreen extends Component {
 	};
 
 	viewAllPressedHandler = (listType) => {
-		this.props.navigation.navigate('FullListScreen', {
-			listType,
-			titleType: 'movie',
-			username: this.state.username,
-		});
+		let isListEmpty = false;
+		switch (listType) {
+			case 'wishList':
+				if (this.state.wishList.titleId === '') { isListEmpty = true; }
+				break;
+			case 'watchedList':
+				if (this.state.watchedList.titleId === '') { isListEmpty = true; }
+				break;
+			default: null;
+		}
+		if (!isListEmpty) {
+			// Handle button press only is list isn't empty
+			this.props.navigation.navigate('FullListScreen', {
+				listType,
+				titleType: 'movie',
+				username: this.state.username,
+			});
+		}
 	}
 
 	componentDidMount() {
