@@ -10,6 +10,7 @@ import {
 	Dimensions,
 	ActivityIndicator,
 	ImageBackground,
+	ScrollView,
 	Image,
 } from 'react-native';
 import NetInfo from '@react-native-community/netinfo';
@@ -102,42 +103,43 @@ class SignInScreen extends Component {
 			<ImageBackground blurRadius={1.3}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
-
-				<View style={styles.container}>
-					<StatusBar barStyle="dark-content"
+				<StatusBar barStyle="dark-content"
 					translucent={true}
-						backgroundColor="rgba(238, 238, 238, 0)"
-					/>
-					<View style={styles.signInForm}>
-						<Image source={require('../assets/mainLogoWText.png')}
-							resizeMode="contain" style={styles.logo} />
-						<View style={styles.usernameWrapper}>
-							<TextInput placeholder="Username"
-								style={styles.textInput} autoCapitalize="none"
-								onChangeText={this.usernameTextChanged} />
-							<UsernameIcon name="format-text" size={25} color="#ddd"/>
-						</View>
-						<View style={styles.passwordWrapper}>
-							<TextInput placeholder="Password"
-								secureTextEntry={true}
-								style={styles.textInput} autoCapitalize="none"
-								onChangeText={this.passwordTextChanged} />
+					backgroundColor="rgba(238, 238, 238, 0)"
+				/>
+				<ScrollView>
+					<View style={styles.container}>
+						<View style={styles.signInForm}>
+							<Image source={require('../assets/mainLogoWText.png')}
+								resizeMode="contain" style={styles.logo} />
+							<View style={styles.usernameWrapper}>
+								<TextInput placeholder="Username"
+									style={styles.textInput} autoCapitalize="none"
+									onChangeText={this.usernameTextChanged} />
+								<UsernameIcon name="format-text" size={25} color="#ddd" />
+							</View>
+							<View style={styles.passwordWrapper}>
+								<TextInput placeholder="Password"
+									secureTextEntry={true}
+									style={styles.textInput} autoCapitalize="none"
+									onChangeText={this.passwordTextChanged} />
 								<KeyIcon name="key" size={25} color="#ddd" />
+							</View>
+							<TouchableOpacity style={styles.signInBtn}
+								onPress={this.signInBtnPressedHandler}>
+								<Text style={styles.btnText}>Sign-in</Text>
+								{indicatorJsx}
+							</TouchableOpacity>
 						</View>
-						<TouchableOpacity style={styles.signInBtn}
-							onPress={this.signInBtnPressedHandler}>
-							<Text style={styles.btnText}>Sign-in</Text>
-							{indicatorJsx}
-						</TouchableOpacity>
-					</View>
-					<View style={styles.signUpRedirect}>
-						<TouchableOpacity onPress={() => this.redirectToSignUp()}>
-							<Text style={styles.signUpText}>
-								Sign-up if you don't have an account
+						<View style={styles.signUpRedirect}>
+							<TouchableOpacity onPress={() => this.redirectToSignUp()}>
+								<Text style={styles.signUpText}>
+									Sign-up if you don't have an account
 							</Text>
-						</TouchableOpacity>
+							</TouchableOpacity>
+						</View>
 					</View>
-				</View>
+				</ScrollView>
 			</ImageBackground>
 		);
 	}
@@ -149,24 +151,26 @@ const styles = StyleSheet.create({
 		height: '100%',
 		flex: 1,
 	},
+	metaContainer: {
+		flexGrow: 1,
+		justifyContent: 'space-between',
+		flexDirection: 'column',
+	},
 	container: {
 		padding: 20,
 		flex: 1,
 		flexDirection: 'column',
-		justifyContent: 'center',
+		justifyContent: 'flex-end',
 	},
 	logo: {
 		width: 300,
-		height: 60,
+		height: 300,
 		flex: 1,
 		alignSelf: 'center',
 	},
 	signInForm: {
 		flex: 5,
 		justifyContent: 'flex-end',
-	},
-	scrollView: {
-		backgroundColor: '#fefefe',
 	},
 	usernameWrapper: {
 		flexDirection: 'row',
@@ -220,6 +224,7 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		justifyContent: 'center',
 		textAlign: 'center',
+		margin: 30,
 	},
 	signUpText: {
 		textAlign: 'center',
