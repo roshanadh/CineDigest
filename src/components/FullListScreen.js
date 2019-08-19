@@ -138,6 +138,7 @@ export default class FullListScreen extends Component {
                                             source={list}
                                             sourceLength={len}
                                             onIdSelected={this.onIdSelected}
+                                            listType={this.state.listType}
                                         />;
                                     break;
                                 case 'watchingList':
@@ -146,6 +147,7 @@ export default class FullListScreen extends Component {
                                             source={list}
                                             sourceLength={len}
                                             onIdSelected={this.onIdSelected}
+                                            listType={this.state.listType}
                                         />;
                                     break;
                                 case 'watchedList':
@@ -154,6 +156,7 @@ export default class FullListScreen extends Component {
                                             source={list}
                                             sourceLength={len}
                                             onIdSelected={this.onIdSelected}
+                                            listType={this.state.listType}
                                         />;
                                     break;
                                 default:
