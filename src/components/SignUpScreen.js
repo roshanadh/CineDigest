@@ -13,6 +13,8 @@ import {
 	StatusBar,
 } from 'react-native';
 
+import bcrypt from 'react-native-bcrypt';
+
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
@@ -87,21 +89,28 @@ export default class SignUpScreen extends Component {
 					text: 'okay',
 				}]);
 			} else {
-				let addPromise = db.addUser(this.state.username, this.state.password1, this.state.name);
-				addPromise.then(result => {
-					this.setState({isLoading: false});
-					console.warn(result);
-					Alert.alert(
-						'Successful',
-						`${result.username} has been registered!`, [{
-							text: 'OK',
-							onPress: () => props.navigation.navigate('SignIn'),
-						}]
-					);
-				}, err => {
-					this.setState({isLoading: false});
-					Alert.alert('Oops', `Username ${err.username} already exists!`);
-					console.warn(err);
+				// Generate Salt for hashing (with 10 rounds) / ASYNC
+				bcrypt.genSalt(5, (_err, salt) => {
+					// Generate Hash for the password / ASYNC
+					bcrypt.hash(this.state.password1, salt, (_err, hash) => {
+						console.warn(hash + ' is the hash!');
+						let addPromise = db.addUser(this.state.username, hash, this.state.name);
+						addPromise.then(result => {
+							this.setState({ isLoading: false });
+							console.warn(result);
+							Alert.alert(
+								'Successful',
+								`${result.username} has been registered!`, [{
+									text: 'OK',
+									onPress: () => props.navigation.navigate('SignIn'),
+								}]
+							);
+						}, err => {
+							this.setState({ isLoading: false });
+							Alert.alert('Oops', `Username ${err.username} already exists!`);
+							console.warn(err);
+						});
+					});
 				});
 			}
 		};
