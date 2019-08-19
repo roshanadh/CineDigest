@@ -13,6 +13,7 @@ import {
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import db from '../db/db';
+import netCon from '../util/NetCon';
 
 export default class ShowDetailsScreen extends Component {
     static navigationOptions = ({navigation}) => {
@@ -337,13 +338,18 @@ export default class ShowDetailsScreen extends Component {
     }
 
     onSeasonSelected = (seasonNo, seasonName) => {
-        this.props.navigation.navigate('SeasonDetailsScreen',
-        {
-            showName: this.state.title,
-            titleId:  this.state.titleId,
-            seasonNo,
-            seasonName,
-        });
+        netCon.checkNetCon()
+            .then((result) => {
+                this.props.navigation.navigate('SeasonDetailsScreen',
+                    {
+                        showName: this.state.title,
+                        titleId: this.state.titleId,
+                        seasonNo,
+                        seasonName,
+                    });
+            }, (error) => {
+                netCon.showSnackBar('An internet connection is required!');
+            });
     }
 
     render() {

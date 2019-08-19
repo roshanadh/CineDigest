@@ -301,11 +301,16 @@ export default class MoviesScreen extends Component {
 	}
 
 	onListItemSelected = (itemId, itemTitle) => {
-		this.props.navigation.navigate('ShowDetailsScreen', {
-			titleId: itemId,
-			screenName: itemTitle,
-			username: this.state.username,
-		});
+		netCon.checkNetCon()
+			.then((result) => {
+				this.props.navigation.navigate('ShowDetailsScreen', {
+					titleId: itemId,
+					screenName: itemTitle,
+					username: this.state.username,
+				});
+			}, (error) => {
+				netCon.showSnackBar('An internet connection is required!');
+			});
 	};
 
 	viewAllPressedHandler = (listType) => {
