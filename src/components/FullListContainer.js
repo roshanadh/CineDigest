@@ -14,6 +14,7 @@ export default class FullListContainer extends Component {
         super(props);
         this.source = props.source;
         this.dataLength = props.sourceLength;
+        this.listType = props.listType;
         this.data = [];
         console.warn('poster:' + this.props.source.posterPaths[0]);
 
@@ -33,12 +34,27 @@ export default class FullListContainer extends Component {
     }
 
     render() {
+        let listInfo = '';
+        let listName = '';
+        switch (this.listType) {
+            case 'wishList':
+                listName = 'Wish List';
+                break;
+            case 'watchingList':
+                listName = 'Watching List';
+                break;
+            case 'watchedList':
+                listName = 'Watched List';
+                break;
+        }
+
+        listInfo = this.dataLength + (this.dataLength > 1 ? ' items in your ' : ' item in your ') + listName;
         return (
             <View style={styles.metaContainer}>
                 <ScrollView style={styles.listContainer}>
-                    <View style={styles.searchInfo}>
-                        <Text>
-                            {this.dataLength}{this.dataLength > 1 ? ' items' : ' item'}
+                    <View style={styles.listInfo}>
+                        <Text style={styles.listInfoText}>
+                            {listInfo}
                         </Text>
                     </View>
                     <FlatList data={this.state.data}
@@ -63,8 +79,11 @@ export default class FullListContainer extends Component {
 
 const styles = StyleSheet.create({
     metaContainer: {},
-    searchInfo: {
-        margin: 10,
+    listInfo: {
+        margin: 20,
         alignSelf: 'flex-end',
+    },
+    listInfoText: {
+        fontSize: 15,
     },
 });
