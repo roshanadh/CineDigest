@@ -16,6 +16,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
 import db from '../db/db';
+import netCon from '../util/NetCon';
 
 export default class MoviesListsScreen extends Component {
 	constructor(props, context) {
@@ -212,11 +213,16 @@ export default class MoviesListsScreen extends Component {
 	};
 
 	searchBtnPressedHandler = () => {
-		this.props.navigation.navigate('SearchScreen', {
-			searchQuery: this.state.searchQuery,
-			searchType: 'm',
-			username: this.state.username,
-		});
+		netCon.checkNetCon()
+			.then((result) => {
+				this.props.navigation.navigate('SearchScreen', {
+					searchQuery: this.state.searchQuery,
+					searchType: 'm',
+					username: this.state.username,
+				});
+			}, (error) => {
+				netCon.showSnackBar('An internet connection is required!');
+			});
 	};
 
 	viewAllPressedHandler = (listType) => {
@@ -245,11 +251,16 @@ export default class MoviesListsScreen extends Component {
 	}
 
 	onListItemSelected = (itemId, itemTitle) => {
-		this.props.navigation.navigate('MovieDetailsScreen', {
-				titleId: itemId,
-				screenName: itemTitle,
-				username: this.state.username,
-		});
+		netCon.checkNetCon()
+			.then((result) => {
+				this.props.navigation.navigate('MovieDetailsScreen', {
+					titleId: itemId,
+					screenName: itemTitle,
+					username: this.state.username,
+				});
+			}, (error) => {
+				netCon.showSnackBar('An internet connection is required!');
+			});
 	};
 
     render() {

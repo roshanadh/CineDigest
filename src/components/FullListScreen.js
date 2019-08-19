@@ -11,6 +11,7 @@ import {
 
 import FullListContainer from './FullListContainer';
 import db from '../db/db';
+import netCon from '../util/NetCon';
 
 export default class FullListScreen extends Component {
     static navigationOptions = ({navigation}) => {
@@ -187,16 +188,21 @@ export default class FullListScreen extends Component {
     }
 
     onIdSelected = (itemId, itemTitle) => {
-        this.state.titleType === 'movie' ?
-            this.props.navigation.navigate('MovieDetailsScreen', {
-                titleId: itemId,
-                screenName: itemTitle,
-                username: this.state.username,
-            }) :
-            this.props.navigation.navigate('ShowDetailsScreen', {
-                screenName: itemTitle,
-                titleId: itemId,
-                username: this.state.username,
+        netCon.checkNetCon()
+            .then((result) => {
+                this.state.titleType === 'movie' ?
+                    this.props.navigation.navigate('MovieDetailsScreen', {
+                        titleId: itemId,
+                        screenName: itemTitle,
+                        username: this.state.username,
+                    }) :
+                    this.props.navigation.navigate('ShowDetailsScreen', {
+                        screenName: itemTitle,
+                        titleId: itemId,
+                        username: this.state.username,
+                    });
+            }, (error) => {
+                netCon.showSnackBar('An internet connection is required!');
             });
     };
 

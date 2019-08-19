@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 
 import ListContainer from './ListContainer';
+import netCon from '../util/NetCon';
 
 export default class SearchScreen extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -30,16 +31,21 @@ export default class SearchScreen extends Component {
     }
 
     onIdSelected = (itemId, itemTitle) => {
-        this.searchType === 'm' ?
-            this.props.navigation.navigate('MovieDetailsScreen', {
-                titleId: itemId,
-                screenName: itemTitle,
-                username: this.state.username,
-            }) :
-            this.props.navigation.navigate('ShowDetailsScreen', {
-                screenName: itemTitle,
-                titleId: itemId,
-                username: this.state.username,
+        netCon.checkNetCon()
+            .then((result) => {
+                this.searchType === 'm' ?
+                    this.props.navigation.navigate('MovieDetailsScreen', {
+                        titleId: itemId,
+                        screenName: itemTitle,
+                        username: this.state.username,
+                    }) :
+                    this.props.navigation.navigate('ShowDetailsScreen', {
+                        screenName: itemTitle,
+                        titleId: itemId,
+                        username: this.state.username,
+                    });
+            }, (error) => {
+                netCon.showSnackBar('An internet connection is required!');
             });
     };
 

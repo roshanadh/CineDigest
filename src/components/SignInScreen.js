@@ -13,8 +13,6 @@ import {
 	ScrollView,
 	Image,
 } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
-import Snackbar from 'react-native-snackbar';
 
 import UsernameIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
@@ -61,27 +59,6 @@ class SignInScreen extends Component {
         header: null,
 	}
 
-	showSnackBar = (message) => {
-		Snackbar.show({
-			title: message,
-			duration: Snackbar.LENGTH_INDEFINITE,
-			action: {
-				title: 'OK',
-				color: 'green',
-				onPress: () => {},
-			},
-			backgroundColor: '#efefef',
-		});
-	};
-
-	checkNetConn = () => {
-		NetInfo.fetch().then(state => {
-			if (!state.isConnected) {
-				this.showSnackBar('An internet connection is required!');
-			}
-		});
-	};
-
     usernameTextChanged = newUsername => {
         this.setState({username: newUsername});
     };
@@ -95,7 +72,6 @@ class SignInScreen extends Component {
 	}
 
 	render() {
-		this.checkNetConn();
 		let indicatorJsx = this.state.isLoading ?
 			<ActivityIndicator size="small" color="#fefefe"
 				style={styles.indicator} /> : null;
