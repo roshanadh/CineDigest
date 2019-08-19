@@ -11,6 +11,7 @@ import {
 	ScrollView,
 	Image,
 	StatusBar,
+	Dimensions,
 } from 'react-native';
 
 import bcrypt from 'react-native-bcrypt';
@@ -19,6 +20,10 @@ import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
 import db from '../db/db.js';
+
+const { width, height } = Dimensions.get('window');
+const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
+const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
 
 export default class SignUpScreen extends Component {
 	constructor(props, context) {
@@ -337,10 +342,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		alignSelf: 'center',
 		borderRadius: 50,
+		marginTop: 20,
 		padding: 15,
-		width: '35%',
+		minHeight: btnHeight,
+		width: btnWidth,
 		backgroundColor: '#22a7f0',
-		marginTop: 25,
 	},
 	btnText: {
 		color: '#fff',
