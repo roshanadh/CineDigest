@@ -21,10 +21,9 @@ import KeyIcon from 'react-native-vector-icons/Feather';
 import db from '../db/db';
 import {onSignIn} from '../auth/auth';
 
-const {width, height, fontScale} = Dimensions.get('window');
+const { width, height } = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
 const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
-const headerFontSize = 35 / fontScale;
 
 class SignInScreen extends Component {
     constructor(props, context) {
