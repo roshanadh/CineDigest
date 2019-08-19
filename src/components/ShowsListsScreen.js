@@ -14,6 +14,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
 import db from '../db/db';
+import netCon from '../util/NetCon';
 
 export default class MoviesScreen extends Component {
 	constructor(props, context) {
@@ -270,18 +271,28 @@ export default class MoviesScreen extends Component {
 	};
 
 	searchBtnPressedHandler = () => {
-		this.props.navigation.navigate('SearchScreen', {
-			searchQuery: this.state.searchQuery,
-			searchType: 's',
-			username: this.state.username,
-		});
+		netCon.checkNetCon()
+			.then((result) => {
+				this.props.navigation.navigate('SearchScreen', {
+					searchQuery: this.state.searchQuery,
+					searchType: 's',
+					username: this.state.username,
+				});
+			}, (error) => {
+				netCon.showSnackBar('An internet connection is required!');
+			});
 	};
 
 	onIdSelected = (itemId, itemTitle) => {
-		this.props.navigation.navigate('ShowDetailsScreen', {
-			screenName: itemTitle,
-			titleId: itemId,
-		});
+		netCon.checkNetCon()
+			.then((result) => {
+				this.props.navigation.navigate('ShowDetailsScreen', {
+					screenName: itemTitle,
+					titleId: itemId,
+				});
+			}, (error) => {
+				netCon.showSnackBar('An internet connection is required!');
+			});
 	};
 
 	getUsername = async () => {
