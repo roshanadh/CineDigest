@@ -119,7 +119,7 @@ export default class SeasonDetailsScreen extends Component {
 					{
 						this.state.episodeAirDates[i] !== null ?
 							( new Date(this.state.episodeAirDates[i]) > new Date() ?
-								<Text style={styles.text}>
+								<Text style={styles.airDate}>
 									Airs on
 									{' ' + this.monthNames[new Date(this.state.episodeAirDates[i]).getMonth()]}
 									{' ' + this.state.episodeAirDates[i].slice(-2)}, {' ' + this.state.episodeAirDates[i].slice(0, 4)}
@@ -234,6 +234,10 @@ const styles = StyleSheet.create(
 		marginBottom: 10,
 	},
 	text: {
+		fontSize: 15,
+		marginBottom: 10,
+	},
+	airDate: {
 		fontSize: 15,
 		marginBottom: 10,
 	},
