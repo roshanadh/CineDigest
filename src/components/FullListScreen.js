@@ -5,6 +5,7 @@ import {
     ActivityIndicator,
     ImageBackground,
     ScrollView,
+    RefreshControl,
 } from 'react-native';
 
 
@@ -36,6 +37,7 @@ export default class FullListScreen extends Component {
         super(props, context);
         this.state = {
             isEmpty: true,
+            refreshing: false,
             titleType: '',
             listType: '',
             username: '',
@@ -64,6 +66,7 @@ export default class FullListScreen extends Component {
                 voteAverages: [],
                 voteCounts: [],
             },
+            listContainerJsx: '',
         };
 
         this.initState = () => {
@@ -71,6 +74,7 @@ export default class FullListScreen extends Component {
                 const listType = this.props.navigation.getParam('listType', null);
                 const titleType = this.props.navigation.getParam('titleType', null);
                 const username = this.props.navigation.getParam('username', null);
+
                 this.setState({
                     username,
                     listType,
@@ -116,9 +120,53 @@ export default class FullListScreen extends Component {
                                 posterPaths.push(result[i].titlePosterPath);
                             }
 
+                            let list = {
+                                titleIds,
+                                titles,
+                                overviews: partialOverviews,
+                                voteCounts,
+                                voteAverages,
+                                posterPaths,
+                            };
+
+                            // Set listContainerJsx
+                            let listContainerJsx = '';
+                            switch (this.state.listType) {
+                                case 'wishList':
+                                    listContainerJsx =
+                                        <FullListContainer
+                                            source={list}
+                                            sourceLength={len}
+                                            onIdSelected={this.onIdSelected}
+                                            listType={this.state.listType}
+                                        />;
+                                    break;
+                                case 'watchingList':
+                                    listContainerJsx =
+                                        <FullListContainer
+                                            source={list}
+                                            sourceLength={len}
+                                            onIdSelected={this.onIdSelected}
+                                            listType={this.state.listType}
+                                        />;
+                                    break;
+                                case 'watchedList':
+                                    listContainerJsx =
+                                        <FullListContainer
+                                            source={list}
+                                            sourceLength={len}
+                                            onIdSelected={this.onIdSelected}
+                                            listType={this.state.listType}
+                                        />;
+                                    break;
+                                default:
+                                    listContainerJsx = '';
+                            }
+
                             // Set latest addition to state
                             this.setState({
                                 isEmpty: false,
+                                refreshing: false,
                                 [listType]: {
                                     titleIds,
                                     titles,
@@ -128,13 +176,14 @@ export default class FullListScreen extends Component {
                                     posterPaths,
                                 },
                                 listLength: len,
+                                listContainerJsx,
                             });
                             resolve(true);
                         }
                         resolve(true);
                     });
             });
-        }
+        };
     }
 
     onIdSelected = (itemId, itemTitle) => {
@@ -151,6 +200,18 @@ export default class FullListScreen extends Component {
             });
     };
 
+    _onRefresh = () => {
+        this.setState({
+            refreshing: true,
+            listContainerJsx: <View />,
+        });
+
+        this.initList()
+            .then(() => {
+                this.setState({refreshing: false});
+            });
+    }
+
     componentDidMount() {
         this.initState()
         .then(() => this.initList())
@@ -158,44 +219,20 @@ export default class FullListScreen extends Component {
     }
 
     render() {
-        let listContainerJsx = '';
-        switch (this.state.listType) {
-            case 'wishList':
-                listContainerJsx =
-                    <FullListContainer
-                        source={this.state.wishList}
-                        sourceLength={this.state.listLength}
-                        onIdSelected={this.onIdSelected}
-                    />;
-                break;
-            case 'watchingList':
-                listContainerJsx =
-                    <FullListContainer
-                        source={this.state.watchingList}
-                        sourceLength={this.state.listLength}
-                        onIdSelected={this.onIdSelected}
-                    />;
-                break;
-            case 'watchedList':
-                listContainerJsx =
-                    <FullListContainer
-                        source={this.state.watchedList}
-                        sourceLength={this.state.listLength}
-                        onIdSelected={this.onIdSelected}
-                    />;
-                break;
-            default:
-                listContainerJsx = null;
-        }
         console.warn('From screen: listLength new: ' + this.state.listLength)
         if (!this.state.isEmpty) {
             return (
                 <ImageBackground blurRadius={1.3}
                     source={require('../assets/lilypads.png')}
                     resizeMode="cover" style={styles.bgImage}>
-                    <ScrollView style={styles.scrollView}>
+                    <ScrollView style={styles.scrollView}
+                        refreshControl={
+                            <RefreshControl
+                                refreshing={this.state.refreshing}
+                                onRefresh={this._onRefresh}
+                            />}>
                         <View style={styles.container}>
-                            {listContainerJsx}
+                            {this.state.listContainerJsx}
                         </View>
                     </ScrollView>
                 </ImageBackground>
@@ -229,5 +266,6 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         flex: 1,
+        alignSelf: 'center',
     },
 });

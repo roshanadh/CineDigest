@@ -38,7 +38,7 @@ export default class ListContainer extends Component {
             <View style={styles.metaContainer}>
                 <ScrollView style={styles.listContainer}>
                     <View style={styles.searchInfo}>
-                        <Text>
+                        <Text style={styles.searchInfoText}>
                             {this.dataLength}{this.dataLength > 1 ? ' search results' : ' search result'}
                         </Text>
                     </View>
@@ -64,11 +64,11 @@ export default class ListContainer extends Component {
 
 const styles = StyleSheet.create({
     metaContainer: {},
-    listContainer: {
-        paddingBottom: 80,
-    },
     searchInfo: {
-        margin: 10,
+        margin: 20,
         alignSelf: 'flex-end',
+    },
+    searchInfoText: {
+        fontSize: 15,
     },
 });
