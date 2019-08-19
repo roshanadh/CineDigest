@@ -3,6 +3,8 @@ import {
 	Alert,
 } from 'react-native';
 
+import bcrypt from 'react-native-bcrypt';
+
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
@@ -30,16 +32,12 @@ class Database {
 	addUser(username, password, name) {
 		let db;
 		return new Promise((resolve, reject) => {
-			console.warn('Plugin integrity check ...');
 			SQLite.echoTest()
 				.then(() => {
-					console.warn('Integrity check passed ...');
-					console.warn('Opening database ...');
 
 					SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library'})
 						.then(DB => {
 							db = DB;
-							console.warn('Database OPEN');
 							db.transaction((tx) => {
 								tx.executeSql(`CREATE TABLE IF NOT EXISTS "users" (
 										"username"	TEXT NOT NULL UNIQUE,
@@ -47,7 +45,6 @@ class Database {
 										"name"	TEXT NOT NULL,
 										PRIMARY KEY("username")
 									)`);
-								console.warn('Table users Created!');
 							})
 								.catch((error) => console.warn('Table users was not created! ' + error.message))
 								.then(() => {
@@ -92,31 +89,33 @@ class Database {
 					db.transaction(tx => {
 						// Check if user exists
 						tx.executeSql(
-							`SELECT name FROM users WHERE username='${username}'`, [], (tx, results) => {
-								console.warn('SELECT completed');
+							`SELECT password FROM users WHERE username='${username}'`, [], (tx, results) => {
 								let len = results.rows.length;
 								if (len > 0) {
-									console.warn('YES USER FOUND YAY!');
+									// Generate Salt for hashing (with 10 rounds) / ASYNC
+									bcrypt.genSalt(5, (_err, salt) => {
+										// Generate Hash for the password / ASYNC
+										bcrypt.hash(password, salt, (_err, hash) => {
+											let retrievedHash = results.rows.item(0).password;
 
-									// Check if user exists for given password
-									tx.executeSql(
-										`SELECT name FROM users WHERE username='${username}'AND password='${password}'`,
-										[], (tx, results) => {
-											let len = results.rows.length;
-											if (len > 0) {
-												resolve({
-													status: 'ok',
-													username,
-													password,
-												});
-											} else {
-												// User exists but incorrect password
-												reject({
-													status: 'password mismatch',
-													username,
-													password,
-												});
-											}
+											// Compare plain password with retrieved hash
+											bcrypt.compare(password, retrievedHash, function (_err, res) {
+												if (res === true) {
+													resolve({
+														status: 'ok',
+														username,
+														password,
+													});
+												} else {
+													// User exists but incorrect password
+													reject({
+														status: 'password mismatch',
+														username,
+														password,
+													});
+												}
+											});
+										});
 									});
 								} else {
 									// User doesn't exist
@@ -503,7 +502,7 @@ class Database {
 						console.warn('Database OPEN');
 						db.transaction((tx) => {
 							console.warn('Transaction started..');
-							tx.executeSql('DELETE FROM history WHERE 1', [], (tx, results) => {
+							tx.executeSql('DELETE FROM users WHERE 1', [], (tx, results) => {
 								console.warn('SQL executed..');
 							});
 						});

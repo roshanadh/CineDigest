@@ -11,12 +11,19 @@ import {
 	ScrollView,
 	Image,
 	StatusBar,
+	Dimensions,
 } from 'react-native';
+
+import bcrypt from 'react-native-bcrypt';
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
 import db from '../db/db.js';
+
+const { width, height } = Dimensions.get('window');
+const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
+const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
 
 export default class SignUpScreen extends Component {
 	constructor(props, context) {
@@ -87,21 +94,28 @@ export default class SignUpScreen extends Component {
 					text: 'okay',
 				}]);
 			} else {
-				let addPromise = db.addUser(this.state.username, this.state.password1, this.state.name);
-				addPromise.then(result => {
-					this.setState({isLoading: false});
-					console.warn(result);
-					Alert.alert(
-						'Successful',
-						`${result.username} has been registered!`, [{
-							text: 'OK',
-							onPress: () => props.navigation.navigate('SignIn'),
-						}]
-					);
-				}, err => {
-					this.setState({isLoading: false});
-					Alert.alert('Oops', `Username ${err.username} already exists!`);
-					console.warn(err);
+				// Generate Salt for hashing (with 10 rounds) / ASYNC
+				bcrypt.genSalt(5, (_err, salt) => {
+					// Generate Hash for the password / ASYNC
+					bcrypt.hash(this.state.password1, salt, (_err, hash) => {
+						console.warn(hash + ' is the hash!');
+						let addPromise = db.addUser(this.state.username, hash, this.state.name);
+						addPromise.then(result => {
+							this.setState({ isLoading: false });
+							console.warn(result);
+							Alert.alert(
+								'Successful',
+								`${result.username} has been registered!`, [{
+									text: 'OK',
+									onPress: () => props.navigation.navigate('SignIn'),
+								}]
+							);
+						}, err => {
+							this.setState({ isLoading: false });
+							Alert.alert('Oops', `Username ${err.username} already exists!`);
+							console.warn(err);
+						});
+					});
 				});
 			}
 		};
@@ -328,10 +342,11 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		alignSelf: 'center',
 		borderRadius: 50,
+		marginTop: 20,
 		padding: 15,
-		width: '35%',
+		minHeight: btnHeight,
+		width: btnWidth,
 		backgroundColor: '#22a7f0',
-		marginTop: 25,
 	},
 	btnText: {
 		color: '#fff',
