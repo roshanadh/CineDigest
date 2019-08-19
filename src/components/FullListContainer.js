@@ -63,9 +63,6 @@ export default class FullListContainer extends Component {
 
 const styles = StyleSheet.create({
     metaContainer: {},
-    listContainer: {
-        paddingBottom: 80,
-    },
     searchInfo: {
         margin: 10,
         alignSelf: 'flex-end',
