@@ -102,7 +102,8 @@ class SignInScreen extends Component {
 									style={styles.textInput}
 									autoCapitalize="none"
 									onChangeText={this.passwordTextChanged}
-									returnKeyType="done" />
+									returnKeyType="done"
+									onSubmitEditing={this.signInBtnPressedHandler} />
 								<KeyIcon name="key" size={25} color="#ddd" />
 							</View>
 							<TouchableOpacity style={styles.signInBtn}
