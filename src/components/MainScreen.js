@@ -21,7 +21,12 @@ import SearchScreen from './SearchScreen';
 
 const StackNavigator = createAppContainer(new createStackNavigator(
     {
-        TabNavigator,
+        TabNavigator: {
+            screen: TabNavigator,
+            navigationOptions: {
+                header: null,
+            },
+        },
         MovieDetailsScreen,
         ShowDetailsScreen,
         SeasonDetailsScreen,
@@ -32,7 +37,6 @@ const StackNavigator = createAppContainer(new createStackNavigator(
         cardStyle: {
             paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         },
-        headerMode: 'none',
     },
 ));
 
