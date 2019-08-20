@@ -13,7 +13,8 @@ export default function searchItem(props) {
 			<TextInput placeholder={props.placeholder}
 				style={styles.searchTextInput}
 				onChangeText={props.onChangeText}
-				onSubmitEditing={props.onSubmitEditing} />
+				onSubmitEditing={props.onSubmitEditing}
+				returnKeyType="search" />
 			<Icon name="search" size={20}
 				color="#bbb" style={styles.heartIcon}
 				onPress={props.onSubmitEditing} />
