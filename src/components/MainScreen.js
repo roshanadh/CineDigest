@@ -21,19 +21,7 @@ import SearchScreen from './SearchScreen';
 
 const StackNavigator = createAppContainer(new createStackNavigator(
     {
-        TabNavigator: {
-            screen: TabNavigator,
-            navigationOptions: {
-                title: 'Cine Digest',
-                headerTitleStyle: {
-                    fontSize: 19,
-                    color: '#fff',
-                },
-                headerStyle: {
-                    backgroundColor: '#6bb9f0',
-                },
-            },
-        },
+        TabNavigator,
         MovieDetailsScreen,
         ShowDetailsScreen,
         SeasonDetailsScreen,
@@ -44,6 +32,7 @@ const StackNavigator = createAppContainer(new createStackNavigator(
         cardStyle: {
             paddingTop: Platform.OS === 'ios' ? 0 : StatusBar.currentHeight,
         },
+        headerMode: 'none',
     },
 ));
 
