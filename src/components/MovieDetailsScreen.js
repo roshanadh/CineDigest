@@ -18,6 +18,14 @@ export default class MovieDetails extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: navigation.getParam('screenName', 'Movie Details'),
+            headerTitleStyle: {
+                color: '#fefefe',
+            },
+            headerTintColor: '#fefefe',
+            headerStyle: {
+                backgroundColor: '#6bb9f0',
+                elevation: 0,
+            },
         };
     };
 

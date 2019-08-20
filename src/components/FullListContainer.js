@@ -48,7 +48,7 @@ export default class FullListContainer extends Component {
                 break;
         }
 
-        listInfo = this.dataLength + (this.dataLength > 1 ? ' items in your ' : ' item in your ') + listName;
+        listInfo = this.dataLength + (this.dataLength > 1 ? ' titles in your ' : ' title in your ') + listName;
         return (
             <View style={styles.metaContainer}>
                 <ScrollView style={styles.listContainer}>
@@ -80,7 +80,7 @@ export default class FullListContainer extends Component {
 const styles = StyleSheet.create({
     metaContainer: {},
     listInfo: {
-        margin: 20,
+        margin: 15,
         alignSelf: 'flex-end',
     },
     listInfoText: {

@@ -65,7 +65,7 @@ export default class ListContainer extends Component {
 const styles = StyleSheet.create({
     metaContainer: {},
     searchInfo: {
-        margin: 20,
+        margin: 15,
         alignSelf: 'flex-end',
     },
     searchInfoText: {

@@ -24,14 +24,7 @@ const StackNavigator = createAppContainer(new createStackNavigator(
         TabNavigator: {
             screen: TabNavigator,
             navigationOptions: {
-                title: 'Cine Digest',
-                headerTitleStyle: {
-                    fontSize: 19,
-                    color: '#fff',
-                },
-                headerStyle: {
-                    backgroundColor: '#6bb9f0',
-                },
+                header: null,
             },
         },
         MovieDetailsScreen,
