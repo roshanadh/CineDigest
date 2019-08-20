@@ -269,9 +269,9 @@ export default class MoviesListsScreen extends Component {
 			<ImageBackground blurRadius={1.3}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
-				<StatusBar barStyle="dark-content"
+				<StatusBar barStyle="light-content"
 					translucent={true}
-					backgroundColor="rgba(238, 238, 238, 0)"
+					backgroundColor="#6bb9f0"
 				/>
 				<ScrollView style={styles.scrollView}
 					refreshControl={
