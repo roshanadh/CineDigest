@@ -347,7 +347,7 @@ export default class MoviesScreen extends Component {
 			<ImageBackground blurRadius={1.3}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
-				<ScrollView style={styles.scrollView} 
+				<ScrollView style={styles.scrollView}
 					refreshControl={
 						<RefreshControl
 							refreshing={this.state.refreshing}
@@ -452,5 +452,3 @@ const styles = StyleSheet.create({
 		color: '#22a7f0',
 	},
 });
-
-

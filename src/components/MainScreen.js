@@ -32,13 +32,6 @@ const StackNavigator = createAppContainer(new createStackNavigator(
                 headerStyle: {
                     backgroundColor: '#6bb9f0',
                 },
-                headerRight: (
-                    <View>
-                        <TouchableOpacity onPress={() => alert('This is a button!')} style={{marginRight: 20,}}>
-                            <Text>Click!</Text>
-                        </TouchableOpacity>
-                    </View>
-                ),
             },
         },
         MovieDetailsScreen,
