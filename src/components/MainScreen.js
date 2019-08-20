@@ -26,7 +26,11 @@ const StackNavigator = createAppContainer(new createStackNavigator(
             navigationOptions: {
                 title: 'Cine Digest',
                 headerTitleStyle: {
-                    fontSize: 18,
+                    fontSize: 19,
+                    color: '#fff',
+                },
+                headerStyle: {
+                    backgroundColor: '#6bb9f0',
                 },
                 headerRight: (
                     <View>
