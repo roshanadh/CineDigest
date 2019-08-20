@@ -14,9 +14,10 @@ export default function searchItem(props) {
 				style={styles.searchTextInput}
 				onChangeText={props.onChangeText}
 				onSubmitEditing={props.onSubmitEditing}
+				placeholderTextColor="#fefefe"
 				returnKeyType="search" />
 			<Icon name="search" size={20}
-				color="#bbb" style={styles.heartIcon}
+				color="#fefefe" style={styles.searchIcon}
 				onPress={props.onSubmitEditing} />
 		</View>
     );
@@ -24,15 +25,15 @@ export default function searchItem(props) {
 
 const styles = StyleSheet.create({
     searchWrapper: {
-		margin: 10,
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderBottomWidth: 1,
 		borderColor: '#22a7f0',
+		paddingTop: 20,
 		paddingLeft: 20,
 		paddingRight: 20,
-		backgroundColor: 'rgba(255,255,255,0.3)',
+		backgroundColor: '#6bb9f0',
 	},
 	searchTextInput: {
 		marginRight: 10,
