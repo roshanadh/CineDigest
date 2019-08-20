@@ -15,6 +15,14 @@ export default class SearchScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'Search Results: ' + navigation.getParam('searchQuery', null),
+            headerTitleStyle: {
+                color: '#fefefe',
+            },
+            headerTintColor: '#fefefe',
+            headerStyle: {
+                backgroundColor: '#6bb9f0',
+                elevation: 0,
+            },
         };
     };
 
