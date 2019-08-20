@@ -187,7 +187,8 @@ export default class SignUpScreen extends Component {
 								<TextInput
 									style={styles.input}
 									placeholder="Name"
-									onChangeText={(name) => this.setState({ name })} />
+									onChangeText={(name) => this.setState({ name })}
+									returnKeyType="next" />
 								<TextIcon name="format-text" size={25} color="#ddd" />
 							</View>
 						</View>
@@ -202,7 +203,8 @@ export default class SignUpScreen extends Component {
 									style={styles.input}
 									placeholder="Username"
 									autoCapitalize="none"
-									onChangeText={(username) => this.setState({ username })} />
+									onChangeText={(username) => this.setState({ username })}
+									returnKeyType="next" />
 								<TextIcon name="format-text" size={25} color="#ddd" />
 							</View>
 						</View>
@@ -216,7 +218,8 @@ export default class SignUpScreen extends Component {
 									placeholder="Password"
 									autoCapitalize="none"
 									secureTextEntry={true}
-									onChangeText={(password1) => this.setState({ password1 })} />
+									onChangeText={(password1) => this.setState({ password1 })}
+									returnKeyType="next" />
 
 								<KeyIcon name="key" size={25} color="#ddd" />
 							</View>
@@ -232,7 +235,9 @@ export default class SignUpScreen extends Component {
 									placeholder="Confirm Password"
 									secureTextEntry={true}
 									autoCapitalize="none"
-									onChangeText={(password2) => this.setState({ password2 })} />
+									onChangeText={(password2) => this.setState({ password2 })}
+									returnKeyType="done"
+									onSubmitEditing={this.signUpHandler} />
 
 								<KeyIcon name="key" size={25} color="#ddd" />
 							</View>
