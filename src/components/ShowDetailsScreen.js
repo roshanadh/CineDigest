@@ -19,6 +19,14 @@ export default class ShowDetailsScreen extends Component {
     static navigationOptions = ({navigation}) => {
         return {
             title: navigation.getParam('screenName', 'Show Details'),
+            headerTitleStyle: {
+                color: '#fefefe',
+            },
+            headerTintColor: '#fefefe',
+            headerStyle: {
+                backgroundColor: '#6bb9f0',
+                elevation: 0,
+            },
         };
     }
     constructor(props) {

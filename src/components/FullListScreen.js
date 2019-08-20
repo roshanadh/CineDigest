@@ -32,6 +32,14 @@ export default class FullListScreen extends Component {
         }
         return {
             title: titleType + ' ' + listType,
+            headerTitleStyle: {
+                color: '#fefefe',
+            },
+            headerTintColor: '#fefefe',
+            headerStyle: {
+                backgroundColor: '#6bb9f0',
+                elevation: 0,
+            },
         };
     }
     constructor(props, context) {

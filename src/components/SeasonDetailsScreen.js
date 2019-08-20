@@ -13,9 +13,16 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 export default class SeasonDetailsScreen extends Component {
 	static navigationOptions = ({navigation}) => {
 		this.title = navigation.getParam('seasonName', 'Season Details') + ' : ' + navigation.getParam('showName', '');
-
 		return {
 			title: this.title,
+			headerTitleStyle: {
+				color: '#fefefe',
+			},
+			headerTintColor: '#fefefe',
+			headerStyle: {
+				backgroundColor: '#6bb9f0',
+				elevation: 0,
+			},
 		};
 	};
 
