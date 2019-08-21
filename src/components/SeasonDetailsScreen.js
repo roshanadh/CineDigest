@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import { 
+import {
 	Text,
 	View,
 	ScrollView,
