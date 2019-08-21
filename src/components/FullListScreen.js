@@ -7,7 +7,7 @@ import {
     ScrollView,
     RefreshControl,
 } from 'react-native';
-
+import Snackbar from 'react-native-snackbar';
 
 import FullListContainer from './FullListContainer';
 import db from '../db/db';
@@ -112,7 +112,7 @@ export default class FullListScreen extends Component {
                         let partialOverviews = [];
 
                         if (len > 0) {
-                            // If atleast one movie is listed in watchedList display it
+                            // If atleast one title is listed in watchedList display it
                             for (let i = len - 1; i >= 0; i--) {
                                 titleIds.push(result[i].titleId);
                                 titles.push(result[i].titleName);
@@ -188,6 +188,36 @@ export default class FullListScreen extends Component {
                                 listContainerJsx,
                             });
                             resolve(true);
+                        } else {
+                            // The list is empty
+                            let listName = '';
+                            switch (this.state.listType) {
+                                case 'wishList':
+                                    listName = 'Wish List';
+                                    break;
+                                case 'watchingList':
+                                    listName = 'Watching List';
+                                    break;
+                                case 'watchedList':
+                                    listName = 'Watched List';
+                                    break;
+                                default:
+                                    null;
+                            }
+
+                            Snackbar.show({
+                                title: `${listName} is empty!`,
+                                duration: Snackbar.LENGTH_LONG,
+                                action: {
+                                    title: 'OK',
+                                    color: '#fefefe',
+                                    onPress: () => { },
+                                },
+                                color: '#fefefe',
+                                fontSize: 16,
+                                backgroundColor: '#e74c3c',
+                            });
+                            this.props.navigation.goBack();
                         }
                         resolve(true);
                     });
