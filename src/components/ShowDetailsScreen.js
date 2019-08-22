@@ -304,6 +304,15 @@ export default class ShowDetailsScreen extends Component {
         this.displayAlreadyInList = (listType, title) => {
             Alert.alert('Error', title + ' is already in your ' + listType + '-list!');
         };
+
+        this.getRecommendations = () => {
+            this.props.navigation.navigate('RecommendationsScreen', {
+                username: this.state.username,
+                titleId: this.state.titleId,
+                title: this.state.title,
+                recomType: 'show',
+            });
+        };
     }
 
     componentDidMount() {
@@ -379,12 +388,7 @@ export default class ShowDetailsScreen extends Component {
                         : (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOff} />)
                 }
                 onPress={() =>
-                    this.props.navigation.navigate('RecommendationsScreen', {
-                        username: this.state.username,
-                        titleId: this.state.titleId,
-                        title: this.state.title,
-                        recomType: 'show',
-                    })
+                    this.getRecommendations()
                 } />;
 
         let posterJsx = this.noPoster === false ?
