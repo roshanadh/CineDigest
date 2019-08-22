@@ -223,14 +223,17 @@ export default class MovieDetails extends Component {
         };
 
         this.getRecommendations = () => {
-            console.warn('R4 ' + this.state.title + this.state.titleId);
-            this.props.navigation.navigate('RecommendationsScreen',
-                {
+            if (this.state.titleId === '' || this.state.title === '') {
+                // Movie has not been loaded yet
+                Alert.alert('Oops', 'Please try again!');
+            } else {
+                this.props.navigation.navigate('RecommendationsScreen', {
                     username: this.state.username,
                     titleId: this.state.titleId,
                     title: this.state.title,
                     recomType: 'movie',
                 });
+            }
         };
     }
 

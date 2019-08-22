@@ -306,12 +306,17 @@ export default class ShowDetailsScreen extends Component {
         };
 
         this.getRecommendations = () => {
-            this.props.navigation.navigate('RecommendationsScreen', {
-                username: this.state.username,
-                titleId: this.state.titleId,
-                title: this.state.title,
-                recomType: 'show',
-            });
+            if (this.state.titleId === '' || this.state.title === '') {
+                // Show has not been loaded yet
+                Alert.alert('Oops', 'Please try again!');
+            } else {
+                this.props.navigation.navigate('RecommendationsScreen', {
+                    username: this.state.username,
+                    titleId: this.state.titleId,
+                    title: this.state.title,
+                    recomType: 'show',
+                });
+            }
         };
     }
 
