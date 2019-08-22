@@ -12,6 +12,9 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import FABIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ActionButton from 'react-native-action-button';
+
 import db from '../db/db';
 import netCon from '../util/NetCon';
 
@@ -363,6 +366,19 @@ export default class ShowDetailsScreen extends Component {
     render() {
         this.titleId = this.props.navigation.getParam('titleId', 'null');
         this.fetchShowDetails(this.titleId);
+
+        let fabJsx =
+            <ActionButton
+                buttonColor="#db0a5b"
+                position="right"
+                style={styles.fab}
+                renderIcon={
+                    active => active ?
+                        (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOn} />)
+                        : (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOff} />)
+                }
+                onPress={() => alert('Oh yes!')} />;
+
         let posterJsx = this.noPoster === false ?
             <Image source={{uri: this.state.posterPath}}
                 style={styles.posterPath}
@@ -432,10 +448,12 @@ export default class ShowDetailsScreen extends Component {
                 );
             }
         }
+
         return (
             <ImageBackground blurRadius={1.5}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
+                {fabJsx}
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.container}>
                         {posterJsx}
@@ -602,5 +620,19 @@ const styles = StyleSheet.create({
     seasonTitle: {
         fontSize: 15,
         flex: 9,
+    },
+    fab: {
+        zIndex: 1,
+        marginBottom: 50,
+    },
+    actionButtonIconOn: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    },
+    actionButtonIconOff: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
     },
 });
