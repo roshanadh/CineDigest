@@ -30,23 +30,23 @@ export default class RecommendationsScreen extends Component {
         super(props, context);
         this.state = {
             isEmpty: true,
-            titleId: this.props.navigation.getParam('titleId', null),
-            title: this.props.navigation.getParam('title', null),
             searchResponse: {},
             username: this.props.navigation.getParam('username', null),
         };
         this.titleId = this.props.navigation.getParam('titleId', null);
         this.title = this.props.navigation.getParam('title', null);
-        this.searchType = this.props.navigation.getParam('searchType', null);
+        this.recomType = this.props.navigation.getParam('recomType', null);
     }
 
     onIdSelected = (itemId, itemTitle) => {
         netCon.checkNetCon()
             .then((result) => {
-                this.searchType === 'm' ?
+                console.warn('itemTitle is ' + itemTitle);
+                console.warn('itemId is ' + itemId);
+                this.recomType === 'movie' ?
                     this.props.navigation.navigate('MovieDetailsScreen', {
-                        titleId: itemId,
                         screenName: itemTitle,
+                        titleId: itemId,
                         username: this.state.username,
                     }) :
                     this.props.navigation.navigate('ShowDetailsScreen', {
@@ -81,12 +81,10 @@ export default class RecommendationsScreen extends Component {
                 });
             }) // TODO fix response status parsing
             .catch(error => {
-                Alert.alert('Invalid Request', `Your request couldn't be handled!`, [{
+                Alert.alert('Something went wrong', `Please try again!`, [{
                     text: 'OK',
                     onPress: (
-                        () => this.searchType === 'm' ?
-                            this.props.navigation.navigate('MoviesListsScreen') :
-                            this.props.navigation.navigate('ShowsListsScreen')),
+                        () => this.props.navigation.goBack()),
                 }]);
             });
     }

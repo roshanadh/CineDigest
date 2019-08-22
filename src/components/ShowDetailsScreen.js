@@ -311,6 +311,7 @@ export default class ShowDetailsScreen extends Component {
         this.fetchShowDetails(this.titleId);
         this.getUsername();
     }
+
     fetchShowDetails = (titleId) => {
         if (this.titleId !== 'null') {
             fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}`)
