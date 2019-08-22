@@ -274,8 +274,16 @@ export default class MovieDetails extends Component {
                     active => active ?
                         (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOn} />)
                         : (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOff} />)
-                } 
-                onPress={() => alert('Oh yes!')} />;
+                }
+                onPress={() =>
+                    this.props.navigation.navigate('RecommendationsScreen',
+                        {
+                            username: this.state.username,
+                            titleId: this.state.titleId,
+                            title: this.state.title,
+                            recomType: 'movie',
+                        })
+                } />;
 
         let posterJsx = this.noPoster === false ?
             <Image source={{uri: this.state.posterPath}}
@@ -337,7 +345,6 @@ export default class MovieDetails extends Component {
                         {overviewJsx}
                         {backdropPathJsx}
                         {castJsx}
-                        
                     </View>
                 </ScrollView>
             </ImageBackground>
