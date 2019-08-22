@@ -221,12 +221,17 @@ export default class MovieDetails extends Component {
         this.displayAlreadyInList = (listType, title) => {
             Alert.alert('Error', title + ' is already in your ' + listType + '-list!');
         };
-    }
 
-    componentDidMount() {
-        this.titleId = this.props.navigation.getParam('titleId', 'null');
-        this.fetchMovieDetails(this.titleId);
-        this.getUsername();
+        this.getRecommendations = () => {
+            console.warn('R4 ' + this.state.title + this.state.titleId);
+            this.props.navigation.navigate('RecommendationsScreen',
+                {
+                    username: this.state.username,
+                    titleId: this.state.titleId,
+                    title: this.state.title,
+                    recomType: 'movie',
+                });
+        };
     }
 
     fetchMovieDetails = (titleId) => {
@@ -264,7 +269,16 @@ export default class MovieDetails extends Component {
         }
     }
 
+    componentDidMount() {
+        this.titleId = this.props.navigation.getParam('titleId', 'null');
+        this.fetchMovieDetails(this.titleId);
+        this.getUsername();
+    }
+
     render() {
+        this.titleId = this.props.navigation.getParam('titleId', 'null');
+        this.fetchMovieDetails(this.titleId);
+
         let fabJsx =
             <ActionButton
                 buttonColor="#db0a5b"
@@ -275,15 +289,7 @@ export default class MovieDetails extends Component {
                         (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOn} />)
                         : (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOff} />)
                 }
-                onPress={() =>
-                    this.props.navigation.navigate('RecommendationsScreen',
-                        {
-                            username: this.state.username,
-                            titleId: this.state.titleId,
-                            title: this.state.title,
-                            recomType: 'movie',
-                        })
-                } />;
+                onPress={() => this.getRecommendations()} />;
 
         let posterJsx = this.noPoster === false ?
             <Image source={{uri: this.state.posterPath}}
