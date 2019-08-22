@@ -59,6 +59,7 @@ export default class MovieDetails extends Component {
             releaseDate: '',
             wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
             watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+            contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
         };
         this.noBackdrop = false;
         this.noPoster = false;
@@ -82,6 +83,7 @@ export default class MovieDetails extends Component {
                                     <Text style={styles.btnText}>Add to Watched-list</Text>
                                 </TouchableOpacity>,
                         });
+                        resolve(true);
                     }, error => {
                         // Movie is not in Wish-list
                         // Check if it is in Watched-list
@@ -100,6 +102,7 @@ export default class MovieDetails extends Component {
                                             <Text style={styles.btnText}>Remove from Watched-list</Text>
                                         </TouchableOpacity >,
                                 });
+                                resolve(true);
                             }, error => {
                                 // Movie is not in Watched-list
                                 this.setState({
@@ -114,6 +117,7 @@ export default class MovieDetails extends Component {
                                             <Text style={styles.btnText}>Add to Watched-list</Text>
                                         </TouchableOpacity>,
                                 });
+                                resolve(true);
                             });
                     });
             });
@@ -123,7 +127,8 @@ export default class MovieDetails extends Component {
             return new Promise((resolve, reject) => {
                 let username = this.props.navigation.getParam('username', null);
                 this.setState({ username });
-                this.initButtons(username, this.titleId);
+                this.initButtons(username, this.titleId)
+                    .then(() => resolve(true));
             });
         };
 
@@ -235,127 +240,149 @@ export default class MovieDetails extends Component {
                 });
             }
         };
-    }
 
-    fetchMovieDetails = (titleId) => {
-        if (this.titleId !== 'null') {
-            fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
-                .then(response => response.json())
-                .then(jsonResponse => { // TODO read full response, not just titles
-                    // Parse Genres from array of JSON
-                    let genres = [];
-                    for (let i = 0; i < jsonResponse.genres.length; i++)
-                        {genres[i] = jsonResponse.genres[i].name;}
-                    this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
-                    this.noPoster = jsonResponse.poster_path !== null ? false : true;
-                    this.setState({
-                        titleId: jsonResponse.id,
-                        title: jsonResponse.title,
-                        tagline: jsonResponse.tagline,
-                        voteAverage: jsonResponse.vote_average,
-                        voteCount: jsonResponse.vote_count,
-                        runtime: jsonResponse.runtime,
-                        status: jsonResponse.status,
-                        genres: genres,
-                        credits: jsonResponse.credits,
-                        creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
-                        backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
-                        originalLanguage: jsonResponse.original_language,
-                        overview: jsonResponse.overview,
-                        posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
-                        releaseDate: jsonResponse.release_date,
-                    });
-                }) // TODO fix response status parsing
-                .catch(error => {
-                    // alert('Oops!\nPlease make sure your search query is correct!');
-                });
-        }
+        this.initScreen = () => {
+            let fabJsx =
+                <ActionButton
+                    buttonColor="#db0a5b"
+                    position="right"
+                    style={styles.fab}
+                    renderIcon={
+                        active => active ?
+                            (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOn} />)
+                            : (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOff} />)
+                    }
+                    onPress={() => this.getRecommendations()} />;
+
+            let posterJsx = this.noPoster === false ?
+                <Image source={{ uri: this.state.posterPath }}
+                    style={styles.posterPath}
+                    resizeMode="contain" /> : null;
+            let taglineJsx = this.state.tagline !== null ?
+                <Text style={styles.tagline}>{this.state.tagline}</Text>
+                : null;
+            let genresJsx = this.state.genres.length !== 0 ?
+                <Text style={styles.genres}>
+                    Genres:
+                {' ' + this.state.genres.join(' | ')}
+                </Text> : null;
+            let releaseDateJsx = this.state.releaseDate !== null ?
+                (new Date(this.state.releaseDate) > new Date() ?
+                    <Text style={styles.releaseDate}>
+                        Releases
+                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                        {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+                    </Text> :
+                    <Text style={styles.releaseDate}>
+                        Released
+                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                        {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+                    </Text>) : null;
+            let overviewJsx = this.state.overview !== null ?
+                <Text style={styles.text}>{this.state.overview}</Text>
+                : null;
+            let backdropPathJsx = this.noBackdrop === false ?
+                <Image source={{ uri: this.state.backdropPath }}
+                    style={styles.backdropPath}
+                    resizeMode="contain" /> : null;
+            let castJsx = this.state.credits.length !== 0 ?
+                <View>
+                    <Text style={styles.castHeader}>Cast</Text>
+                    <Text style={styles.cast}>
+                        {this.state.credits.join(' | ')}
+                    </Text>
+                </View> : null;
+
+            let contentJsx =
+                <View>
+                    {fabJsx}
+                    <ScrollView style={styles.scrollView}>
+                        <View style={styles.container}>
+                            {posterJsx}
+                            <Text style={styles.title}>{this.state.title}</Text>
+                            <View style={styles.voteWrapper}>
+                                <Text style={styles.text}>{this.state.voteAverage}</Text>
+                                <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
+                                <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
+                            </View>
+                            {taglineJsx}
+                            {genresJsx}
+                            {this.state.wishListBtnJsx}
+                            {this.state.watchedListBtnJsx}
+                            {releaseDateJsx}
+                            {overviewJsx}
+                            {backdropPathJsx}
+                            {castJsx}
+                        </View>
+                    </ScrollView >
+                </View>;
+            this.setState({ contentJsx });
+        };
+
+        this.fetchMovieDetails = (titleId) => {
+            return new Promise((resolve, reject) => {
+                if (this.titleId !== 'null') {
+                    fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
+                        .then(response => response.json())
+                        .then(jsonResponse => { // TODO read full response, not just titles
+                            // Parse Genres from array of JSON
+                            let genres = [];
+                            for (let i = 0; i < jsonResponse.genres.length; i++) { genres[i] = jsonResponse.genres[i].name; }
+                            this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
+                            this.noPoster = jsonResponse.poster_path !== null ? false : true;
+                            this.setState({
+                                titleId: jsonResponse.id,
+                                title: jsonResponse.title,
+                                tagline: jsonResponse.tagline,
+                                voteAverage: jsonResponse.vote_average,
+                                voteCount: jsonResponse.vote_count,
+                                runtime: jsonResponse.runtime,
+                                status: jsonResponse.status,
+                                genres: genres,
+                                credits: jsonResponse.credits,
+                                creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
+                                backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
+                                originalLanguage: jsonResponse.original_language,
+                                overview: jsonResponse.overview,
+                                posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
+                                releaseDate: jsonResponse.release_date,
+                            });
+                            this.initScreen();
+                            resolve(true);
+                        }) // TODO fix response status parsing
+                        .catch(error => {
+                            // alert('Oops!\nPlease make sure your search query is correct!');
+                            reject(false);
+                        });
+                }
+            });
+        };
     }
 
     componentDidMount() {
-        this.titleId = this.props.navigation.getParam('titleId', 'null');
-        this.fetchMovieDetails(this.titleId);
-        this.getUsername();
+        let titleId = this.props.navigation.getParam('titleId', null);
+        console.warn('REQUEST for new title: ' + titleId);
+        this.getUsername()
+            .then(() => {
+                this.fetchMovieDetails(titleId)
+                    .catch(error => console.warn(error));
+            });
     }
 
+    // componentWillReceiveProps() {
+    //     let titleId = this.props.navigation.getParam('titleId', null);
+    //     console.warn('REQUEST for new title: ' + titleId);
+    //     this.getUsername();
+    //     this.fetchMovieDetails(titleId)
+    //         .then(() => this.initScreen());
+    // }
+
     render() {
-        this.titleId = this.props.navigation.getParam('titleId', 'null');
-        this.fetchMovieDetails(this.titleId);
-
-        let fabJsx =
-            <ActionButton
-                buttonColor="#db0a5b"
-                position="right"
-                style={styles.fab}
-                renderIcon={
-                    active => active ?
-                        (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOn} />)
-                        : (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOff} />)
-                }
-                onPress={() => this.getRecommendations()} />;
-
-        let posterJsx = this.noPoster === false ?
-            <Image source={{uri: this.state.posterPath}}
-                style={styles.posterPath}
-                resizeMode="contain"/> : null;
-        let taglineJsx = this.state.tagline !== null ?
-            <Text style={styles.tagline}>{this.state.tagline}</Text>
-            : null;
-        let genresJsx = this.state.genres.length !== 0 ?
-            <Text style={styles.genres}>
-                Genres:
-                {' ' + this.state.genres.join(' | ')}
-            </Text> : null;
-        let releaseDateJsx = this.state.releaseDate !== null ?
-            ( new Date(this.state.releaseDate) > new Date() ?
-            <Text style={styles.releaseDate}>
-                Releases
-                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-            </Text> :
-            <Text style={styles.releaseDate}>
-                Released
-                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-            </Text> ) : null;
-        let overviewJsx = this.state.overview !== null ?
-            <Text style={styles.text}>{this.state.overview}</Text>
-            : null;
-        let backdropPathJsx = this.noBackdrop === false ?
-            <Image source={{uri: this.state.backdropPath}}
-                style={styles.backdropPath}
-                resizeMode="contain"/> : null;
-        let castJsx = this.state.credits.length !== 0 ?
-            <View>
-                <Text style={styles.castHeader}>Cast</Text>
-                <Text style={styles.cast}>
-                    {this.state.credits.join(' | ')}
-                </Text>
-            </View> : null;
         return (
             <ImageBackground blurRadius={1.5}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
-                {fabJsx}
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.container}>
-                        {posterJsx}
-                        <Text style={styles.title}>{this.state.title}</Text>
-                        <View style={styles.voteWrapper}>
-                            <Text style={styles.text}>{this.state.voteAverage}</Text>
-                            <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
-                            <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
-                        </View>
-                        {taglineJsx}
-                        {genresJsx}
-                        {this.state.wishListBtnJsx}
-                        {this.state.watchedListBtnJsx}
-                        {releaseDateJsx}
-                        {overviewJsx}
-                        {backdropPathJsx}
-                        {castJsx}
-                    </View>
-                </ScrollView>
+                {this.state.contentJsx}
             </ImageBackground>
         );
     }
