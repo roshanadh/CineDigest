@@ -204,7 +204,7 @@ const styles = StyleSheet.create(
 		marginLeft: 0,
 		marginBottom: 20,
 		padding: 25,
-        backgroundColor: '#fff',
+		backgroundColor: '#fff',
 		width: 300,
         flexDirection: 'column',
         justifyContent: 'flex-start',
