@@ -60,7 +60,7 @@ export default class SearchScreen extends Component {
     };
 
     componentDidMount() {
-        let searchQuery = this.releaseYear.trim().length === 0 ?
+        let searchQuery = (this.releaseYear === null || this.releaseYear.trim().length === 0) ?
             this.searchQuery : this.searchQuery + '/' + this.releaseYear;
         console.warn('Search query: ' + searchQuery);
         fetch(`https://api-cine-digest.herokuapp.com/api/v1/search${this.searchType}/${searchQuery}`)
