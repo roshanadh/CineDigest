@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     Text,
     Image,
@@ -97,8 +97,8 @@ export default class MovieDetails extends Component {
                                             <Text style={styles.btnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchedListBtnJsx:
-                                        <TouchableOpacity style = { styles.removeFromWatchedListBtn }
-                                            onPress = { () => this.removeFromList('watchedList') } >
+                                        <TouchableOpacity style={styles.removeFromWatchedListBtn}
+                                            onPress={() => this.removeFromList('watchedList')} >
                                             <Text style={styles.btnText}>Remove from Watched-list</Text>
                                         </TouchableOpacity >,
                                 });
@@ -118,8 +118,10 @@ export default class MovieDetails extends Component {
                                         </TouchableOpacity>,
                                 });
                                 resolve(true);
-                            });
-                    });
+                            })
+                            .catch(error => console.warn(error.message));
+                    })
+                    .catch(error => console.warn(error.message));
             });
         };
 
@@ -128,7 +130,8 @@ export default class MovieDetails extends Component {
                 let username = this.props.navigation.getParam('username', null);
                 this.setState({ username });
                 this.initButtons(username, this.titleId)
-                    .then(() => resolve(true));
+                    .then(() => resolve(true))
+                    .catch(error => console.warn(error.message));
             });
         };
 
@@ -157,7 +160,8 @@ export default class MovieDetails extends Component {
                         );
                     }, error => {
                         Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                    })
+                    .catch(error => console.warn(error.message));
             }
         };
 
@@ -186,7 +190,8 @@ export default class MovieDetails extends Component {
                         );
                     }, error => {
                         Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                    })
+                    .catch(error => console.warn(error.message));
             }
         };
 
@@ -219,7 +224,8 @@ export default class MovieDetails extends Component {
                         );
                     }, error => {
                         Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                    })
+                    .catch(error => console.warn(error.message));
             }
         };
 
@@ -347,8 +353,9 @@ export default class MovieDetails extends Component {
                                 posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
                                 releaseDate: jsonResponse.release_date,
                             });
-                            this.initScreen();
-                            resolve(true);
+                            this.initScreen()
+                                .then(() => resolve(true))
+                                .catch(error => reject(error));
                         }) // TODO fix response status parsing
                         .catch(error => {
                             // alert('Oops!\nPlease make sure your search query is correct!');
@@ -361,21 +368,39 @@ export default class MovieDetails extends Component {
 
     componentDidMount() {
         let titleId = this.props.navigation.getParam('titleId', null);
-        console.warn('REQUEST for new title: ' + titleId);
+        console.warn('Mount titleID: ' + titleId);
         this.getUsername()
             .then(() => {
                 this.fetchMovieDetails(titleId)
                     .catch(error => console.warn(error));
-            });
+            })
+            .catch(error => console.warn(error.message));
     }
 
-    // componentWillReceiveProps() {
-    //     let titleId = this.props.navigation.getParam('titleId', null);
-    //     console.warn('REQUEST for new title: ' + titleId);
-    //     this.getUsername();
-    //     this.fetchMovieDetails(titleId)
-    //         .then(() => this.initScreen());
-    // }
+    willFocusSubscription = this.props.navigation.addListener(
+        'willFocus',
+        payload => {
+            console.debug('willFocus', payload);
+            this.setState({
+                contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+            });
+        }
+    );
+
+    didFocusSubscription = this.props.navigation.addListener(
+        'didFocus',
+        payload => {
+            console.debug('didFocus', payload);
+            let titleId = this.props.navigation.getParam('titleId', null);
+            console.warn('Mount titleID: ' + titleId);
+            this.getUsername()
+                .then(() => {
+                    this.fetchMovieDetails(titleId)
+                        .catch(error => console.warn(error));
+                })
+                .catch(error => console.warn(error.message));
+        }
+    );
 
     render() {
         return (
@@ -415,7 +440,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     tagline: {
-        fontStyle :'italic',
+        fontStyle: 'italic',
         marginBottom: 15,
         fontSize: 15,
     },
@@ -428,8 +453,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-		borderRadius: 50,
-		padding: 15,
+        borderRadius: 50,
+        padding: 15,
         width: '70%',
         marginBottom: 10,
         backgroundColor: '#019875',
@@ -461,8 +486,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-		borderRadius: 50,
-		padding: 15,
+        borderRadius: 50,
+        padding: 15,
         width: '70%',
         backgroundColor: '#22a7f0',
         marginBottom: 30,
