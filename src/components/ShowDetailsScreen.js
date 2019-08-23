@@ -12,6 +12,9 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import FABIcon from 'react-native-vector-icons/MaterialCommunityIcons';
+import ActionButton from 'react-native-action-button';
+
 import db from '../db/db';
 import netCon from '../util/NetCon';
 
@@ -56,14 +59,21 @@ export default class ShowDetailsScreen extends Component {
             wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
             watchingListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
             watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+            contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
         };
         this.noBackdrop = false;
         this.noPoster = false;
 
         this.initButtons = (username, titleId) => {
             return new Promise((resolve, reject) => {
+                this.setState({
+                    wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+                    watchingListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+                    watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+                    contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                });
                 // Check if show is in Wish-list
-                db.isInList('wishList', this.titleId, username, 'show')
+                db.isInList('wishList', this.state.titleId, username, 'show')
                     .then(result => {
                         // Show is already in Wish-list
                         this.setState({
@@ -84,11 +94,15 @@ export default class ShowDetailsScreen extends Component {
                                     onPress={() => this.addToWatchedList()}>
                                     <Text style={styles.btnText}>Add to Watched-list</Text>
                                 </TouchableOpacity>,
+                        }, () =>
+                        {
+                            this.initScreen();
+                            resolve(true);
                         });
                     }, error => {
                         // Show is not in Wish-list
                         // Check if it is in Watching-list
-                        db.isInList('watchingList', this.titleId, username, 'show')
+                        db.isInList('watchingList', this.state.titleId, username, 'show')
                             .then(result => {
                                 // Show is in Watching-list
                                 // Add to Wish-list btn is disabled,
@@ -110,11 +124,15 @@ export default class ShowDetailsScreen extends Component {
                                             onPress={() => this.addToWatchedList()} >
                                             <Text style={styles.btnText}>Add to Watched-list</Text>
                                         </TouchableOpacity >,
+                                }, () =>
+                                {
+                                    this.initScreen();
+                                    resolve(true);
                                 });
                             }, error => {
                                 // Show is not in Watching-list
                                 // Check if it is in Watched-list
-                                    db.isInList('watchedList', this.titleId, username, 'show')
+                                    db.isInList('watchedList', this.state.titleId, username, 'show')
                                         .then(result => {
                                             // Show is in Watched-list
                                             // Add to Wish-list and
@@ -136,6 +154,10 @@ export default class ShowDetailsScreen extends Component {
                                                         onPress={() => this.removeFromList('watchedList')}>
                                                         <Text style={styles.btnText}>Remove from Watched-list</Text>
                                                     </TouchableOpacity>,
+                                            }, () =>
+                                            {
+                                                this.initScreen();
+                                                resolve(true);
                                             });
                                         }, error => {
                                             // Show is not in Watched-list either
@@ -156,6 +178,10 @@ export default class ShowDetailsScreen extends Component {
                                                             onPress={() => this.addToWatchedList()} >
                                                             <Text style={styles.btnText}>Add to Watched-list</Text>
                                                         </TouchableOpacity >,
+                                                }, () =>
+                                                {
+                                                    this.initScreen();
+                                                    resolve(true);
                                                 });
                                         });
                                     });
@@ -166,8 +192,11 @@ export default class ShowDetailsScreen extends Component {
         this.getUsername = () => {
             return new Promise((resolve, reject) => {
                 let username = this.props.navigation.getParam('username', null);
-                this.setState({ username });
-                this.initButtons(username, this.titleId);
+                this.setState({ username }, () => {
+                    this.initButtons(username, this.state.titleId)
+                        .then(() => resolve(true))
+                        .catch(error => console.warn(error.message));
+                });
             });
         };
 
@@ -191,7 +220,7 @@ export default class ShowDetailsScreen extends Component {
                         Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -220,7 +249,7 @@ export default class ShowDetailsScreen extends Component {
                         Alert.alert('Success', this.state.title + ' has been added to your watching-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -249,7 +278,7 @@ export default class ShowDetailsScreen extends Component {
                         Alert.alert('Success', this.state.title + ' has been added to your watched-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.statetitleId),
                             }]
                         );
                     }, error => {
@@ -289,7 +318,7 @@ export default class ShowDetailsScreen extends Component {
                         Alert.alert('Success', message,
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -301,49 +330,212 @@ export default class ShowDetailsScreen extends Component {
         this.displayAlreadyInList = (listType, title) => {
             Alert.alert('Error', title + ' is already in your ' + listType + '-list!');
         };
+
+        this.getRecommendations = () => {
+            if (this.state.titleId === '' || this.state.title === '') {
+                // Show has not been loaded yet
+                Alert.alert('Oops', 'Please try again!');
+            } else {
+                this.props.navigation.navigate('RecommendationsScreen', {
+                    username: this.state.username,
+                    titleId: this.state.titleId,
+                    title: this.state.title,
+                    recomType: 'show',
+                });
+            }
+        };
+
+        this.initScreen = () => {
+            let fabJsx =
+                <ActionButton
+                    buttonColor="#db0a5b"
+                    position="right"
+                    style={styles.fab}
+                    shadowStyle={styles.fabShadow}
+                    onPress={() => this.getRecommendations()} />;
+
+            let posterJsx = this.noPoster === false ?
+                <Image source={{ uri: this.state.posterPath }}
+                    style={styles.posterPath}
+                    resizeMode="contain" /> : null;
+
+            let createdByJsx = this.state.createdBy.length !== 0 ?
+                <Text style={styles.createdBy}>
+                    Created by
+                {' ' + this.state.createdBy.join(' | ')}
+                </Text> : null;
+
+            let genresJsx = this.state.genres.length !== 0 ?
+                <Text style={styles.genres}>
+                    Genres:
+                {' ' + this.state.genres.join(' | ')}
+                </Text> : null;
+
+            let networksJsx = this.state.networks.length !== 0 ?
+                <Text style={styles.networks}>
+                    Networks:
+                {' ' + this.state.networks.join(' | ')}
+                </Text> : null;
+
+            let firstAirDateJsx = this.state.firstAirDate !== null ?
+                <Text style={styles.airDate}>
+                    First aired on
+                {' ' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
+                    {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
+                </Text> : null;
+
+            let lastAirDateJsx = this.state.lastAirDate !== null ?
+                <Text style={styles.airDate}>
+                    Last aired on
+                {' ' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
+                    {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
+                </Text> : null;
+
+            let overviewJsx = this.state.overview !== null ?
+                <Text style={styles.overview}>{this.state.overview}</Text>
+                : null;
+
+            let backdropPathJsx = this.noBackdrop === null ?
+                <Image source={{ uri: this.state.backdropPath }}
+                    style={styles.backdropPath}
+                    resizeMode="contain" /> : null;
+
+            let seasonsJsx = [];
+
+            if (this.state.seasons[0] === 'Specials') {
+                for (let i = 0; i < this.state.seasons.length; i++) {
+                    seasonsJsx.push(
+                        <TouchableOpacity style={styles.seasonWrapper}
+                            onPress={() => this.onSeasonSelected(i, this.state.seasons[i])}>
+                            <Text style={styles.seasonTitle}>{this.state.seasons[i]}</Text>
+                            <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon} />
+                        </TouchableOpacity>
+                    );
+                }
+            } else {
+                for (let i = 1; i <= this.state.seasons.length; i++) {
+                    seasonsJsx.push(
+                        <TouchableOpacity style={styles.seasonWrapper}
+                            onPress={() => this.onSeasonSelected(i, this.state.seasons[i - 1])}>
+                            <Text style={styles.seasonTitle}>{this.state.seasons[i - 1]}</Text>
+                            <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon} />
+                        </TouchableOpacity>
+                    );
+                }
+            }
+
+            let contentJsx =
+                <View>
+                    {fabJsx}
+                    <ScrollView style={styles.scrollView}>
+                        <View style={styles.container}>
+                            {posterJsx}
+                            <Text style={styles.title}>{this.state.title}</Text>
+                            <View style={styles.voteWrapper}>
+                                <Text style={styles.text}>{this.state.voteAverage}</Text>
+                                <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
+                                <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
+                            </View>
+                            {createdByJsx}
+                            {genresJsx}
+                            {networksJsx}
+                            {this.state.wishListBtnJsx}
+                            {this.state.watchingListBtnJsx}
+                            {this.state.watchedListBtnJsx}
+                            <View style={styles.airDateWrapper}>
+                                {firstAirDateJsx}
+                                {lastAirDateJsx}
+                            </View>
+                            {overviewJsx}
+                            {backdropPathJsx}
+                            {seasonsJsx}
+                        </View>
+                    </ScrollView>
+                </View>;
+            this.setState({ contentJsx });
+        };
+
+        this.fetchShowDetails = (titleId) => {
+            return new Promise((resolve, reject) => {
+                if (titleId !== 'null') {
+                    fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}`)
+                        .then(response => response.json())
+                        .then(jsonResponse => { // TODO read full response, not just titles
+                            // Parse Genres from array of JSON
+                            let genres = [];
+                            for (let i = 0; i < jsonResponse.genres.length; i++) { genres[i] = jsonResponse.genres[i].name; }
+                            this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
+                            this.noPoster = jsonResponse.poster_path !== null ? false : true;
+                            this.setState({
+                                titleId: jsonResponse.id,
+                                title: jsonResponse.name,
+                                backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
+                                createdBy: jsonResponse.createdBy,
+                                voteAverage: jsonResponse.vote_average,
+                                voteCount: jsonResponse.vote_count,
+                                seasons: jsonResponse.seasons,
+                                episodeRuntime: jsonResponse.episodeRunTime,
+                                status: jsonResponse.status,
+                                firstAirDate: jsonResponse.first_air_date,
+                                lastAirDate: jsonResponse.last_air_date,
+                                nextEpisodeToAir: jsonResponse.next_episode_to_air,
+                                genres: genres,
+                                networks: jsonResponse.networks,
+                                numberOfEpisodes: jsonResponse.number_of_episodes,
+                                overview: jsonResponse.overview,
+                                posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
+                            });
+                            this.initScreen()
+                                .then(() => resolve(true))
+                                .catch(error => reject(error));
+                        }) // TODO fix response status parsing
+                        .catch(error => {
+                            // alert('Oops!\nPlease make sure your search query is correct!');
+                            reject(false);
+                        });
+                }
+            });
+        };
     }
 
     componentDidMount() {
-        this.titleId = this.props.navigation.getParam('titleId', 'null');
-        this.fetchShowDetails(this.titleId);
-        this.getUsername();
+        let titleId = this.props.navigation.getParam('titleId', null);
+        console.warn('Mount titleID: ' + titleId);
+        this.getUsername()
+            .then(() => {
+                this.fetchShowDetails(titleId)
+                    .catch(error => console.warn(error));
+            })
+            .catch(error => console.warn(error.message));
     }
-    fetchShowDetails = (titleId) => {
-        if (this.titleId !== 'null') {
-            fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}`)
-                .then(response => response.json())
-                .then(jsonResponse => { // TODO read full response, not just titles
-                    // Parse Genres from array of JSON
-                    let genres = [];
-                    for (let i = 0; i < jsonResponse.genres.length; i++)
-                        {genres[i] = jsonResponse.genres[i].name;}
-                    this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
-                    this.noPoster = jsonResponse.poster_path !== null ? false : true;
-                    this.setState({
-                        titleId: jsonResponse.id,
-                        title: jsonResponse.name,
-                        backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
-                        createdBy: jsonResponse.createdBy,
-                        voteAverage: jsonResponse.vote_average,
-                        voteCount: jsonResponse.vote_count,
-                        seasons: jsonResponse.seasons,
-                        episodeRuntime: jsonResponse.episodeRunTime,
-                        status: jsonResponse.status,
-                        firstAirDate: jsonResponse.first_air_date,
-                        lastAirDate: jsonResponse.last_air_date,
-                        nextEpisodeToAir: jsonResponse.next_episode_to_air,
-                        genres: genres,
-                        networks: jsonResponse.networks,
-                        numberOfEpisodes: jsonResponse.number_of_episodes,
-                        overview: jsonResponse.overview,
-                        posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
-                    });
-                }) // TODO fix response status parsing
-                .catch(error => {
-                    // alert('Oops!\nPlease make sure your search query is correct!');
-                });
+
+    willFocusSubscription = this.props.navigation.addListener(
+        'willFocus',
+        payload => {
+            console.debug('willFocus', payload);
+            this.setState({
+                contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+            });
         }
-    }
+    );
+
+    didFocusSubscription = this.props.navigation.addListener(
+        'didFocus',
+        payload => {
+            console.debug('didFocus', payload);
+            let titleId = this.props.navigation.getParam('titleId', null);
+            console.warn('DID FOCUS titleID: ' + titleId);
+            this.setState({ titleId }, () => {
+                console.warn('Added to state: ' + this.state.titleId);
+                this.getUsername()
+                    .then(() => {
+                        this.fetchShowDetails(titleId)
+                            .catch(error => console.warn(error));
+                    })
+                    .catch(error => console.warn(error.message));
+            });
+        }
+    );
 
     onSeasonSelected = (seasonNo, seasonName) => {
         netCon.checkNetCon()
@@ -361,105 +553,11 @@ export default class ShowDetailsScreen extends Component {
     }
 
     render() {
-        this.titleId = this.props.navigation.getParam('titleId', 'null');
-        this.fetchShowDetails(this.titleId);
-        let posterJsx = this.noPoster === false ?
-            <Image source={{uri: this.state.posterPath}}
-                style={styles.posterPath}
-                resizeMode="contain"/> : null;
-
-        let createdByJsx = this.state.createdBy.length !== 0 ?
-            <Text style={styles.createdBy}>
-                Created by
-                {' ' + this.state.createdBy.join(' | ')}
-            </Text> : null;
-
-        let genresJsx = this.state.genres.length !== 0 ?
-            <Text style={styles.genres}>
-                Genres:
-                {' ' + this.state.genres.join(' | ')}
-            </Text> : null;
-
-        let networksJsx = this.state.networks.length !== 0 ?
-            <Text style={styles.networks}>
-                Networks:
-                {' ' + this.state.networks.join(' | ')}
-            </Text> : null;
-
-        let firstAirDateJsx = this.state.firstAirDate !== null ?
-            <Text style={styles.airDate}>
-                First aired on
-                {' ' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
-                {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
-            </Text> : null;
-
-        let lastAirDateJsx = this.state.lastAirDate !== null ?
-            <Text style={styles.airDate}>
-                Last aired on
-                {' ' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
-                {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
-            </Text> : null;
-
-        let overviewJsx = this.state.overview !== null ?
-            <Text style={styles.overview}>{this.state.overview}</Text>
-            : null;
-
-        let backdropPathJsx = this.noBackdrop === null ?
-            <Image source={{uri: this.state.backdropPath}}
-                style={styles.backdropPath}
-                resizeMode="contain"/> : null;
-
-        let seasonsJsx = [];
-
-        if (this.state.seasons[0] === 'Specials') {
-            for (let i = 0; i < this.state.seasons.length; i++) {
-                seasonsJsx.push(
-                    <TouchableOpacity style={styles.seasonWrapper}
-                        onPress={() => this.onSeasonSelected(i, this.state.seasons[i])}>
-                        <Text style={styles.seasonTitle}>{this.state.seasons[i]}</Text>
-                        <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
-                    </TouchableOpacity>
-                );
-            }
-        } else {
-            for (let i = 1; i <= this.state.seasons.length; i++) {
-                seasonsJsx.push(
-                    <TouchableOpacity style={styles.seasonWrapper}
-                        onPress={() => this.onSeasonSelected(i, this.state.seasons[i - 1])}>
-                        <Text style={styles.seasonTitle}>{this.state.seasons[i - 1]}</Text>
-                        <Icon name="angle-right" size={20} color="#19b5fe" style={styles.rightIcon}/>
-                    </TouchableOpacity>
-                );
-            }
-        }
         return (
             <ImageBackground blurRadius={1.5}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.container}>
-                        {posterJsx}
-                        <Text style={styles.title}>{this.state.title}</Text>
-                        <View style={styles.voteWrapper}>
-                            <Text style={styles.text}>{this.state.voteAverage}</Text>
-                            <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
-                            <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
-                        </View>
-                        {createdByJsx}
-                        {genresJsx}
-                        {networksJsx}
-                        {this.state.wishListBtnJsx}
-                        {this.state.watchingListBtnJsx}
-                        {this.state.watchedListBtnJsx}
-                        <View style={styles.airDateWrapper}>
-                            {firstAirDateJsx}
-                            {lastAirDateJsx}
-                        </View>
-                        {overviewJsx}
-                        {backdropPathJsx}
-                        {seasonsJsx}
-                    </View>
-                </ScrollView>
+                {this.state.contentJsx}
             </ImageBackground>
         );
     }
@@ -602,5 +700,29 @@ const styles = StyleSheet.create({
     seasonTitle: {
         fontSize: 15,
         flex: 9,
+    },
+    fab: {
+        zIndex: 1,
+        marginBottom: 50,
+    },
+    fabShadow: {
+        borderRadius: 50,
+        borderWidth: 1,
+        borderColor: 'rgba(217, 30, 24, 0.1)',
+    },
+    indicator: {
+        flex: 1,
+        alignSelf: 'center',
+        margin: 20,
+    },
+    actionButtonIconOn: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
+    },
+    actionButtonIconOff: {
+        fontSize: 20,
+        height: 22,
+        color: 'white',
     },
 });

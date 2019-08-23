@@ -75,7 +75,7 @@ const styles = StyleSheet.create({
     listItem: {
         margin: 5,
         padding: 25,
-        backgroundColor: 'rgba(179, 229, 252, 0.1)',
+        backgroundColor: '#fff',
         borderRadius: 5,
         width: '98%',
         flexDirection: 'column',

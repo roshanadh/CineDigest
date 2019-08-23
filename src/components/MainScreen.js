@@ -18,6 +18,7 @@ import SeasonDetailsScreen from './SeasonDetailsScreen';
 import FullListScreen from './FullListScreen';
 import TabNavigator from './TabNavigator';
 import SearchScreen from './SearchScreen';
+import RecommendationsScreen from './RecommendationsScreen';
 
 const StackNavigator = createAppContainer(new createStackNavigator(
     {
@@ -32,6 +33,7 @@ const StackNavigator = createAppContainer(new createStackNavigator(
         SeasonDetailsScreen,
         SearchScreen,
         FullListScreen,
+        RecommendationsScreen,
     },
     {
         cardStyle: {

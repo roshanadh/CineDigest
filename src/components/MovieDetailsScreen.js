@@ -1,4 +1,4 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import {
     Text,
     Image,
@@ -12,6 +12,8 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import ActionButton from 'react-native-action-button';
+
 import db from '../db/db';
 
 export default class MovieDetails extends Component {
@@ -56,16 +58,24 @@ export default class MovieDetails extends Component {
             releaseDate: '',
             wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
             watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+            contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
         };
         this.noBackdrop = false;
         this.noPoster = false;
 
         this.initButtons = (username, titleId) => {
+            console.warn('OK initButtons init! ' + username + ' ' + titleId);
             return new Promise((resolve, reject) => {
+                this.setState({
+                    wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+                    watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+                    contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                },);
                 // Check if movie is in Wish-list
-                db.isInList('wishList', this.titleId, username, 'movie')
+                db.isInList('wishList', titleId, username, 'movie')
                     .then(result => {
                         // Movie is already in Wish-list
+                        console.warn(`Movie ${titleId} is already in wish list`);
                         this.setState({
                             wishListBtnJsx:
                                 <TouchableOpacity style={styles.removeFromWishListBtn}
@@ -78,13 +88,18 @@ export default class MovieDetails extends Component {
                                     onPress={() => this.addToWatchedList()}>
                                     <Text style={styles.btnText}>Add to Watched-list</Text>
                                 </TouchableOpacity>,
+                        }, () =>
+                        {
+                            this.initScreen();
+                            resolve(true);
                         });
                     }, error => {
                         // Movie is not in Wish-list
                         // Check if it is in Watched-list
-                        db.isInList('watchedList', this.titleId, username, 'movie')
+                        db.isInList('watchedList', titleId, username, 'movie')
                             .then(result => {
-                                // Movie is in Wish-list
+                                // Movie is in Watched-list
+                                console.warn(`Movie ${titleId} is already in watched list`);
                                 this.setState({
                                     wishListBtnJsx:
                                         <TouchableOpacity style={styles.wishListBtn}
@@ -92,13 +107,18 @@ export default class MovieDetails extends Component {
                                             <Text style={styles.btnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchedListBtnJsx:
-                                        <TouchableOpacity style = { styles.removeFromWatchedListBtn }
-                                            onPress = { () => this.removeFromList('watchedList') } >
+                                        <TouchableOpacity style={styles.removeFromWatchedListBtn}
+                                            onPress={() => this.removeFromList('watchedList')} >
                                             <Text style={styles.btnText}>Remove from Watched-list</Text>
                                         </TouchableOpacity >,
+                                }, () =>
+                                {
+                                    this.initScreen();
+                                    resolve(true);
                                 });
                             }, error => {
                                 // Movie is not in Watched-list
+                                    console.warn(`Movie ${titleId} is not in a list`);
                                 this.setState({
                                     wishListBtnJsx:
                                         <TouchableOpacity style={styles.wishListBtn}
@@ -110,21 +130,31 @@ export default class MovieDetails extends Component {
                                             onPress={() => this.addToWatchedList()}>
                                             <Text style={styles.btnText}>Add to Watched-list</Text>
                                         </TouchableOpacity>,
+                                }, () =>
+                                {
+                                    this.initScreen();
+                                    resolve(true);
                                 });
-                            });
-                    });
+                            })
+                            .catch(error => console.warn(error.message));
+                    })
+                    .catch(error => console.warn(error.message));
             });
         };
 
         this.getUsername = () => {
             return new Promise((resolve, reject) => {
                 let username = this.props.navigation.getParam('username', null);
-                this.setState({ username });
-                this.initButtons(username, this.titleId);
+                this.setState({ username }, () => {
+                    this.initButtons(username, this.state.titleId)
+                        .then(() => resolve(true))
+                        .catch(error => console.warn(error.message));
+                });
             });
         };
 
         this.addToWishList = () => {
+            console.warn('OK add to wishList init!');
             if (this.state.titleId === '') {
                 // Movie has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
@@ -141,15 +171,17 @@ export default class MovieDetails extends Component {
                     username: this.state.username,
                 })
                     .then(result => {
+                        console.warn('OK added to wishList! ' + this.state.title);
                         Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
                             }]
                         );
                     }, error => {
                         Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                    })
+                    .catch(error => console.warn(error.message));
             }
         };
 
@@ -173,12 +205,13 @@ export default class MovieDetails extends Component {
                         Alert.alert('Success', this.state.title + ' has been added to your watched-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
                             }]
                         );
                     }, error => {
                         Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                    })
+                    .catch(error => console.warn(error.message));
             }
         };
 
@@ -206,123 +239,200 @@ export default class MovieDetails extends Component {
                         Alert.alert('Success', message,
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
                             }]
                         );
                     }, error => {
                         Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                    })
+                    .catch(error => console.warn(error.message));
             }
         };
 
         this.displayAlreadyInList = (listType, title) => {
             Alert.alert('Error', title + ' is already in your ' + listType + '-list!');
         };
+
+        this.getRecommendations = () => {
+            if (this.state.titleId === '' || this.state.title === '') {
+                // Movie has not been loaded yet
+                Alert.alert('Oops', 'Please try again!');
+            } else {
+                this.props.navigation.navigate('RecommendationsScreen', {
+                    username: this.state.username,
+                    titleId: this.state.titleId,
+                    title: this.state.title,
+                    recomType: 'movie',
+                });
+            }
+        };
+
+        this.initScreen = () => {
+            let fabJsx =
+                <ActionButton
+                    buttonColor="#db0a5b"
+                    position="right"
+                    style={styles.fab}
+                    shadowStyle={styles.fabShadow}
+                    onPress={() => this.getRecommendations()} />;
+
+            let posterJsx = this.noPoster === false ?
+                <Image source={{ uri: this.state.posterPath }}
+                    style={styles.posterPath}
+                    resizeMode="contain" /> : null;
+
+            let taglineJsx = this.state.tagline.trim().length !== 0 ?
+                <Text style={styles.tagline}>{this.state.tagline}</Text>
+                : null;
+
+            let genresJsx = this.state.genres.length !== 0 ?
+                <Text style={styles.genres}>
+                    Genres:
+                {' ' + this.state.genres.join(' | ')}
+                </Text> : null;
+
+            let releaseDateJsx = this.state.releaseDate !== null ?
+                (new Date(this.state.releaseDate) > new Date() ?
+                    <Text style={styles.releaseDate}>
+                        Releases
+                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                        {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+                    </Text> :
+                    <Text style={styles.releaseDate}>
+                        Released
+                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                        {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+                    </Text>) : null;
+
+            let overviewJsx = this.state.overview !== null ?
+                <Text style={styles.text}>{this.state.overview}</Text>
+                : null;
+
+            let backdropPathJsx = this.noBackdrop === false ?
+                <Image source={{ uri: this.state.backdropPath }}
+                    style={styles.backdropPath}
+                    resizeMode="contain" /> : null;
+
+            let castJsx = this.state.credits.length !== 0 ?
+                <View>
+                    <Text style={styles.castHeader}>Cast</Text>
+                    <Text style={styles.cast}>
+                        {this.state.credits.join(' | ')}
+                    </Text>
+                </View> : null;
+
+            let contentJsx =
+                <View>
+                    {fabJsx}
+                    <ScrollView style={styles.scrollView}>
+                        <View style={styles.container}>
+                            {posterJsx}
+                            <Text style={styles.title}>{this.state.title}</Text>
+                            <View style={styles.voteWrapper}>
+                                <Text style={styles.text}>{this.state.voteAverage}</Text>
+                                <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
+                                <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
+                            </View>
+                            {taglineJsx}
+                            {genresJsx}
+                            {this.state.wishListBtnJsx}
+                            {this.state.watchedListBtnJsx}
+                            {releaseDateJsx}
+                            {overviewJsx}
+                            {backdropPathJsx}
+                            {castJsx}
+                        </View>
+                    </ScrollView >
+                </View>;
+            this.setState({ contentJsx });
+        };
+
+        this.fetchMovieDetails = (titleId) => {
+            return new Promise((resolve, reject) => {
+                if (titleId !== 'null') {
+                    fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
+                        .then(response => response.json())
+                        .then(jsonResponse => { // TODO read full response, not just titles
+                            // Parse Genres from array of JSON
+                            let genres = [];
+                            for (let i = 0; i < jsonResponse.genres.length; i++) { genres[i] = jsonResponse.genres[i].name; }
+                            this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
+                            this.noPoster = jsonResponse.poster_path !== null ? false : true;
+                            this.setState({
+                                titleId: jsonResponse.id,
+                                title: jsonResponse.title,
+                                tagline: jsonResponse.tagline,
+                                voteAverage: jsonResponse.vote_average,
+                                voteCount: jsonResponse.vote_count,
+                                runtime: jsonResponse.runtime,
+                                status: jsonResponse.status,
+                                genres: genres,
+                                credits: jsonResponse.credits,
+                                creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
+                                backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
+                                originalLanguage: jsonResponse.original_language,
+                                overview: jsonResponse.overview,
+                                posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
+                                releaseDate: jsonResponse.release_date,
+                            });
+                            this.initScreen()
+                                .then(() => resolve(true))
+                                .catch(error => reject(error));
+                        }) // TODO fix response status parsing
+                        .catch(error => {
+                            // alert('Oops!\nPlease make sure your search query is correct!');
+                            reject(false);
+                        });
+                }
+            });
+        };
     }
 
     componentDidMount() {
-        this.titleId = this.props.navigation.getParam('titleId', 'null');
-        this.fetchMovieDetails(this.titleId);
-        this.getUsername();
+        let titleId = this.props.navigation.getParam('titleId', null);
+        console.warn('Mount titleID: ' + titleId);
+        this.getUsername()
+            .then(() => {
+                this.fetchMovieDetails(titleId)
+                    .catch(error => console.warn(error));
+            })
+            .catch(error => console.warn(error.message));
     }
 
-    fetchMovieDetails = (titleId) => {
-        if (this.titleId !== 'null') {
-            fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
-                .then(response => response.json())
-                .then(jsonResponse => { // TODO read full response, not just titles
-                    // Parse Genres from array of JSON
-                    let genres = [];
-                    for (let i = 0; i < jsonResponse.genres.length; i++)
-                        {genres[i] = jsonResponse.genres[i].name;}
-                    this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
-                    this.noPoster = jsonResponse.poster_path !== null ? false : true;
-                    this.setState({
-                        titleId: jsonResponse.id,
-                        title: jsonResponse.title,
-                        tagline: jsonResponse.tagline,
-                        voteAverage: jsonResponse.vote_average,
-                        voteCount: jsonResponse.vote_count,
-                        runtime: jsonResponse.runtime,
-                        status: jsonResponse.status,
-                        genres: genres,
-                        credits: jsonResponse.credits,
-                        creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
-                        backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
-                        originalLanguage: jsonResponse.original_language,
-                        overview: jsonResponse.overview,
-                        posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
-                        releaseDate: jsonResponse.release_date,
-                    });
-                }) // TODO fix response status parsing
-                .catch(error => {
-                    // alert('Oops!\nPlease make sure your search query is correct!');
-                });
+    willFocusSubscription = this.props.navigation.addListener(
+        'willFocus',
+        payload => {
+            console.debug('willFocus', payload);
+            this.setState({
+                contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+            });
         }
-    }
+    );
+
+    didFocusSubscription = this.props.navigation.addListener(
+        'didFocus',
+        payload => {
+            console.debug('didFocus', payload);
+            let titleId = this.props.navigation.getParam('titleId', null);
+            console.warn('DID FOCUS titleID: ' + titleId);
+            this.setState({titleId}, () => {
+                console.warn('Added to state: ' + this.state.titleId);
+                this.getUsername()
+                    .then(() => {
+                        this.fetchMovieDetails(titleId)
+                            .catch(error => console.warn(error));
+                    })
+                    .catch(error => console.warn(error.message));
+            });
+        }
+    );
 
     render() {
-        let posterJsx = this.noPoster === false ?
-            <Image source={{uri: this.state.posterPath}}
-                style={styles.posterPath}
-                resizeMode="contain"/> : null;
-        let taglineJsx = this.state.tagline !== null ?
-            <Text style={styles.tagline}>{this.state.tagline}</Text>
-            : null;
-        let genresJsx = this.state.genres.length !== 0 ?
-            <Text style={styles.genres}>
-                Genres:
-                {' ' + this.state.genres.join(' | ')}
-            </Text> : null;
-        let releaseDateJsx = this.state.releaseDate !== null ?
-            ( new Date(this.state.releaseDate) > new Date() ?
-            <Text style={styles.releaseDate}>
-                Releases
-                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-            </Text> :
-            <Text style={styles.releaseDate}>
-                Released
-                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-            </Text> ) : null;
-        let overviewJsx = this.state.overview !== null ?
-            <Text style={styles.text}>{this.state.overview}</Text>
-            : null;
-        let backdropPathJsx = this.noBackdrop === false ?
-            <Image source={{uri: this.state.backdropPath}}
-                style={styles.backdropPath}
-                resizeMode="contain"/> : null;
-        let castJsx = this.state.credits.length !== 0 ?
-            <View>
-                <Text style={styles.castHeader}>Cast</Text>
-                <Text style={styles.text}>
-                    {this.state.credits.join(' | ')}
-                </Text>
-            </View> : null;
         return (
             <ImageBackground blurRadius={1.5}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.container}>
-                        {posterJsx}
-                        <Text style={styles.title}>{this.state.title}</Text>
-                        <View style={styles.voteWrapper}>
-                            <Text style={styles.text}>{this.state.voteAverage}</Text>
-                            <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon}/>
-                            <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
-                        </View>
-                        {taglineJsx}
-                        {genresJsx}
-                        {this.state.wishListBtnJsx}
-                        {this.state.watchedListBtnJsx}
-                        {releaseDateJsx}
-                        {overviewJsx}
-                        {backdropPathJsx}
-                        {castJsx}
-                    </View>
-                </ScrollView>
+                {this.state.contentJsx}
             </ImageBackground>
         );
     }
@@ -355,7 +465,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     tagline: {
-        fontStyle :'italic',
+        fontStyle: 'italic',
         marginBottom: 15,
         fontSize: 15,
     },
@@ -368,8 +478,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-		borderRadius: 50,
-		padding: 15,
+        borderRadius: 50,
+        padding: 15,
         width: '70%',
         marginBottom: 10,
         backgroundColor: '#019875',
@@ -401,8 +511,8 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
-		borderRadius: 50,
-		padding: 15,
+        borderRadius: 50,
+        padding: 15,
         width: '70%',
         backgroundColor: '#22a7f0',
         marginBottom: 30,
@@ -440,9 +550,23 @@ const styles = StyleSheet.create({
         marginTop: 10,
         marginBottom: 10,
     },
+    fab: {
+        zIndex: 1,
+        marginBottom: 50,
+    },
+    fabShadow: {
+        borderRadius: 50,
+        borderWidth: 1,
+        borderColor: 'rgba(217, 30, 24, 0.1)',
+    },
     indicator: {
         flex: 1,
         alignSelf: 'center',
         margin: 20,
+    },
+    cast: {
+        marginBottom: 15,
+        fontSize: 15,
+        textAlign: 'justify',
     },
 });
