@@ -26,6 +26,7 @@ export default class MoviesListsScreen extends Component {
 			refreshing: false,
 			username: '',
 			searchQuery: '',
+			filterYear: '',
 			wishList: {
 				titleId: '',
 				title: '',
@@ -212,11 +213,18 @@ export default class MoviesListsScreen extends Component {
 		});
 	};
 
+	filterYearChangedHandler = (newYear) => {
+		this.setState({
+			filterYear: newYear,
+		});
+	};
+
 	searchBtnPressedHandler = () => {
 		netCon.checkNetCon()
 			.then((result) => {
 				this.props.navigation.navigate('SearchScreen', {
 					searchQuery: this.state.searchQuery,
+					releaseYear: this.state.filterYear,
 					searchType: 'm',
 					username: this.state.username,
 				});
@@ -281,7 +289,9 @@ export default class MoviesListsScreen extends Component {
 						/> }>
 					<View style={styles.container}>
 						<SearchItem onChangeText={this.searchFieldChangedHandler}
+							onChangeYear={this.filterYearChangedHandler}
 							placeholder="Search a movie"
+							searchType="movie"
 							onSubmitEditing={this.searchBtnPressedHandler} />
 					</View>
 					<View style={styles.listHeader}>
