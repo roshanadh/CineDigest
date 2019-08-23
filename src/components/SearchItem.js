@@ -25,6 +25,7 @@ export default class SearchItem extends Component{
 							<TextInput placeholder={this.props.placeholder}
 								style={styles.searchTextInput}
 								onChangeText={this.props.onChangeText}
+								onSubmitEditing={this.props.onSubmitEditing}
 								placeholderTextColor="#fefefe"
 								returnKeyType="next" />
 						</View>;
