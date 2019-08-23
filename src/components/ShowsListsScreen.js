@@ -356,6 +356,7 @@ export default class MoviesScreen extends Component {
 					<View style={styles.container}>
 						<SearchItem onChangeText={this.searchFieldChangedHandler}
 							placeholder="Search a TV show"
+							searchType="show"
 							onSubmitEditing={this.searchBtnPressedHandler} />
 					</View>
 					<View style={styles.listHeader}>
