@@ -274,11 +274,7 @@ export default class MovieDetails extends Component {
                     buttonColor="#db0a5b"
                     position="right"
                     style={styles.fab}
-                    renderIcon={
-                        active => active ?
-                            (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOn} />)
-                            : (<FABIcon name="lightbulb-on" style={styles.actionButtonIconOff} />)
-                    }
+                    shadowStyle={styles.fabShadow}
                     onPress={() => this.getRecommendations()} />;
 
             let posterJsx = this.noPoster === false ?
@@ -553,6 +549,11 @@ const styles = StyleSheet.create({
         zIndex: 1,
         marginBottom: 50,
     },
+    fabShadow: {
+        borderRadius: 50,
+        borderWidth: 1,
+        borderColor: 'rgba(217, 30, 24, 0.1)',
+    },
     indicator: {
         flex: 1,
         alignSelf: 'center',
@@ -562,15 +563,5 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         fontSize: 15,
         textAlign: 'justify',
-    },
-    actionButtonIconOn: {
-        fontSize: 20,
-        height: 22,
-        color: 'white',
-    },
-    actionButtonIconOff: {
-        fontSize: 20,
-        height: 22,
-        color: 'white',
     },
 });
