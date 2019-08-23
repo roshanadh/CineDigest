@@ -65,11 +65,18 @@ export default class MovieDetails extends Component {
         this.noPoster = false;
 
         this.initButtons = (username, titleId) => {
+            console.warn('OK initButtons init! ' + username + ' ' + titleId);
             return new Promise((resolve, reject) => {
+                this.setState({
+                    wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+                    watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
+                    contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                },);
                 // Check if movie is in Wish-list
-                db.isInList('wishList', this.titleId, username, 'movie')
+                db.isInList('wishList', titleId, username, 'movie')
                     .then(result => {
                         // Movie is already in Wish-list
+                        console.warn(`Movie ${titleId} is already in wish list`);
                         this.setState({
                             wishListBtnJsx:
                                 <TouchableOpacity style={styles.removeFromWishListBtn}
@@ -82,14 +89,18 @@ export default class MovieDetails extends Component {
                                     onPress={() => this.addToWatchedList()}>
                                     <Text style={styles.btnText}>Add to Watched-list</Text>
                                 </TouchableOpacity>,
+                        }, () =>
+                        {
+                            this.initScreen();
+                            resolve(true);
                         });
-                        resolve(true);
                     }, error => {
                         // Movie is not in Wish-list
                         // Check if it is in Watched-list
-                        db.isInList('watchedList', this.titleId, username, 'movie')
+                        db.isInList('watchedList', titleId, username, 'movie')
                             .then(result => {
-                                // Movie is in Wish-list
+                                // Movie is in Watched-list
+                                console.warn(`Movie ${titleId} is already in watched list`);
                                 this.setState({
                                     wishListBtnJsx:
                                         <TouchableOpacity style={styles.wishListBtn}
@@ -101,10 +112,14 @@ export default class MovieDetails extends Component {
                                             onPress={() => this.removeFromList('watchedList')} >
                                             <Text style={styles.btnText}>Remove from Watched-list</Text>
                                         </TouchableOpacity >,
+                                }, () =>
+                                {
+                                    this.initScreen();
+                                    resolve(true);
                                 });
-                                resolve(true);
                             }, error => {
                                 // Movie is not in Watched-list
+                                    console.warn(`Movie ${titleId} is not in a list`);
                                 this.setState({
                                     wishListBtnJsx:
                                         <TouchableOpacity style={styles.wishListBtn}
@@ -116,8 +131,11 @@ export default class MovieDetails extends Component {
                                             onPress={() => this.addToWatchedList()}>
                                             <Text style={styles.btnText}>Add to Watched-list</Text>
                                         </TouchableOpacity>,
+                                }, () =>
+                                {
+                                    this.initScreen();
+                                    resolve(true);
                                 });
-                                resolve(true);
                             })
                             .catch(error => console.warn(error.message));
                     })
@@ -128,14 +146,16 @@ export default class MovieDetails extends Component {
         this.getUsername = () => {
             return new Promise((resolve, reject) => {
                 let username = this.props.navigation.getParam('username', null);
-                this.setState({ username });
-                this.initButtons(username, this.titleId)
-                    .then(() => resolve(true))
-                    .catch(error => console.warn(error.message));
+                this.setState({ username }, () => {
+                    this.initButtons(username, this.state.titleId)
+                        .then(() => resolve(true))
+                        .catch(error => console.warn(error.message));
+                });
             });
         };
 
         this.addToWishList = () => {
+            console.warn('OK add to wishList init!');
             if (this.state.titleId === '') {
                 // Movie has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
@@ -152,10 +172,11 @@ export default class MovieDetails extends Component {
                     username: this.state.username,
                 })
                     .then(result => {
+                        console.warn('OK added to wishList! ' + this.state.title);
                         Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -185,7 +206,7 @@ export default class MovieDetails extends Component {
                         Alert.alert('Success', this.state.title + ' has been added to your watched-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -219,7 +240,7 @@ export default class MovieDetails extends Component {
                         Alert.alert('Success', message,
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -327,7 +348,7 @@ export default class MovieDetails extends Component {
 
         this.fetchMovieDetails = (titleId) => {
             return new Promise((resolve, reject) => {
-                if (this.titleId !== 'null') {
+                if (titleId !== 'null') {
                     fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
                         .then(response => response.json())
                         .then(jsonResponse => { // TODO read full response, not just titles
@@ -392,13 +413,16 @@ export default class MovieDetails extends Component {
         payload => {
             console.debug('didFocus', payload);
             let titleId = this.props.navigation.getParam('titleId', null);
-            console.warn('Mount titleID: ' + titleId);
-            this.getUsername()
-                .then(() => {
-                    this.fetchMovieDetails(titleId)
-                        .catch(error => console.warn(error));
-                })
-                .catch(error => console.warn(error.message));
+            console.warn('DID FOCUS titleID: ' + titleId);
+            this.setState({titleId}, () => {
+                console.warn('Added to state: ' + this.state.titleId);
+                this.getUsername()
+                    .then(() => {
+                        this.fetchMovieDetails(titleId)
+                            .catch(error => console.warn(error));
+                    })
+                    .catch(error => console.warn(error.message));
+            });
         }
     );
 
