@@ -281,14 +281,17 @@ export default class MovieDetails extends Component {
                 <Image source={{ uri: this.state.posterPath }}
                     style={styles.posterPath}
                     resizeMode="contain" /> : null;
-            let taglineJsx = this.state.tagline !== null ?
+
+            let taglineJsx = this.state.tagline.trim().length !== 0 ?
                 <Text style={styles.tagline}>{this.state.tagline}</Text>
                 : null;
+
             let genresJsx = this.state.genres.length !== 0 ?
                 <Text style={styles.genres}>
                     Genres:
                 {' ' + this.state.genres.join(' | ')}
                 </Text> : null;
+
             let releaseDateJsx = this.state.releaseDate !== null ?
                 (new Date(this.state.releaseDate) > new Date() ?
                     <Text style={styles.releaseDate}>
@@ -301,13 +304,16 @@ export default class MovieDetails extends Component {
                 {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
                         {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
                     </Text>) : null;
+
             let overviewJsx = this.state.overview !== null ?
                 <Text style={styles.text}>{this.state.overview}</Text>
                 : null;
+
             let backdropPathJsx = this.noBackdrop === false ?
                 <Image source={{ uri: this.state.backdropPath }}
                     style={styles.backdropPath}
                     resizeMode="contain" /> : null;
+
             let castJsx = this.state.credits.length !== 0 ?
                 <View>
                     <Text style={styles.castHeader}>Cast</Text>
