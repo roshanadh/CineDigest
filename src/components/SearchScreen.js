@@ -31,10 +31,12 @@ export default class SearchScreen extends Component {
         this.state = {
             isEmpty: true,
             searchQuery: this.props.navigation.getParam('searchQuery', null),
+            releaseYear: this.props.navigation.getParam('releaseYear', null),
             searchResponse: {},
             username: this.props.navigation.getParam('username', null),
         };
         this.searchQuery = this.props.navigation.getParam('searchQuery', null);
+        this.releaseYear = this.props.navigation.getParam('releaseYear', null);
         this.searchType = this.props.navigation.getParam('searchType', null);
     }
 
@@ -58,7 +60,10 @@ export default class SearchScreen extends Component {
     };
 
     componentDidMount() {
-        fetch(`https://api-cine-digest.herokuapp.com/api/v1/search${this.searchType}/${this.searchQuery}`)
+        let searchQuery = (this.releaseYear === null || this.releaseYear.trim().length === 0) ?
+            this.searchQuery : this.searchQuery + '/' + this.releaseYear;
+        console.warn('Search query: ' + searchQuery);
+        fetch(`https://api-cine-digest.herokuapp.com/api/v1/search${this.searchType}/${searchQuery}`)
             .then(response => response.json())
             .then(jsonResponse => { // TODO read full response, not just titles
                 this.setState({
