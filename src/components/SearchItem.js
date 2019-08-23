@@ -28,6 +28,14 @@ export default class SearchItem extends Component{
 								onSubmitEditing={this.props.onSubmitEditing}
 								placeholderTextColor="#fefefe"
 								returnKeyType="next" />
+								{/*
+									Icons are used to push TextInput to the left side.
+									These icons are not clickable.
+								*/}
+						<Icon name="filter" size={20}
+							color="#6bb9f0" style={styles.filterIcon} />
+						<Icon name="search" size={20}
+							color="#6bb9f0" style={styles.searchIcon} />
 						</View>;
 					break;
 				case false:
