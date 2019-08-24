@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     listInfo: {
         marginTop: 15,
         marginRight: 10,
+        marginBottom: 5,
         alignSelf: 'flex-end',
     },
     listInfoText: {

@@ -67,6 +67,7 @@ const styles = StyleSheet.create({
     searchInfo: {
         marginTop: 15,
         marginRight: 10,
+        marginBottom: 5,
         alignSelf: 'flex-end',
     },
     searchInfoText: {
