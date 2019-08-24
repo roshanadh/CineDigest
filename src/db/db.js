@@ -601,10 +601,10 @@ class Database {
 		return new Promise((resolve, reject) => {
 			this.getRecentMovies(username)
 				.then((result) => {
-					if (result.length > 3) {
+					if (result.length > 4) {
 						let movieRecoms = [];
 						let titleIds = [];
-						for (let i = 0; i < result.length; i++) {
+						for (let i = 0; i < 5; i++) {
 							titleIds.push(result[i].titleId);
 							fetch(`https://api-cine-digest.herokuapp.com/api/v1/getmr/${titleIds[i]}`)
 								.then(response => response.json())

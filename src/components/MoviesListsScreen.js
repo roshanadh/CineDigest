@@ -313,7 +313,7 @@ export default class MoviesListsScreen extends Component {
 					.then((result) => {
 						// Promise takes time to resolve..
 						// wait 5 seconds before updating state.
-						setInterval(() => {
+						setTimeout(() => {
 							// Update state only if the resolved promise..
 							// is not empty.
 							result.length > 0 ?
@@ -366,7 +366,6 @@ export default class MoviesListsScreen extends Component {
 							onRefresh={this._onRefresh}
 						/> }>
 					<View style={styles.carouselContainer}>
-						<Text style={styles.carouselHeader}>Based on your recent activity</Text>
 						<Carousel
 							layout={'default'}
 							data={this.state.movieRecoms}
@@ -428,13 +427,8 @@ const styles = StyleSheet.create({
 		width: '100%',
 		zIndex: 1,
 	},
-	carouselHeader: {
-		fontSize: 14,
-		color: '#67809f',
-		marginTop: 20,
-		marginBottom: 10,
-	},
 	carouselContainer: {
+		marginTop: 20,
 		alignItems: 'center',
 		backgroundColor: 'rgba(255, 255, 255, 0.1)',
 		width: '100%',
@@ -452,15 +446,19 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 	},
 	carouselText: {
-		marginTop: 10,
+		width: 150,
+		paddingTop: 10,
+		paddingBottom: 10,
 		fontSize: 15,
 		color: '#2e3131',
+		textAlign: 'center',
 	},
 	wishListContainer: {
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
 		flex: 1,
+		marginBottom: 20,
 	},
 	watchedListContainer: {
 		flexDirection: 'column',
@@ -471,7 +469,6 @@ const styles = StyleSheet.create({
 	listHeader: {
 		paddingLeft: 10,
 		paddingRight: 25,
-		marginTop: 20,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'flex-start',
