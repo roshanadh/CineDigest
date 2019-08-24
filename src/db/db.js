@@ -521,20 +521,29 @@ class Database {
 							// Get recent five additions to history
 							let len = results.rows.length;
 							if (len > 0) {
-								let titleIds = [];
-								let titles = [];
-								let posterPaths = [];
-								for (let i = len - 1; i > len - 6; i--) {
-									let row = results.rows.item(i);
-									titleIds.push(row.titleId);
-									titles.push(row.titleName);
-									posterPaths.push(row.titlePosterPath);
+								let recentMovies = [];
+								let lowerLimit = 0;
+								switch (len) {
+									case len <= 5:
+										lowerLimit = 0;
+										break;
+									case len > 6:
+										lowerLimit = len - 6;
+										break;
+									default: null;
 								}
-								resolve({
-									titleIds,
-									titles,
-									posterPaths,
-								});
+
+								for (let i = len - 1; i >= lowerLimit; i--) {
+									// console.warn(i);
+									let row = results.rows.item(i);
+									recentMovies.push({
+										title: row.titleName,
+										titleId: row.titleId,
+										posterPath: row.titlePosterPath,
+									});
+									// console.warn(recentMovies[i]);
+								}
+								resolve(recentMovies);
 							} else {
 								reject(false);
 							}
@@ -557,13 +566,26 @@ class Database {
 							let len = results.rows.length;
 							if (len > 0) {
 								let recentShows = [];
-								for (let i = len - 1; i > len - 6; i--) {
+								let lowerLimit = 0;
+								switch (len) {
+									case len <= 5:
+										lowerLimit = 0;
+										break;
+									case len > 6:
+										lowerLimit = len - 6;
+										break;
+									default: null;
+								}
+
+								for (let i = len - 1; i >= lowerLimit; i--) {
+									// console.warn(i);
 									let row = results.rows.item(i);
 									recentShows.push({
 										title: row.titleName,
 										titleId: row.titleId,
 										posterPath: row.titlePosterPath,
 									});
+									// console.warn(recentMovies[i]);
 								}
 								resolve(recentShows);
 							} else {
