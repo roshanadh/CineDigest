@@ -719,14 +719,4 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         margin: 20,
     },
-    actionButtonIconOn: {
-        fontSize: 20,
-        height: 22,
-        color: 'white',
-    },
-    actionButtonIconOff: {
-        fontSize: 20,
-        height: 22,
-        color: 'white',
-    },
 });
