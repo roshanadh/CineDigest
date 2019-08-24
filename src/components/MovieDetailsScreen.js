@@ -350,39 +350,43 @@ export default class MovieDetails extends Component {
         this.fetchMovieDetails = (titleId) => {
             return new Promise((resolve, reject) => {
                 if (titleId !== 'null') {
-                    fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
-                        .then(response => response.json())
-                        .then(jsonResponse => { // TODO read full response, not just titles
-                            // Parse Genres from array of JSON
-                            let genres = [];
-                            for (let i = 0; i < jsonResponse.genres.length; i++) { genres[i] = jsonResponse.genres[i].name; }
-                            this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
-                            this.noPoster = jsonResponse.poster_path !== null ? false : true;
-                            this.setState({
-                                titleId: jsonResponse.id,
-                                title: jsonResponse.title,
-                                tagline: jsonResponse.tagline,
-                                voteAverage: jsonResponse.vote_average,
-                                voteCount: jsonResponse.vote_count,
-                                runtime: jsonResponse.runtime,
-                                status: jsonResponse.status,
-                                genres: genres,
-                                credits: jsonResponse.credits,
-                                creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
-                                backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
-                                originalLanguage: jsonResponse.original_language,
-                                overview: jsonResponse.overview,
-                                posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
-                                releaseDate: jsonResponse.release_date,
+                    this.setState({
+                        contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                    }, () => {
+                        fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
+                            .then(response => response.json())
+                            .then(jsonResponse => { // TODO read full response, not just titles
+                                // Parse Genres from array of JSON
+                                let genres = [];
+                                for (let i = 0; i < jsonResponse.genres.length; i++) { genres[i] = jsonResponse.genres[i].name; }
+                                this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
+                                this.noPoster = jsonResponse.poster_path !== null ? false : true;
+                                this.setState({
+                                    titleId: jsonResponse.id,
+                                    title: jsonResponse.title,
+                                    tagline: jsonResponse.tagline,
+                                    voteAverage: jsonResponse.vote_average,
+                                    voteCount: jsonResponse.vote_count,
+                                    runtime: jsonResponse.runtime,
+                                    status: jsonResponse.status,
+                                    genres: genres,
+                                    credits: jsonResponse.credits,
+                                    creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
+                                    backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
+                                    originalLanguage: jsonResponse.original_language,
+                                    overview: jsonResponse.overview,
+                                    posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
+                                    releaseDate: jsonResponse.release_date,
+                                });
+                                this.initScreen()
+                                    .then(() => resolve(true))
+                                    .catch(error => reject(error));
+                            }) // TODO fix response status parsing
+                            .catch(error => {
+                                 // alert('Oops!\nPlease make sure your search query is correct!');
+                                reject(false);
                             });
-                            this.initScreen()
-                                .then(() => resolve(true))
-                                .catch(error => reject(error));
-                        }) // TODO fix response status parsing
-                        .catch(error => {
-                            // alert('Oops!\nPlease make sure your search query is correct!');
-                            reject(false);
-                        });
+                    });
                 }
             });
         };
