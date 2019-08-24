@@ -458,41 +458,45 @@ export default class ShowDetailsScreen extends Component {
         this.fetchShowDetails = (titleId) => {
             return new Promise((resolve, reject) => {
                 if (titleId !== 'null') {
-                    fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}`)
-                        .then(response => response.json())
-                        .then(jsonResponse => { // TODO read full response, not just titles
-                            // Parse Genres from array of JSON
-                            let genres = [];
-                            for (let i = 0; i < jsonResponse.genres.length; i++) { genres[i] = jsonResponse.genres[i].name; }
-                            this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
-                            this.noPoster = jsonResponse.poster_path !== null ? false : true;
-                            this.setState({
-                                titleId: jsonResponse.id,
-                                title: jsonResponse.name,
-                                backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
-                                createdBy: jsonResponse.createdBy,
-                                voteAverage: jsonResponse.vote_average,
-                                voteCount: jsonResponse.vote_count,
-                                seasons: jsonResponse.seasons,
-                                episodeRuntime: jsonResponse.episodeRunTime,
-                                status: jsonResponse.status,
-                                firstAirDate: jsonResponse.first_air_date,
-                                lastAirDate: jsonResponse.last_air_date,
-                                nextEpisodeToAir: jsonResponse.next_episode_to_air,
-                                genres: genres,
-                                networks: jsonResponse.networks,
-                                numberOfEpisodes: jsonResponse.number_of_episodes,
-                                overview: jsonResponse.overview,
-                                posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
+                    this.setState({
+                        contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                    }, () => {
+                        fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}`)
+                            .then(response => response.json())
+                            .then(jsonResponse => { // TODO read full response, not just titles
+                                // Parse Genres from array of JSON
+                                let genres = [];
+                                for (let i = 0; i < jsonResponse.genres.length; i++) { genres[i] = jsonResponse.genres[i].name; }
+                                this.noBackdrop = jsonResponse.backdrop_path !== null ? false : true;
+                                this.noPoster = jsonResponse.poster_path !== null ? false : true;
+                                this.setState({
+                                    titleId: jsonResponse.id,
+                                    title: jsonResponse.name,
+                                    backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
+                                    createdBy: jsonResponse.createdBy,
+                                    voteAverage: jsonResponse.vote_average,
+                                    voteCount: jsonResponse.vote_count,
+                                    seasons: jsonResponse.seasons,
+                                    episodeRuntime: jsonResponse.episodeRunTime,
+                                    status: jsonResponse.status,
+                                    firstAirDate: jsonResponse.first_air_date,
+                                    lastAirDate: jsonResponse.last_air_date,
+                                    nextEpisodeToAir: jsonResponse.next_episode_to_air,
+                                    genres: genres,
+                                    networks: jsonResponse.networks,
+                                    numberOfEpisodes: jsonResponse.number_of_episodes,
+                                    overview: jsonResponse.overview,
+                                    posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
+                                });
+                                this.initScreen()
+                                    .then(() => resolve(true))
+                                    .catch(error => reject(error));
+                            }) // TODO fix response status parsing
+                            .catch(error => {
+                                // alert('Oops!\nPlease make sure your search query is correct!');
+                                reject(false);
                             });
-                            this.initScreen()
-                                .then(() => resolve(true))
-                                .catch(error => reject(error));
-                        }) // TODO fix response status parsing
-                        .catch(error => {
-                            // alert('Oops!\nPlease make sure your search query is correct!');
-                            reject(false);
-                        });
+                    });
                 }
             });
         };
@@ -714,15 +718,5 @@ const styles = StyleSheet.create({
         flex: 1,
         alignSelf: 'center',
         margin: 20,
-    },
-    actionButtonIconOn: {
-        fontSize: 20,
-        height: 22,
-        color: 'white',
-    },
-    actionButtonIconOff: {
-        fontSize: 20,
-        height: 22,
-        color: 'white',
     },
 });
