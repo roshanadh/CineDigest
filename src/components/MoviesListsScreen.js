@@ -28,6 +28,7 @@ export default class MoviesListsScreen extends Component {
 			username: '',
 			searchQuery: '',
 			filterYear: '',
+			scrollViewMargin: 60,
 			wishList: {
 				titleId: '',
 				title: '',
@@ -220,6 +221,15 @@ export default class MoviesListsScreen extends Component {
 		});
 	};
 
+	filterShown = (isShown) => {
+		console.warn(isShown + ' is shown!');
+		if (isShown) {
+			this.setState({scrollViewMargin: 120});
+		} else {
+			this.setState({scrollViewMargin: 60});
+		}
+	};
+
 	searchBtnPressedHandler = () => {
 		netCon.checkNetCon()
 			.then((result) => {
@@ -293,20 +303,20 @@ export default class MoviesListsScreen extends Component {
 					translucent={true}
 					backgroundColor="#6bb9f0"
 				/>
-				<ScrollView style={styles.scrollView}
+				<View style={styles.searchItem}>
+					<SearchItem onChangeText={this.searchFieldChangedHandler}
+						onChangeYear={this.filterYearChangedHandler}
+						placeholder="Search a movie"
+						searchType="movie"
+						filterShown={this.filterShown}
+						onSubmitEditing={this.searchBtnPressedHandler} />
+				</View>
+				<ScrollView style={{marginTop: this.state.scrollViewMargin}}
 					refreshControl={
 						<RefreshControl
 							refreshing={this.state.refreshing}
 							onRefresh={this._onRefresh}
 						/> }>
-					<View style={styles.container}>
-						<SearchItem onChangeText={this.searchFieldChangedHandler}
-							onChangeYear={this.filterYearChangedHandler}
-							placeholder="Search a movie"
-							searchType="movie"
-							onSubmitEditing={this.searchBtnPressedHandler} />
-					</View>
-
 					<View style={styles.listHeader}>
 						<View style={styles.listName}>
 							<Text>
@@ -350,11 +360,11 @@ const styles = StyleSheet.create({
 		height: '100%',
 		flex: 1,
 	},
-	container: {
-		flex: 1,
-		flexDirection: 'column',
-		justifyContent: 'flex-start',
-		alignItems: 'center',
+	searchItem: {
+		position: 'absolute',
+		top: 0,
+		width: '100%',
+		zIndex: 1,
 	},
 	wishListContainer: {
 		flexDirection: 'column',
