@@ -74,6 +74,7 @@ export default class ListItem extends Component {
 const styles = StyleSheet.create({
     listItem: {
         margin: 5,
+        marginTop: 0,
         padding: 25,
         backgroundColor: '#fff',
         borderRadius: 5,
