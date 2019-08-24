@@ -596,6 +596,35 @@ class Database {
 				});
 		});
 	}
+
+	getMovieRecommendations(username) {
+		return new Promise((resolve, reject) => {
+			this.getRecentMovies(username)
+				.then((result) => {
+					if (result.length > 3) {
+						let movieRecoms = [];
+						let titleIds = [];
+						for (let i = 0; i < result.length; i++) {
+							titleIds.push(result[i].titleId);
+							fetch(`https://api-cine-digest.herokuapp.com/api/v1/getmr/${titleIds[i]}`)
+								.then(response => response.json())
+								.then(jsonResponse => {
+									movieRecoms.push({
+										title: jsonResponse.titles[0],
+										titleId: jsonResponse.titleIds[0],
+										posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.posterPaths[0]}`,
+									});
+									console.warn(movieRecoms[i].title + ' for ' + i);
+								})
+								.catch(error => console.warn('404 for ' + titleIds[i]));
+						}
+						resolve(movieRecoms);
+					} else {
+						reject(false);
+					}
+				});
+		});
+	}
 }
 
 const db = new Database();
