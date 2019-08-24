@@ -521,19 +521,19 @@ class Database {
 							// Get recent five additions to history
 							let len = results.rows.length;
 							if (len > 0) {
-								let movieTitleIds = [];
-								let movieTitles = [];
-								let moviePosterPaths = [];
+								let titleIds = [];
+								let titles = [];
+								let posterPaths = [];
 								for (let i = len - 1; i > len - 6; i--) {
 									let row = results.rows.item(i);
-									movieTitleIds.push(row.titleId);
-									movieTitles.push(row.titleName);
-									moviePosterPaths.push(row.titlePosterPath);
+									titleIds.push(row.titleId);
+									titles.push(row.titleName);
+									posterPaths.push(row.titlePosterPath);
 								}
 								resolve({
-									movieTitleIds,
-									movieTitles,
-									moviePosterPaths,
+									titleIds,
+									titles,
+									posterPaths,
 								});
 							} else {
 								reject(false);
@@ -556,20 +556,16 @@ class Database {
 							// Get recent five additions to history
 							let len = results.rows.length;
 							if (len > 0) {
-								let movieTitleIds = [];
-								let movieTitles = [];
-								let moviePosterPaths = [];
+								let recentShows = [];
 								for (let i = len - 1; i > len - 6; i--) {
 									let row = results.rows.item(i);
-									movieTitleIds.push(row.titleId);
-									movieTitles.push(row.titleName);
-									moviePosterPaths.push(row.titlePosterPath);
+									recentShows.push({
+										title: row.titleName,
+										titleId: row.titleId,
+										posterPath: row.titlePosterPath,
+									});
 								}
-								resolve({
-									movieTitleIds,
-									movieTitles,
-									moviePosterPaths,
-								});
+								resolve(recentShows);
 							} else {
 								reject(false);
 							}
