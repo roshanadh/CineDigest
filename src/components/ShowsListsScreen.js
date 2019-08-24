@@ -350,7 +350,8 @@ export default class MoviesScreen extends Component {
 				db.getRecentShows(result)
 					.then((result) => {
 						this.setState({ recentShows: result }, () => console.warn(this.state.recentShows[0]));
-					}, (error) => console.warn('ERROR in getRecentShows/ ShowsListsScreen' + error));
+					}, (error) => console.warn('ERROR in getRecentShows/ ShowsListsScreen' + error))
+					.catch(error => alert('OOPS could not recommend!'))
 			});
 		this.initLists();
 	}
