@@ -80,10 +80,11 @@ export default class FullListContainer extends Component {
 const styles = StyleSheet.create({
     metaContainer: {},
     listInfo: {
-        margin: 15,
+        marginTop: 15,
+        marginRight: 10,
         alignSelf: 'flex-end',
     },
     listInfoText: {
-        fontSize: 15,
+        fontSize: 14,
     },
 });
