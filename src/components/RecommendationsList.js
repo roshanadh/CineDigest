@@ -38,8 +38,8 @@ export default class ListContainer extends Component {
         return (
             <View style={styles.metaContainer}>
                 <ScrollView style={styles.listContainer}>
-                    <View style={styles.searchInfo}>
-                        <Text style={styles.searchInfoText}>
+                    <View style={styles.listInfo}>
+                        <Text style={styles.listInfoText}>
                             {recomInfo}
                         </Text>
                     </View>
@@ -67,11 +67,13 @@ export default class ListContainer extends Component {
 
 const styles = StyleSheet.create({
     metaContainer: {},
-    searchInfo: {
-        margin: 15,
+    listInfo: {
+        marginTop: 15,
+        marginRight: 10,
+        marginBottom: 5,
         alignSelf: 'flex-end',
     },
-    searchInfoText: {
+    listInfoText: {
         fontSize: 15,
     },
 });
