@@ -339,6 +339,14 @@ export default class MoviesScreen extends Component {
 	}
 
 	componentDidMount() {
+		// Get recently listed shows for the current user
+		this.getUsername()
+			.then((result) => {
+				db.getRecentShows(result)
+					.then((result) => {
+						console.warn(result.movieTitles[0]);
+					}, (error) => console.warn('ERROR in getRecentMovies/ MoviesListsScreen' + error));
+			});
 		this.initLists();
 	}
 
