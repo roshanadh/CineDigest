@@ -277,6 +277,15 @@ export default class MoviesListsScreen extends Component {
 			.then(() => {
 				Snackbar.dismiss();
 			});
+
+		// Get recently listed movies for the current user
+		this.getUsername()
+			.then((result) => {
+				db.getRecentMovies(result)
+					.then((result) => {
+						console.warn(result.movieTitles[0]);
+					}, (error) => console.warn('ERROR in getRecentMovies/ MoviesListsScreen' + error));
+			});
 		this.initLists();
 	}
 
