@@ -10,11 +10,12 @@ import {
 	ActivityIndicator,
 	StatusBar,
 	Image,
+	Dimensions,
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
 import Snackbar from 'react-native-snackbar';
-import Carousel, { Pagination } from 'react-native-snap-carousel';
+import Carousel from 'react-native-snap-carousel';
 
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
@@ -30,7 +31,23 @@ export default class MoviesListsScreen extends Component {
 			username: '',
 			searchQuery: '',
 			filterYear: '',
-			recentMovies: [],
+			movieRecoms: [
+				{
+					title: 'The Green Mile' ,
+					titleId: 497 ,
+					posterPath: 'https://image.tmdb.org/t/p/original/sOHqdY1RnSn6kcfAHKu28jvTebE.jpg',
+				},
+				{
+					title: 'The Shawshank Redemption',
+					titleId: 278,
+					posterPath: 'https://image.tmdb.org/t/p/original/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg',
+				},
+				{
+					title: 'Good Will Hunting',
+					titleId: 489,
+					posterPath: 'https://image.tmdb.org/t/p/original/jq8LjngZ7XZEQge5JFTdOGMrHyZ.jpg',
+				},
+			],
 			scrollViewMargin: 60,
 			wishList: {
 				titleId: '',
@@ -289,18 +306,24 @@ export default class MoviesListsScreen extends Component {
 			fontSize: 16,
 			backgroundColor: '#3fc380',
 		});
-		fetch('https://api-cine-digest.herokuapp.com/api/v1')
-			.then(() => {
-				Snackbar.dismiss();
-			});
-
-		// Get recently listed movies for the current user
+		// Get recommendations from recently listed movies for the current user
 		this.getUsername()
 			.then((result) => {
-				db.getRecentMovies(result)
+				db.getMovieRecommendations(result)
 					.then((result) => {
-						this.setState({ recentMovies: result }, () => console.warn(this.state.recentMovies[0].title));
-					}, (error) => console.warn('ERROR in getRecentMovies/ MoviesListsScreen' + error));
+						// Promise takes time to resolve..
+						// wait 5 seconds before updating state.
+						setInterval(() => {
+							// Update state only if the resolved promise..
+							// is not empty.
+							result.length > 0 ?
+								this.setState({ movieRecoms: this.state.movieRecoms.concat(result) }, () => {
+									console.warn(result.length + ' is the len!');
+								}) : null;
+						}, 3000);
+					}, (error) => console.warn('ERROR in getMovieRecommendations/ MoviesListsScreen' + error))
+					.catch(error => console.warn('CAUGHT ERROR in getMovieRecommendations/ MoviesListsScreen' + error));
+				Snackbar.dismiss();
 			});
 		this.initLists();
 	}
@@ -342,18 +365,20 @@ export default class MoviesListsScreen extends Component {
 							refreshing={this.state.refreshing}
 							onRefresh={this._onRefresh}
 						/> }>
-
 					<View style={styles.carouselContainer}>
+						<Text style={styles.carouselHeader}>Based on your recent activity</Text>
 						<Carousel
 							layout={'default'}
-							data={this.state.recentMovies}
-							sliderWidth={250}
+							data={this.state.movieRecoms}
+							sliderWidth={Dimensions.get('window').width}
 							itemWidth={150}
 							autoplay={true}
+							autoplayInterval={5000}
+							firstItem={1}
 							loop={true}
+							loopClonesPerSide={0}
 							renderItem={this._renderItem} />
-					</View>
-
+						</View>
 					<View style={styles.listHeader}>
 						<View style={styles.listName}>
 							<Text>
@@ -403,11 +428,14 @@ const styles = StyleSheet.create({
 		width: '100%',
 		zIndex: 1,
 	},
+	carouselHeader: {
+		fontSize: 14,
+		color: '#67809f',
+		marginTop: 20,
+		marginBottom: 10,
+	},
 	carouselContainer: {
-		flexDirection: 'row',
-		justifyContent: 'center',
 		alignItems: 'center',
-		flex: 1,
 		backgroundColor: 'rgba(255, 255, 255, 0.1)',
 		width: '100%',
 		paddingBottom: 20,
@@ -416,7 +444,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginTop: 20,
 		borderRadius: 15,
 	},
 	carouselImage: {
