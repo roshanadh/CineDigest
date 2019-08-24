@@ -347,18 +347,19 @@ export default class MoviesScreen extends Component {
 			<ImageBackground blurRadius={1.3}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
+				<View style={styles.searchItem}>
+					<SearchItem onChangeText={this.searchFieldChangedHandler}
+						style={styles.searchItem}
+						placeholder="Search a TV show"
+						searchType="show"
+						onSubmitEditing={this.searchBtnPressedHandler} />
+				</View>
 				<ScrollView style={styles.scrollView}
 					refreshControl={
 						<RefreshControl
 							refreshing={this.state.refreshing}
 							onRefresh={this._onRefresh}
 						/> }>
-					<View style={styles.container}>
-						<SearchItem onChangeText={this.searchFieldChangedHandler}
-							placeholder="Search a TV show"
-							searchType="show"
-							onSubmitEditing={this.searchBtnPressedHandler} />
-					</View>
 					<View style={styles.listHeader}>
 						<View style={styles.listName}>
 							<Text>
@@ -419,11 +420,14 @@ const styles = StyleSheet.create({
 		height: '100%',
 		flex: 1,
 	},
-	container: {
-		flex: 1,
-		flexDirection: 'column',
-		justifyContent: 'flex-start',
-		alignItems: 'center',
+	searchItem: {
+		position: 'absolute',
+		top: 0,
+		width: '100%',
+		zIndex: 1,
+	},
+	scrollView: {
+		marginTop: 60,
 	},
 	wishListContainer: {
 		flexDirection: 'column',
