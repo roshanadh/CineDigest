@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import AsyncStorage from '@react-native-community/async-storage';
+import Snackbar from 'react-native-snackbar';
 
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
@@ -255,6 +256,17 @@ export default class MoviesListsScreen extends Component {
 	}
 
 	componentDidMount() {
+		Snackbar.show({
+			title: 'Initializing the app',
+			duration: Snackbar.LENGTH_INDEFINITE,
+			color: '#fefefe',
+			fontSize: 16,
+			backgroundColor: '#3fc380',
+		});
+		fetch('https://api-cine-digest.herokuapp.com/api/v1')
+			.then(() => {
+				Snackbar.dismiss();
+			});
 		this.initLists();
 	}
 
