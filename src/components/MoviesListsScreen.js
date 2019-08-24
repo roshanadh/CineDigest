@@ -306,10 +306,13 @@ export default class MoviesListsScreen extends Component {
 							searchType="movie"
 							onSubmitEditing={this.searchBtnPressedHandler} />
 					</View>
+
 					<View style={styles.listHeader}>
-						<Text>
-							Wish List
+						<View style={styles.listName}>
+							<Text>
+								Wish List
 							</Text>
+						</View>
 						<TouchableOpacity style={styles.viewAll} onPress={() => this.viewAllPressedHandler('wishList')}>
 							<Text style={styles.viewAllText}>
 								View All
@@ -319,10 +322,13 @@ export default class MoviesListsScreen extends Component {
 					<View style={styles.wishListContainer}>
 						{wishListJsx}
 					</View>
+
 					<View style={styles.listHeader}>
-						<Text>
-							Watched List
+						<View style={styles.listName}>
+							<Text>
+								Watched List
 							</Text>
+						</View>
 						<TouchableOpacity style={styles.viewAll} onPress={() => this.viewAllPressedHandler('watchedList')}>
 							<Text style={styles.viewAllText}>
 								View All
@@ -351,21 +357,19 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 	},
 	wishListContainer: {
-		marginTop: 5,
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
 		flex: 1,
 	},
 	watchedListContainer: {
-		marginTop: 5,
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
 		flex: 1,
 	},
 	listHeader: {
-		paddingLeft: 25,
+		paddingLeft: 10,
 		paddingRight: 25,
 		marginTop: 20,
 		flexDirection: 'row',
@@ -373,8 +377,19 @@ const styles = StyleSheet.create({
 		alignItems: 'flex-start',
 		flex: 1,
 	},
+	listName: {
+		padding: 10,
+		marginBottom: 0,
+		backgroundColor: 'rgba(218, 223, 225, 0.5)',
+		borderTopLeftRadius: 10,
+		borderTopRightRadius: 10,
+	},
+	viewAll: {
+		paddingTop: 10,
+	},
 	viewAllText: {
 		color: '#22a7f0',
+		fontSize: 15,
 	},
 });
 
