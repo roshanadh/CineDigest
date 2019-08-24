@@ -74,6 +74,6 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-end',
     },
     listInfoText: {
-        fontSize: 15,
+        fontSize: 14,
     },
 });
