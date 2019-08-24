@@ -53,7 +53,7 @@ export default class SearchItem extends Component{
 									() => {
 										this.setState(prevState => ({
 											showFilter: !prevState.showFilter,
-										}));
+										}), this.props.filterShown(!this.state.showFilter));
 									}
 								} />
 							<Icon name="search" size={20}
@@ -78,7 +78,7 @@ export default class SearchItem extends Component{
 							() => {
 								this.setState(prevState => ({
 									showFilter: !prevState.showFilter,
-								}));
+								}), this.props.filterShown(!this.state.showFilter));
 							}
 						} />
 					<Icon name="search" size={20}
