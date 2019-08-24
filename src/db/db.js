@@ -494,21 +494,22 @@ class Database {
 			});
 		}
 
-		deleteAll() {
-			return new Promise((resolve, reject) => {
-				SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-					.then(DB => {
-						let db = DB;
-						console.warn('Database OPEN');
-						db.transaction((tx) => {
-							console.warn('Transaction started..');
-							tx.executeSql('DELETE FROM users WHERE 1', [], (tx, results) => {
-								console.warn('SQL executed..');
-							});
+	deleteAll() {
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					console.warn('Database OPEN');
+					db.transaction((tx) => {
+						console.warn('Transaction started..');
+						tx.executeSql('DELETE FROM history WHERE 1', [], (tx, results) => {
+							console.warn('SQL executed..');
 						});
 					});
-			});
-		}
+				});
+		});
+	}
+
 	getRecentMovies(username) {
 		return new Promise((resolve, reject) => {
 			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
@@ -600,25 +601,57 @@ class Database {
 	getMovieRecommendations(username) {
 		return new Promise((resolve, reject) => {
 			this.getRecentMovies(username)
+			// Get last 5 entries to history table
 				.then((result) => {
-					if (result.length > 4) {
+					if (result.length > 2) {
+						// Proceed only if atleast 3 titles have been added to lists
 						let movieRecoms = [];
 						let titleIds = [];
-						for (let i = 0; i < 5; i++) {
-							titleIds.push(result[i].titleId);
-							fetch(`https://api-cine-digest.herokuapp.com/api/v1/getmr/${titleIds[i]}`)
-								.then(response => response.json())
-								.then(jsonResponse => {
-									movieRecoms.push({
-										title: jsonResponse.titles[0],
-										titleId: jsonResponse.titleIds[0],
-										posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.posterPaths[0]}`,
-									});
-									console.warn(movieRecoms[i].title + ' for ' + i);
-								})
-								.catch(error => console.warn('404 for ' + titleIds[i]));
-						}
-						resolve(movieRecoms);
+
+						SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+							.then(DB => {
+								// Iterate through recommendations for the 3 recently listed titles
+								for (let i = 0; i < 3; i++) {
+									titleIds.push(result[i].titleId);
+									fetch(`https://api-cine-digest.herokuapp.com/api/v1/getmr/${titleIds[i]}`)
+										.then(response => response.json())
+										.then(jsonResponse => {
+											let db = DB;
+
+											db.transaction((tx) => {
+												let index = 0;
+												let upperLimit = jsonResponse.titleIds.length < 3 ?
+													jsonResponse.titleIds.length : 3;
+
+												// Check if movie is already in a list
+												tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND titleId=? AND titleType=?', [username, jsonResponse.titleIds[index], 'movie'], (tx, results) => {
+													let len = results.rows.length;
+													while (true) {
+														if (len === 0) {
+															// Movie is not in a list, can be recommended
+															movieRecoms.push({
+																title: jsonResponse.titles[index],
+																titleId: jsonResponse.titleIds[index],
+																posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.posterPaths[index]}`,
+															});
+														}
+
+														if (index >= upperLimit) {
+															// Break if index crosses the upper limit
+															break;
+														}
+														++index;
+													}
+												});
+											});
+										})
+										.catch(error => console.warn('404 for ' + titleIds[i]));
+								}
+								resolve(movieRecoms);
+							})
+							.catch(error => {
+								console.warn(error);
+							});
 					} else {
 						reject(false);
 					}
