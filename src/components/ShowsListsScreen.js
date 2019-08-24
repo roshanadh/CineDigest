@@ -8,8 +8,10 @@ import {
 	ActivityIndicator,
 	RefreshControl,
 	Text,
+	Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import Carousel, { Pagination } from 'react-native-snap-carousel';
 
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
@@ -23,6 +25,7 @@ export default class MoviesScreen extends Component {
 			refreshing: false,
 			username: '',
 			searchQuery: '',
+			recentShows: [],
 			wishList: {
 				titleId: '',
 				title: '',
@@ -248,6 +251,19 @@ export default class MoviesScreen extends Component {
 					}, error => console.warn(error));
 			});
 		};
+
+		this._renderItem = (item, index) => {
+			return (
+				<TouchableOpacity style={styles.carouselItemContainer}
+					onPress={() => {
+						this.onListItemSelected(item.item.titleId, item.item.title);
+					}}>
+					<Image source={{ uri: item.item.posterPath }}
+						style={styles.carouselImage} />
+					<Text style={styles.carouselText}>{item.item.title}</Text>
+				</TouchableOpacity>
+			);
+		};
 	}
 
 	_onRefresh = () => {
@@ -277,18 +293,6 @@ export default class MoviesScreen extends Component {
 					searchQuery: this.state.searchQuery,
 					searchType: 's',
 					username: this.state.username,
-				});
-			}, (error) => {
-				netCon.showSnackBar('An internet connection is required!');
-			});
-	};
-
-	onIdSelected = (itemId, itemTitle) => {
-		netCon.checkNetCon()
-			.then((result) => {
-				this.props.navigation.navigate('ShowDetailsScreen', {
-					screenName: itemTitle,
-					titleId: itemId,
 				});
 			}, (error) => {
 				netCon.showSnackBar('An internet connection is required!');
@@ -338,7 +342,16 @@ export default class MoviesScreen extends Component {
 		}
 	}
 
+
 	componentDidMount() {
+		// Get recently listed shows for the current user
+		this.getUsername()
+			.then((result) => {
+				db.getRecentShows(result)
+					.then((result) => {
+						this.setState({ recentShows: result }, () => console.warn(this.state.recentShows[0]));
+					}, (error) => console.warn('ERROR in getRecentShows/ ShowsListsScreen' + error));
+			});
 		this.initLists();
 	}
 
@@ -360,6 +373,18 @@ export default class MoviesScreen extends Component {
 							refreshing={this.state.refreshing}
 							onRefresh={this._onRefresh}
 						/> }>
+
+					<View style={styles.carouselContainer}>
+						<Carousel
+							layout={'default'}
+							data={this.state.recentShows}
+							sliderWidth={250}
+							itemWidth={150}
+							autoplay={true}
+							loop={true}
+							renderItem={this._renderItem} />
+					</View>
+
 					<View style={styles.listHeader}>
 						<View style={styles.listName}>
 							<Text>
@@ -428,6 +453,32 @@ const styles = StyleSheet.create({
 	},
 	scrollView: {
 		marginTop: 60,
+	},
+	carouselContainer: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		flex: 1,
+		backgroundColor: 'rgba(255, 255, 255, 0.1)',
+		width: '100%',
+		paddingBottom: 20,
+	},
+	carouselItemContainer: {
+		flex: 1,
+		justifyContent: 'center',
+		alignItems: 'center',
+		marginTop: 20,
+		borderRadius: 15,
+	},
+	carouselImage: {
+		width: 150,
+		height: 200,
+		borderRadius: 10,
+	},
+	carouselText: {
+		marginTop: 10,
+		fontSize: 15,
+		color: '#2e3131',
 	},
 	wishListContainer: {
 		flexDirection: 'column',
