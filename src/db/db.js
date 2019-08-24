@@ -509,6 +509,75 @@ class Database {
 					});
 			});
 		}
+	getRecentMovies(username) {
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					console.warn('Database OPEN');
+					db.transaction((tx) => {
+						console.warn('Transaction started..');
+						tx.executeSql('SELECT * FROM history WHERE titleType=? AND username=?', ['movie', username], (tx, results) => {
+							// Get recent five additions to history
+							let len = results.rows.length;
+							if (len > 0) {
+								let movieTitleIds = [];
+								let movieTitles = [];
+								let moviePosterPaths = [];
+								for (let i = len - 1; i > len - 6; i--) {
+									let row = results.rows.item(i);
+									movieTitleIds.push(row.titleId);
+									movieTitles.push(row.titleName);
+									moviePosterPaths.push(row.titlePosterPath);
+								}
+								resolve({
+									movieTitleIds,
+									movieTitles,
+									moviePosterPaths,
+								});
+							} else {
+								reject(false);
+							}
+						});
+					});
+				});
+		});
+	}
+
+	getRecentShows(username) {
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					console.warn('Database OPEN');
+					db.transaction((tx) => {
+						console.warn('Transaction started..');
+						tx.executeSql('SELECT * FROM history WHERE titleType=? AND username=?', ['show', username], (tx, results) => {
+							// Get recent five additions to history
+							let len = results.rows.length;
+							if (len > 0) {
+								let movieTitleIds = [];
+								let movieTitles = [];
+								let moviePosterPaths = [];
+								for (let i = len - 1; i > len - 6; i--) {
+									let row = results.rows.item(i);
+									movieTitleIds.push(row.titleId);
+									movieTitles.push(row.titleName);
+									moviePosterPaths.push(row.titlePosterPath);
+								}
+								resolve({
+									movieTitleIds,
+									movieTitles,
+									moviePosterPaths,
+								});
+							} else {
+								reject(false);
+							}
+						});
+					});
+				});
+		});
+	}
 }
 
 const db = new Database();
