@@ -510,7 +510,7 @@ class Database {
 		});
 	}
 
-	getRecentMovies(username) {
+	getRecentTitles(username, titleType) {
 		return new Promise((resolve, reject) => {
 			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
 				.then(DB => {
@@ -518,11 +518,11 @@ class Database {
 					console.warn('Database OPEN');
 					db.transaction((tx) => {
 						console.warn('Transaction started..');
-						tx.executeSql('SELECT * FROM history WHERE titleType=? AND username=?', ['movie', username], (tx, results) => {
+						tx.executeSql('SELECT * FROM history WHERE titleType=? AND username=?', [titleType, username], (tx, results) => {
 							// Get recent five additions to history
 							let len = results.rows.length;
 							if (len > 0) {
-								let recentMovies = [];
+								let recentTitles = [];
 								let lowerLimit = 0;
 								switch (len) {
 									case len <= 5:
@@ -535,60 +535,14 @@ class Database {
 								}
 
 								for (let i = len - 1; i >= lowerLimit; i--) {
-									// console.warn(i);
 									let row = results.rows.item(i);
-									recentMovies.push({
+									recentTitles.push({
 										title: row.titleName,
 										titleId: row.titleId,
 										posterPath: row.titlePosterPath,
 									});
-									// console.warn(recentMovies[i]);
 								}
-								resolve(recentMovies);
-							} else {
-								reject(false);
-							}
-						});
-					});
-				});
-		});
-	}
-
-	getRecentShows(username) {
-		return new Promise((resolve, reject) => {
-			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-				.then(DB => {
-					let db = DB;
-					console.warn('Database OPEN');
-					db.transaction((tx) => {
-						console.warn('Transaction started..');
-						tx.executeSql('SELECT * FROM history WHERE titleType=? AND username=?', ['show', username], (tx, results) => {
-							// Get recent five additions to history
-							let len = results.rows.length;
-							if (len > 0) {
-								let recentShows = [];
-								let lowerLimit = 0;
-								switch (len) {
-									case len <= 5:
-										lowerLimit = 0;
-										break;
-									case len > 6:
-										lowerLimit = len - 6;
-										break;
-									default: null;
-								}
-
-								for (let i = len - 1; i >= lowerLimit; i--) {
-									// console.warn(i);
-									let row = results.rows.item(i);
-									recentShows.push({
-										title: row.titleName,
-										titleId: row.titleId,
-										posterPath: row.titlePosterPath,
-									});
-									// console.warn(recentMovies[i]);
-								}
-								resolve(recentShows);
+								resolve(recentTitles);
 							} else {
 								reject(false);
 							}
@@ -600,7 +554,7 @@ class Database {
 
 	getTitleRecommendations(username, titleType) {
 		return new Promise((resolve, reject) => {
-			this.getRecentMovies(username)
+			this.getRecentTitles(username, titleType)
 			// Get last 5 entries to history table
 				.then((result) => {
 					if (result.length > 2) {
