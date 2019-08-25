@@ -6,8 +6,10 @@ import {
     ImageBackground,
     ScrollView,
     RefreshControl,
+    Alert,
 } from 'react-native';
 import Snackbar from 'react-native-snackbar';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import FullListContainer from './FullListContainer';
 import db from '../db/db';
@@ -16,22 +18,22 @@ import netCon from '../util/NetCon';
 export default class FullListScreen extends Component {
     static navigationOptions = ({navigation}) => {
         const titleType = navigation.getParam('titleType') === 'movie' ? 'Movies\'' : 'Shows\'';
-        let listType = '';
+        let listTypeForHeader = '';
         switch (navigation.getParam('listType')) {
             case 'wishList':
-                listType = 'Wish List';
+                listTypeForHeader = 'Wish List';
                 break;
             case 'watchedList':
-                listType = 'Watched List';
+                listTypeForHeader = 'Watched List';
                 break;
             case 'watchingList':
-                listType = 'Watching List';
+                listTypeForHeader = 'Watching List';
                 break;
             default:
-                listType = 'List';
+                listTypeForHeader = 'List';
         }
         return {
-            title: titleType + ' ' + listType,
+            title: titleType + ' ' + listTypeForHeader,
             headerTitleStyle: {
                 color: '#fefefe',
             },
@@ -40,6 +42,20 @@ export default class FullListScreen extends Component {
                 backgroundColor: '#6bb9f0',
                 elevation: 0,
             },
+            headerRight: (
+                <Icon name="delete"
+                    style={styles.trashIcon}
+                    size={28}
+                    onPress={() => {
+                        let username = navigation.getParam('username', null);
+                        let listType = navigation.getParam('listType', null);
+                        let titleType = navigation.getParam('titleType', null);
+                        db.deleteAllListItems(username, listType, titleType)
+                            .then((result) => {
+                                Alert.alert('Success', `Your ${listTypeForHeader} has been cleared!`);
+                            }, (error) => Alert.alert('Oops', 'Please try again!'));
+                    }} />
+            ),
         };
     }
     constructor(props, context) {
@@ -258,12 +274,11 @@ export default class FullListScreen extends Component {
 
     componentDidMount() {
         this.initState()
-        .then(() => this.initList())
-        .catch(error => alert(error.message));
+            .then(() => this.initList())
+            .catch(error => alert(error.message));
     }
 
     render() {
-        console.warn('From screen: listLength new: ' + this.state.listLength)
         if (!this.state.isEmpty) {
             return (
                 <ImageBackground blurRadius={1.3}
@@ -299,6 +314,10 @@ const styles = StyleSheet.create({
         width: '100%',
         height: '100%',
         flex: 1,
+    },
+    trashIcon: {
+        color: '#c0392b',
+        marginRight: 30,
     },
     container: {
         flex: 1,
