@@ -26,7 +26,23 @@ export default class ShowsListsScreen extends Component {
 			refreshing: false,
 			username: '',
 			searchQuery: '',
-			showRecoms: [],
+			showRecoms: [
+				{
+					title: 'Game of Thrones',
+					titleId: 1399,
+					posterPath: 'https://image.tmdb.org/t/p/original/u3bZgnGQ9T01sWNhyveQz0wH0Hl.jpg',
+				},
+				{
+					title: 'Stranger Things',
+					titleId: 66732,
+					posterPath: 'https://image.tmdb.org/t/p/original/x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg',
+				},
+				{
+					title: 'The Sopranos',
+					titleId: 1398,
+					posterPath: 'https://image.tmdb.org/t/p/original/u0cLcBQITrYqfHsn06fxnQwtqiE.jpg',
+				},
+			],
 			wishList: {
 				titleId: '',
 				title: '',
