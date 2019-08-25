@@ -274,8 +274,8 @@ export default class FullListScreen extends Component {
 
     componentDidMount() {
         this.initState()
-        .then(() => this.initList())
-        .catch(error => alert(error.message));
+            .then(() => this.initList())
+            .catch(error => alert(error.message));
     }
 
     render() {
