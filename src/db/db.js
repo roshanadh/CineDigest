@@ -598,22 +598,23 @@ class Database {
 		});
 	}
 
-	getMovieRecommendations(username) {
+	getTitleRecommendations(username, titleType) {
 		return new Promise((resolve, reject) => {
 			this.getRecentMovies(username)
 			// Get last 5 entries to history table
 				.then((result) => {
 					if (result.length > 2) {
 						// Proceed only if atleast 3 titles have been added to lists
-						let movieRecoms = [];
+						let recoms = [];
 						let titleIds = [];
+						let getRecomPath = titleType === 'movie' ? 'getmr' : 'getsr';
 
 						SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
 							.then(DB => {
 								// Iterate through recommendations for the 3 recently listed titles
 								for (let i = 0; i < 3; i++) {
 									titleIds.push(result[i].titleId);
-									fetch(`https://api-cine-digest.herokuapp.com/api/v1/getmr/${titleIds[i]}`)
+									fetch(`https://api-cine-digest.herokuapp.com/api/v1/${getRecomPath}/${titleIds[i]}`)
 										.then(response => response.json())
 										.then(jsonResponse => {
 											let db = DB;
@@ -624,12 +625,12 @@ class Database {
 													jsonResponse.titleIds.length : 3;
 
 												// Check if movie is already in a list
-												tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND titleId=? AND titleType=?', [username, jsonResponse.titleIds[index], 'movie'], (tx, results) => {
+												tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND titleId=? AND titleType=?', [username, jsonResponse.titleIds[index], titleType], (tx, results) => {
 													let len = results.rows.length;
 													while (true) {
 														if (len === 0) {
 															// Movie is not in a list, can be recommended
-															movieRecoms.push({
+															recoms.push({
 																title: jsonResponse.titles[index],
 																titleId: jsonResponse.titleIds[index],
 																posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.posterPaths[index]}`,
@@ -647,7 +648,7 @@ class Database {
 										})
 										.catch(error => console.warn('404 for ' + titleIds[i]));
 								}
-								resolve(movieRecoms);
+								resolve(recoms);
 							})
 							.catch(error => {
 								console.warn(error);
