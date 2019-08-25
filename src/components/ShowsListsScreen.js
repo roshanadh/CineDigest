@@ -9,6 +9,7 @@ import {
 	RefreshControl,
 	Text,
 	Image,
+	Dimensions,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import Carousel, { Pagination } from 'react-native-snap-carousel';
@@ -18,14 +19,30 @@ import SearchItem from './SearchItem';
 import db from '../db/db';
 import netCon from '../util/NetCon';
 
-export default class MoviesScreen extends Component {
+export default class ShowsListsScreen extends Component {
 	constructor(props, context) {
 		super(props, context);
 		this.state = {
 			refreshing: false,
 			username: '',
 			searchQuery: '',
-			recentShows: [],
+			showRecoms: [
+				{
+					title: 'Game of Thrones',
+					titleId: 1399,
+					posterPath: 'https://image.tmdb.org/t/p/original/u3bZgnGQ9T01sWNhyveQz0wH0Hl.jpg',
+				},
+				{
+					title: 'Stranger Things',
+					titleId: 66732,
+					posterPath: 'https://image.tmdb.org/t/p/original/x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg',
+				},
+				{
+					title: 'The Sopranos',
+					titleId: 1398,
+					posterPath: 'https://image.tmdb.org/t/p/original/u0cLcBQITrYqfHsn06fxnQwtqiE.jpg',
+				},
+			],
 			wishList: {
 				titleId: '',
 				title: '',
@@ -347,11 +364,20 @@ export default class MoviesScreen extends Component {
 		// Get recently listed shows for the current user
 		this.getUsername()
 			.then((result) => {
-				db.getRecentShows(result)
+				db.getTitleRecommendations(result, 'show')
 					.then((result) => {
-						this.setState({ recentShows: result }, () => console.warn(this.state.recentShows[0]));
-					}, (error) => console.warn('ERROR in getRecentShows/ ShowsListsScreen' + error))
-					.catch(error => alert('OOPS could not recommend!'))
+						// Promise takes time to resolve..
+						// wait 5 seconds before updating state.
+						setTimeout(() => {
+							// Update state only if the resolved promise..
+							// is not empty.
+							result.length > 0 ?
+								this.setState({ showRecoms: this.state.showRecoms.concat(result) }, () => {
+									console.warn(result.length + ' is the len!');
+								}) : null;
+						}, 3000);
+					}, (error) => console.warn('ERROR in getTitleRecommendations/ ShowsListsScreen' + error))
+					.catch(error => console.warn('CAUGHT ERROR in getTitleRecommendations/ ShowsListsScreen' + error));
 			});
 		this.initLists();
 	}
@@ -378,11 +404,14 @@ export default class MoviesScreen extends Component {
 					<View style={styles.carouselContainer}>
 						<Carousel
 							layout={'default'}
-							data={this.state.recentShows}
-							sliderWidth={250}
+							data={this.state.showRecoms}
+							sliderWidth={Dimensions.get('window').width}
 							itemWidth={150}
 							autoplay={true}
+							autoplayInterval={5000}
+							firstItem={1}
 							loop={true}
+							loopClonesPerSide={0}
 							renderItem={this._renderItem} />
 					</View>
 
@@ -456,10 +485,8 @@ const styles = StyleSheet.create({
 		marginTop: 60,
 	},
 	carouselContainer: {
-		flexDirection: 'row',
-		justifyContent: 'center',
+		marginTop: 20,
 		alignItems: 'center',
-		flex: 1,
 		backgroundColor: 'rgba(255, 255, 255, 0.1)',
 		width: '100%',
 		paddingBottom: 20,
@@ -468,7 +495,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: 'center',
 		alignItems: 'center',
-		marginTop: 20,
 		borderRadius: 15,
 	},
 	carouselImage: {
@@ -477,21 +503,26 @@ const styles = StyleSheet.create({
 		borderRadius: 10,
 	},
 	carouselText: {
-		marginTop: 10,
+		width: 150,
+		paddingTop: 10,
+		paddingBottom: 10,
 		fontSize: 15,
 		color: '#2e3131',
+		textAlign: 'center',
 	},
 	wishListContainer: {
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
 		flex: 1,
+		marginBottom: 20,
 	},
 	watchingListContainer: {
 		flexDirection: 'column',
 		justifyContent: 'center',
 		alignItems: 'center',
 		flex: 1,
+		marginBottom: 20,
 	},
 	watchedListContainer: {
 		flexDirection: 'column',
@@ -502,7 +533,6 @@ const styles = StyleSheet.create({
 	listHeader: {
 		paddingLeft: 10,
 		paddingRight: 25,
-		marginTop: 20,
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		alignItems: 'flex-start',

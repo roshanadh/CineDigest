@@ -309,7 +309,7 @@ export default class MoviesListsScreen extends Component {
 		// Get recommendations from recently listed movies for the current user
 		this.getUsername()
 			.then((result) => {
-				db.getMovieRecommendations(result)
+				db.getTitleRecommendations(result, 'movie')
 					.then((result) => {
 						// Promise takes time to resolve..
 						// wait 5 seconds before updating state.
@@ -321,8 +321,8 @@ export default class MoviesListsScreen extends Component {
 									console.warn(result.length + ' is the len!');
 								}) : null;
 						}, 3000);
-					}, (error) => console.warn('ERROR in getMovieRecommendations/ MoviesListsScreen' + error))
-					.catch(error => console.warn('CAUGHT ERROR in getMovieRecommendations/ MoviesListsScreen' + error));
+					}, (error) => console.warn('ERROR in getTitleRecommendations/ MoviesListsScreen' + error))
+					.catch(error => console.warn('CAUGHT ERROR in getTitleRecommendations/ MoviesListsScreen' + error));
 				Snackbar.dismiss();
 			});
 		this.initLists();
