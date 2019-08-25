@@ -613,6 +613,24 @@ class Database {
 				});
 		});
 	}
+
+	deleteAllListItems(username, listType, titleType) {
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					console.warn('Database OPEN');
+					db.transaction((tx) => {
+						console.warn('Transaction started..');
+						tx.executeSql('DELETE FROM history WHERE username=? AND listType=? AND titleType=?', [username, listType, titleType], (tx, results) => {
+							console.warn('DELETED all ' + listType + ' items for ' + username + '/' + titleType);
+							resolve(true);
+						});
+					})
+					.catch(error => reject(error));
+				});
+		});
+	}
 }
 
 const db = new Database();
