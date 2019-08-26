@@ -39,7 +39,6 @@ class Database {
 												password,
 												name,
 											});
-											// db.close();
 										})
 										.catch(error => {
 											console.warn('Error in INSERT: ' + error.message);
@@ -49,7 +48,6 @@ class Database {
 												password,
 												name,
 											});
-											// db.close();
 										});
 								});
 						})
@@ -111,7 +109,6 @@ class Database {
 								Alert.alert('Error', error.message);
 							});
 					});
-					// DB.close();
 				})
 				.catch(error => {
 					Alert.alert('Error', 'Couldn\'t open database!' + error.message);
@@ -153,7 +150,6 @@ class Database {
 										resolve(false);
 									});
 							});
-							// db.close();
 						});
 				})
 				.catch(error => console.warn(error.message));
@@ -239,7 +235,6 @@ class Database {
 								reject(error);
 							});
 						});
-					// DB.close();
 				})
 				.catch(error => console.warn(error.message));
 		});
@@ -279,7 +274,6 @@ class Database {
 									});
 							});
 						});
-					// DB.close();
 				})
 				.catch(error => console.warn(error.message));
 		});
@@ -326,16 +320,14 @@ class Database {
 														(tx, results) => {});
 												});
 											});
+									});
 								});
-							});
 						})
 						.then(() => {
 							resolve(true);
-							// db.close();
 						})
 						.catch(error => {
 							reject(error);
-							// db.close();
 						});
 				})
 				.catch(error => console.warn(error.message));
@@ -400,14 +392,12 @@ class Database {
 											});
 								});
 							})
-							.then(() => {
-								resolve(true);
-								// db.close();
-							})
-							.catch(error => {
-								reject(error);
-								// db.close();
-							});
+								.then(() => {
+									resolve(true);
+								})
+								.catch(error => {
+									reject(error);
+								});
 					});
 				})
 				.catch(error => console.warn(error.message));
@@ -437,7 +427,6 @@ class Database {
 								console.warn('OH OH len: ' + len);
 							});
 					});
-					// db.close();
 				})
 				.catch(error => {
 					resolve(error.message);
@@ -484,9 +473,7 @@ class Database {
 					})
 					.catch(error => {
 						console.log(error.message);
-						// db.close();
 					});
-					// db.close();
 				})
 				.catch(error => {
 					console.warn(error.message);
@@ -506,7 +493,6 @@ class Database {
 							console.warn('SQL executed..');
 						});
 					});
-					// db.close();
 				})
 				.catch(error => {
 					console.warn(error.message);
@@ -552,7 +538,6 @@ class Database {
 							}
 						});
 					});
-					// db.close();
 				})
 				.catch(error => {
 					console.warn(error.message);
@@ -611,7 +596,6 @@ class Database {
 										.catch(error => console.warn('404 for ' + titleIds[i]));
 								}
 								resolve(recoms);
-								// db.close();
 							})
 							.catch(error => {
 								console.warn(error);
@@ -638,7 +622,6 @@ class Database {
 					})
 					.catch(error => {
 						reject(error);
-						// db.close();
 					});
 				})
 				.catch(error => {
