@@ -9,6 +9,35 @@ SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
 class Database {
+	getUser(username) {
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					console.warn('Database OPEN');
+					db.transaction((tx) => {
+						console.warn('Transaction started..');
+						tx.executeSql('SELECT * FROM users WHERE username=?;', [username], (tx, results) => {
+							// Get user details
+							let len = results.rows.length;
+							if (len > 0) {
+								let details = {};
+								let row = results.rows.item(0);
+								resolve({
+									username,
+									name: row.name,
+								});
+							} else {
+								reject(false);
+							}
+						});
+					});
+				})
+				.catch(error => {
+					console.warn(error.message);
+				});
+		});
+	}
 	addUser(username, password, name) {
 		let db;
 		return new Promise((resolve, reject) => {
