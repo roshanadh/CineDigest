@@ -426,6 +426,7 @@ const styles = StyleSheet.create({
 		top: 0,
 		width: '100%',
 		zIndex: 1,
+		padding: 0,
 	},
 	carouselContainer: {
 		marginTop: 20,
