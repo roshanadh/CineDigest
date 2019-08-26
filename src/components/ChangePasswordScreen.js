@@ -6,6 +6,8 @@ import {
     TouchableOpacity,
     StyleSheet,
     ActivityIndicator,
+    ScrollView,
+    ImageBackground,
 } from 'react-native';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
@@ -35,67 +37,75 @@ export default class ChangePassword extends Component {
     render() {
         let indicatorJsx = this.state.isLoading ?
             <ActivityIndicator size="small" color="#fefefe"
-                style={styles.indicator} /> : null;
+                style={styles.indicator} /> : <View style={styles.emptyView} />;
         let newPasswordLengthErrorTextJsx =
             this.state.newPassword.length > 0 && this.state.newPassword.length < 6 ?
                 <Text style={styles.errorText}>Password must contain atleast 6 characters</Text> : null;
         let confirmPasswordErrorTextJsx =
             this.state.passwordConfirmation.length > 0 && (this.state.newPassword !== this.state.passwordConfirmation) ?
-                <Text style={styles.errorText}>Passwords do not match</Text> : null;
+                <Text style={styles.errorText}>Passwords do not match</Text> : <View style={styles.emptyView} />;
 
 
         return (
-            <View style={styles.container}>
-                <View style={styles.textInputWrapper}>
-                    <TextInput placeholder="Old Password"
-                        secureTextEntry={true}
-                        editable={this.state.isPasswordEditable}
-                        style={styles.textInput}
-                        autoCapitalize="none"
-                        onChangeText={oldPassword => this.setState({oldPassword})}
-                        returnKeyType="next" />
-						<KeyIcon name="key" size={25} color="#ddd" />
-                </View>
-                <View style={styles.textInputWrapper}>
-                    <TextInput placeholder="New Password"
-                        secureTextEntry={true}
-                        editable={this.state.isPasswordEditable}
-                        style={styles.textInput}
-                        autoCapitalize="none"
-                        onChangeText={newPassword => this.setState({newPassword})}
-                        returnKeyType="next" />
-						<KeyIcon name="key" size={25} color="#ddd" />
-                </View>
-                <View style={styles.textInputWrapper}>
-                    <TextInput placeholder="Confirm New Password"
-                        secureTextEntry={true}
-                        editable={this.state.isPasswordEditable}
-                        style={styles.textInput}
-                        autoCapitalize="none"
-                        onChangeText={passwordConfirmation => this.setState({passwordConfirmation})}
-                        returnKeyType="next" />
-						<KeyIcon name="key" size={25} color="#ddd" />
-                </View>
-                <TouchableOpacity style={styles.changePassBtn}
-                    onPress={() => console.warn('Pressed!')}>
-                    <Text style={styles.btnText}>Change Password</Text>
-                    {indicatorJsx}
-                </TouchableOpacity>
-                <View style={styles.footer}>
-                    {newPasswordLengthErrorTextJsx}
-                    {confirmPasswordErrorTextJsx}
-                </View>
-            </View>
+            <ImageBackground blurRadius={1.3}
+                source={require('../assets/lilypads.png')}
+                resizeMode="cover" style={styles.bgImage}>
+                <ScrollView style={styles.scrollView}>
+                    <View style={styles.textInputWrapper}>
+                        <TextInput placeholder="Old Password"
+                            secureTextEntry={true}
+                            editable={this.state.isPasswordEditable}
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            onChangeText={oldPassword => this.setState({ oldPassword })}
+                            returnKeyType="next" />
+                        <KeyIcon name="key" size={25} color="#ddd" />
+                    </View>
+                    <View style={styles.textInputWrapper}>
+                        <TextInput placeholder="New Password"
+                            secureTextEntry={true}
+                            editable={this.state.isPasswordEditable}
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            onChangeText={newPassword => this.setState({ newPassword })}
+                            returnKeyType="next" />
+                        <KeyIcon name="key" size={25} color="#ddd" />
+                    </View>
+                    <View style={styles.textInputWrapper}>
+                        <TextInput placeholder="Confirm New Password"
+                            secureTextEntry={true}
+                            editable={this.state.isPasswordEditable}
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            onChangeText={passwordConfirmation => this.setState({ passwordConfirmation })}
+                            returnKeyType="next" />
+                        <KeyIcon name="key" size={25} color="#ddd" />
+                    </View>
+                    <TouchableOpacity style={styles.changePassBtn}
+                        onPress={() => console.warn('Pressed!')}>
+                        <Text style={styles.btnText}>Change Password</Text>
+                        {indicatorJsx}
+                    </TouchableOpacity>
+                    <View style={styles.footer}>
+                        {newPasswordLengthErrorTextJsx}
+                        {confirmPasswordErrorTextJsx}
+                    </View>
+                </ScrollView>
+            </ImageBackground>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    container: {
-        justifyContent: 'center',
-        padding: 20,
+    bgImage: {
+        width: '100%',
+        height: '100%',
         flex: 1,
-        alignItems: 'center',
+    },
+    scrollView: {
+        marginTop: 50,
+        paddingLeft: 20,
+        paddingRight: 20,
     },
     textInputWrapper: {
         flexDirection: 'row',
@@ -140,6 +150,10 @@ const styles = StyleSheet.create({
         fontSize: 14,
         alignSelf: 'center',
         textAlign: 'center',
+        marginBottom: 10,
+    },
+    emptyView: {
+        // marginTop: 30,
         marginBottom: 10,
     },
 });
