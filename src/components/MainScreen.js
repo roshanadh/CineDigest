@@ -1,8 +1,4 @@
-import React from 'react';
 import {
-    TouchableOpacity,
-    Text,
-    View,
     Platform,
     StatusBar,
 } from 'react-native';
@@ -19,7 +15,7 @@ import FullListScreen from './FullListScreen';
 import TabNavigator from './TabNavigator';
 import SearchScreen from './SearchScreen';
 import RecommendationsScreen from './RecommendationsScreen';
-import ChangePassword from './ChangePassword';
+import ChangePasswordScreen from './ChangePasswordScreen';
 
 const StackNavigator = createAppContainer(new createStackNavigator(
     {
@@ -35,7 +31,7 @@ const StackNavigator = createAppContainer(new createStackNavigator(
         SearchScreen,
         FullListScreen,
         RecommendationsScreen,
-        ChangePassword,
+        ChangePasswordScreen,
     },
     {
         cardStyle: {
