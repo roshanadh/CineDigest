@@ -37,14 +37,13 @@ export default class SettingsScreen extends Component {
         this.changeEditable = (field) => {
             switch (field) {
                 case 'name':
-                    this.setState(prevState => ({ isNameEditable: !prevState.isNameEditable }));
+                    this.setState({isNameEditable: true});
                     break;
                 case 'username':
-                    this.setState(prevState => ({ isUsernameEditable: !prevState.isUsernameEditable }));
+                    this.setState({ isUsernameEditable: true });
                     break;
                 case 'password':
-                    this.setState(prevState => ({ isPasswordEditable: !prevState.isPasswordEditable }));
-                    break;
+                    this.setState({ isPasswordEditable: true });
                 default: null;
             }
         };
