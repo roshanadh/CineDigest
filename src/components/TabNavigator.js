@@ -10,7 +10,7 @@ import MoreIcon from 'react-native-vector-icons/MaterialIcons';
 
 import MoviesListsScreen from './MoviesListsScreen';
 import ShowsListsScreen from './ShowsListsScreen';
-import SettingsScreen from './SettingsScreen';
+import ProfileScreen from './ProfileScreen';
 
 const TabNavigator = createMaterialTopTabNavigator(
     {
@@ -32,8 +32,8 @@ const TabNavigator = createMaterialTopTabNavigator(
                 ),
             },
         },
-        SettingsScreen: {
-            screen: SettingsScreen,
+        ProfileScreen: {
+            screen: ProfileScreen,
             navigationOptions: {
                 tabBarLabel: 'Profile',
                 tabBarIcon: ({tintColor}) => (
