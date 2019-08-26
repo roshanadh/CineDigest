@@ -17,7 +17,6 @@ import ActionButton from 'react-native-action-button';
 import AsyncStorage from '@react-native-community/async-storage';
 import Snackbar from 'react-native-snackbar';
 import Carousel from 'react-native-snap-carousel';
-import Icon from 'react-native-vector-icons/Ionicons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
@@ -25,6 +24,7 @@ import ListItem from './ListItem';
 import SearchItem from './SearchItem';
 import db from '../db/db';
 import netCon from '../util/NetCon';
+import { onSignOut } from '../auth/auth';
 
 export default class MoviesListsScreen extends Component {
 	constructor(props, context) {
@@ -356,7 +356,10 @@ export default class MoviesListsScreen extends Component {
 					(<FeatherIcon name="settings" style={styles.actionButtonIcon} size={30} />)
 					: (<FeatherIcon name="settings" style={styles.actionButtonIcon} />)} >
 
-				<ActionButton.Item buttonColor="#db0a5b" title="Sign out" style={styles.actionButtonItem} onPress={() => { }}>
+				<ActionButton.Item buttonColor="#db0a5b"
+					title="Sign out"
+					style={styles.actionButtonItem}
+					onPress={(() => onSignOut().then(() => this.props.navigation.navigate('SignedOut')))}>
 					<SimpleLineIcons name="logout" style={styles.actionButtonIcon} />
 				</ActionButton.Item>
 			</ActionButton>;
@@ -448,7 +451,6 @@ const styles = StyleSheet.create({
 	},
 	fab: {
 		zIndex: 1,
-		marginBottom: 50,
 	},
 	fabShadow: {
 		borderRadius: 50,
