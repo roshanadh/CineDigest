@@ -7,6 +7,7 @@ import {
     ImageBackground,
     TextInput,
     ScrollView,
+    ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import EditIcon from 'react-native-vector-icons/Feather';
@@ -67,6 +68,33 @@ export default class SettingsScreen extends Component {
     }
 
     render() {
+        let indicatorJsx = this.state.isLoading ?
+            <ActivityIndicator size="small" color="#fefefe"
+                style={styles.indicator} /> : null;
+
+        let usernameLengthErrorTextJsx =
+            this.state.username.length > 0 && this.state.username.length < 6 ?
+                <Text style={styles.errorText}>Username must contain atleast 6 characters</Text> : null;
+
+        let usernameCharErrorTextJsx =
+            this.state.username.includes('.') || this.state.username.includes('/') ||
+            this.state.username.includes('\\') || this.state.username.includes('|') ||
+            this.state.username.includes('~') || this.state.username.includes('`') ||
+            this.state.username.includes('!') || this.state.username.includes('@') ||
+            this.state.username.includes('+') || this.state.username.includes('-') ||
+            this.state.username.includes('*') || this.state.username.includes('=') ||
+            this.state.username.includes('#') || this.state.username.includes('$') ||
+            this.state.username.includes('%') || this.state.username.includes('^') ||
+            this.state.username.includes('&') || this.state.username.includes('(') ||
+            this.state.username.includes(')') || this.state.username.includes(';') ||
+            this.state.username.includes(':') || this.state.username.includes('{') ||
+            this.state.username.includes('}') || this.state.username.includes('[') ||
+            this.state.username.includes(']') || this.state.username.includes('\'') ||
+            this.state.username.includes('"') || this.state.username.includes('?') ||
+            this.state.username.includes('<') || this.state.username.includes('>') ||
+            this.state.username.includes(',') || this.state.username.includes(' ') ?
+                <Text style={styles.errorText}>Username must not contain any special characters</Text> : null;
+
         let changePassJsx =
             this.state.isPasswordEditable ?
                 <View style={styles.changePassContainer}>
@@ -149,7 +177,12 @@ export default class SettingsScreen extends Component {
                         <TouchableOpacity style={styles.saveProfileBtn}
                             onPress={() => console.warn('Saved Profile!')}>
                             <Text style={styles.btnText}>Save Profile</Text>
+                            {indicatorJsx}
                         </TouchableOpacity>
+                        <View style={styles.footer}>
+                            {usernameLengthErrorTextJsx}
+                            {usernameCharErrorTextJsx}
+                        </View>
                     </View>
                 </ScrollView>
             </ImageBackground>
@@ -218,14 +251,31 @@ const styles = StyleSheet.create({
         opacity: 1,
     },
     saveProfileBtn: {
-        marginTop: 25,
+        flexDirection: 'row',
+        justifyContent: 'center',
         alignItems: 'center',
+        alignSelf: 'center',
         borderRadius: 50,
+        marginTop: 20,
         padding: 15,
         width: '50%',
         backgroundColor: '#22a7f0',
     },
     btnText: {
-		color: '#fff',
-	},
+        color: '#fff',
+        fontSize: 15,
+    },
+    indicator: {
+        marginLeft: 20,
+    },
+    footer: {
+        marginTop: 30,
+    },
+    errorText: {
+        color: '#e74c3c',
+        fontSize: 14,
+        alignSelf: 'center',
+        textAlign: 'center',
+        marginBottom: 10,
+    },
 });
