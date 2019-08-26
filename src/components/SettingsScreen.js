@@ -9,8 +9,6 @@ import {
 } from 'react-native';
 import EditIcon from 'react-native-vector-icons/Feather';
 
-import {onSignOut} from '../auth/auth';
-
 export default class SettingsScreen extends Component {
     constructor(props) {
         super(props);
@@ -107,10 +105,6 @@ export default class SettingsScreen extends Component {
                         onPress={() => console.warn('Saved Profile!')}>
                         <Text style={styles.btnText}>Save Profile</Text>
                     </TouchableOpacity>
-                    <TouchableOpacity style={styles.signOutBtn}
-                        onPress={() => onSignOut().then(() => this.props.navigation.navigate('SignedOut'))}>
-                        <Text style={styles.btnText}>Sign-out</Text>
-                    </TouchableOpacity>
                 </View>
             </ImageBackground>
         );
@@ -134,7 +128,7 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         color: '#fefefe',
-        fontSize: 18,
+        fontSize: 16,
         textAlign: 'center',
     },
     container: {
@@ -162,19 +156,10 @@ const styles = StyleSheet.create({
         opacity: 1,
     },
     saveProfileBtn: {
-        marginTop: 20,
-        alignItems: 'center',
-        alignSelf: 'center',
-        borderRadius: 50,
-        padding: 15,
-        width: '50%',
-        backgroundColor: '#22a7f0',
-    },
-    signOutBtn: {
         position: 'absolute',
         bottom: 10,
         alignItems: 'center',
-		borderRadius: 50,
+        borderRadius: 50,
         padding: 15,
         width: '50%',
         backgroundColor: '#22a7f0',
