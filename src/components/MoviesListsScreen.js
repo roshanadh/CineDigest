@@ -13,9 +13,13 @@ import {
 	Dimensions,
 } from 'react-native';
 
+import ActionButton from 'react-native-action-button';
 import AsyncStorage from '@react-native-community/async-storage';
 import Snackbar from 'react-native-snackbar';
 import Carousel from 'react-native-snap-carousel';
+import Icon from 'react-native-vector-icons/Ionicons';
+import FeatherIcon from 'react-native-vector-icons/Feather';
+import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
@@ -25,7 +29,6 @@ import netCon from '../util/NetCon';
 export default class MoviesListsScreen extends Component {
 	constructor(props, context) {
 		super(props, context);
-
 		this.state = {
 			refreshing: false,
 			username: '',
@@ -343,6 +346,20 @@ export default class MoviesListsScreen extends Component {
 
     render() {
 		let {wishListJsx, watchedListJsx} = this.state;
+		let fabJsx =
+			<ActionButton
+				buttonColor="#1abc9c"
+				position="right"
+				style={styles.fab}
+				shadowStyle={styles.fabShadow}
+				renderIcon= {active => active ?
+					(<FeatherIcon name="settings" style={styles.actionButtonIcon} size={30} />)
+					: (<FeatherIcon name="settings" style={styles.actionButtonIcon} />)} >
+
+				<ActionButton.Item buttonColor="#db0a5b" title="Sign out" style={styles.actionButtonItem} onPress={() => { }}>
+					<SimpleLineIcons name="logout" style={styles.actionButtonIcon} />
+				</ActionButton.Item>
+			</ActionButton>;
 		return (
 			<ImageBackground blurRadius={1.3}
 				source={require('../assets/lilypads.png')}
@@ -359,6 +376,7 @@ export default class MoviesListsScreen extends Component {
 						filterShown={this.filterShown}
 						onSubmitEditing={this.searchBtnPressedHandler} />
 				</View>
+				{fabJsx}
 				<ScrollView style={{marginTop: this.state.scrollViewMargin}}
 					refreshControl={
 						<RefreshControl
@@ -427,6 +445,22 @@ const styles = StyleSheet.create({
 		width: '100%',
 		zIndex: 1,
 		padding: 0,
+	},
+	fab: {
+		zIndex: 1,
+		marginBottom: 50,
+	},
+	fabShadow: {
+		borderRadius: 50,
+		borderWidth: 1,
+		borderColor: 'rgba(217, 30, 24, 0.1)',
+	},
+	actionButtonIcon: {
+		fontSize: 20,
+		color: '#fefefe',
+	},
+	actionButtonItem: {
+		fontSize: 16,
 	},
 	carouselContainer: {
 		marginTop: 20,
