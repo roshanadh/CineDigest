@@ -44,6 +44,7 @@ export default class SettingsScreen extends Component {
                     break;
                 case 'password':
                     this.setState({ isPasswordEditable: true });
+                    break;
                 default: null;
             }
         };
