@@ -7,7 +7,10 @@ import {
     ImageBackground,
     TextInput,
 } from 'react-native';
+import AsyncStorage from '@react-native-community/async-storage';
 import EditIcon from 'react-native-vector-icons/Feather';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import db from '../db/db';
 
 export default class SettingsScreen extends Component {
     constructor(props) {
@@ -21,6 +24,14 @@ export default class SettingsScreen extends Component {
             oldPassword: '',
             newPassword: '',
             newPasswordConfirmation: '',
+        };
+
+        this.getUsername = () => {
+            return new Promise((resolve, reject) => {
+                let username = AsyncStorage.getItem('USER_KEY');
+                resolve(username)
+                    .catch(error => console.warn('ERROR in getUsername ' + error.message));
+            });
         };
 
         this.changeEditable = (field) => {
@@ -39,18 +50,34 @@ export default class SettingsScreen extends Component {
         };
     }
 
+    componentDidMount() {
+        this.getUsername()
+            .then((result) => {
+                db.getUser(result)
+                    .then(details => {
+                        this.setState({
+                            username: details.username, name: details.name,
+                        }, () => {console.warn('User ' + this.state.name + ' retrieved successfully!');});
+                    }, error => {
+                        console.warn('User by the username ' + result + ' was not found!');
+                    })
+                    .catch(error => console.warn(error.message));
+            });
+    }
+
     render() {
         return (
             <ImageBackground blurRadius={1.3}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
                 <View style={styles.header}>
-                    <Text style={styles.headerTitle}>Edit Profile</Text>
+                    <MaterialIcons name="person" size={25} color="#fefefe" />
+                    <Text style={styles.headerTitle}>Update Profile</Text>
                 </View>
                 <View style={styles.container}>
                     <View style={styles.textInputWrapper}>
                         <TextInput placeholder="Your Name"
-                            defaultValue="My Details"
+                            defaultValue={this.state.name}
                             editable={this.state.isNameEditable}
                             style={styles.textInput}
                             autoCapitalize="none"
@@ -63,7 +90,7 @@ export default class SettingsScreen extends Component {
                     </View>
                     <View style={styles.textInputWrapper}>
                         <TextInput placeholder="Your Username"
-                            defaultValue="My Details"
+                            defaultValue={this.state.username}
                             editable={this.state.isUsernameEditable}
                             style={styles.textInput}
                             autoCapitalize="none"
@@ -118,6 +145,8 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     header: {
+        flexDirection: 'row',
+        justifyContent: 'center',
         position: 'absolute',
         top: 0,
         width: '100%',
@@ -129,7 +158,7 @@ const styles = StyleSheet.create({
     headerTitle: {
         color: '#fefefe',
         fontSize: 16,
-        textAlign: 'center',
+        marginLeft: 10,
     },
     container: {
         padding: 20,
