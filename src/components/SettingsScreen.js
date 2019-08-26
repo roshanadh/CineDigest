@@ -81,8 +81,8 @@ export default class SettingsScreen extends Component {
                             editable={this.state.isNameEditable}
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={this.usernameTextChanged}
-                            returnKeyType="next" />
+                            onChangeText={name => this.setState({name})}
+                            returnKeyType="done" />
                         <EditIcon name="edit-2"
                             size={20}
                             color={this.state.isNameEditable ? '#6bb9f0' : '#67809f'}
@@ -94,8 +94,8 @@ export default class SettingsScreen extends Component {
                             editable={this.state.isUsernameEditable}
                             style={styles.textInput}
                             autoCapitalize="none"
-                            onChangeText={this.usernameTextChanged}
-                            returnKeyType="next" />
+                            onChangeText={username => this.setState({username})}
+                            returnKeyType="done" />
                         <EditIcon name="edit-2"
                             size={20}
                             color={this.state.isUsernameEditable ? '#6bb9f0' : '#67809f'}
