@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     ImageBackground,
     TextInput,
-    ScrollView,
     ActivityIndicator,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
@@ -23,9 +22,6 @@ export default class SettingsScreen extends Component {
             isPasswordEditable: false,
             name: '',
             username: '',
-            oldPassword: '',
-            newPassword: '',
-            newPasswordConfirmation: '',
         };
 
         this.getUsername = () => {
@@ -95,41 +91,6 @@ export default class SettingsScreen extends Component {
             this.state.username.includes(',') || this.state.username.includes(' ') ?
                 <Text style={styles.errorText}>Username must not contain any special characters</Text> : null;
 
-        let changePassJsx =
-            this.state.isPasswordEditable ?
-                <View style={styles.changePassContainer}>
-                    <View style={styles.textInputWrapper}>
-                        <TextInput placeholder="Old Password"
-                            secureTextEntry={true}
-                            editable={this.state.isPasswordEditable}
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={this.usernameTextChanged}
-                            returnKeyType="next" />
-                        <EditIcon name="edit-2" size={20} color={this.state.isPasswordEditable ? '#6bb9f0' : '#67809f'} />
-                    </View>
-                    <View style={styles.textInputWrapper}>
-                        <TextInput placeholder="New Password"
-                            secureTextEntry={true}
-                            editable={this.state.isPasswordEditable}
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={this.usernameTextChanged}
-                            returnKeyType="next" />
-                        <EditIcon name="edit-2" size={20} color={this.state.isPasswordEditable ? '#6bb9f0' : '#67809f'} />
-                    </View>
-                    <View style={styles.textInputWrapper}>
-                        <TextInput placeholder="Confirm New Password"
-                            secureTextEntry={true}
-                            editable={this.state.isPasswordEditable}
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={this.usernameTextChanged}
-                            returnKeyType="next" />
-                        <EditIcon name="edit-2" size={20} color={this.state.isPasswordEditable ? '#6bb9f0' : '#67809f'} />
-                    </View>
-                </View> : null;
-
         return (
             <ImageBackground blurRadius={1.3}
                 source={require('../assets/lilypads.png')}
@@ -138,53 +99,50 @@ export default class SettingsScreen extends Component {
                     <MaterialIcons name="person" size={25} color="#fefefe" />
                     <Text style={styles.headerTitle}>Update Profile</Text>
                 </View>
-                <ScrollView style={styles.scrollView}>
-                    <View style={styles.container}>
-                        <Text style={styles.editInfo}>Tap the edit icon to change your screen names</Text>
-                        <View style={styles.textInputWrapper}>
-                            <TextInput placeholder="Your Name"
-                                defaultValue={this.state.name}
-                                editable={this.state.isNameEditable}
-                                style={styles.textInput}
-                                autoCapitalize="none"
-                                onChangeText={name => this.setState({ name })}
-                                returnKeyType="done" />
-                            <EditIcon name="edit-2"
-                                size={20}
-                                color={this.state.isNameEditable ? '#6bb9f0' : '#67809f'}
-                                onPress={() => this.changeEditable('name')} />
-                        </View>
-                        <View style={styles.textInputWrapper}>
-                            <TextInput placeholder="Your Username"
-                                defaultValue={this.state.username}
-                                editable={this.state.isUsernameEditable}
-                                style={styles.textInput}
-                                autoCapitalize="none"
-                                onChangeText={username => this.setState({ username })}
-                                returnKeyType="done" />
-                            <EditIcon name="edit-2"
-                                size={20}
-                                color={this.state.isUsernameEditable ? '#6bb9f0' : '#67809f'}
-                                onPress={() => this.changeEditable('username')} />
-                        </View>
-                        <TouchableOpacity style={styles.changePass}
-                            onPress={() =>
-                                this.setState(prevState => ({ isPasswordEditable: !prevState.isPasswordEditable }))
-                            }>
-                            <Text style={styles.changePassText}>Change your password?</Text>
-                        </TouchableOpacity>
-                        {changePassJsx}
-                        <TouchableOpacity style={styles.saveProfileBtn}
-                            onPress={() => console.warn('Saved Profile!')}>
-                            <Text style={styles.btnText}>Save Profile</Text>
-                            {indicatorJsx}
-                        </TouchableOpacity>
-                        <View style={styles.footer}>
-                            {usernameLengthErrorTextJsx}
-                            {usernameCharErrorTextJsx}
-                        </View>
+                <View style={styles.container}>
+                    <Text style={styles.editInfo}>Tap the edit icon to change your screen names</Text>
+                    <View style={styles.textInputWrapper}>
+                        <TextInput placeholder="Your Name"
+                            defaultValue={this.state.name}
+                            editable={this.state.isNameEditable}
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            onChangeText={name => this.setState({ name })}
+                            returnKeyType="done" />
+                        <EditIcon name="edit-2"
+                            size={20}
+                            color={this.state.isNameEditable ? '#6bb9f0' : '#67809f'}
+                            onPress={() => this.changeEditable('name')} />
                     </View>
-                </ScrollView>
+                    <View style={styles.textInputWrapper}>
+                        <TextInput placeholder="Your Username"
+                            defaultValue={this.state.username}
+                            editable={this.state.isUsernameEditable}
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            onChangeText={username => this.setState({ username })}
+                            returnKeyType="done" />
+                        <EditIcon name="edit-2"
+                            size={20}
+                            color={this.state.isUsernameEditable ? '#6bb9f0' : '#67809f'}
+                            onPress={() => this.changeEditable('username')} />
+                    </View>
+                    <TouchableOpacity style={styles.changePass}
+                        onPress={() =>
+                            this.props.navigation.navigate('ChangePasswordScreen')
+                        }>
+                        <Text style={styles.changePassText}>Change your password?</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.saveProfileBtn}
+                        onPress={() => console.warn('Saved Profile!')}>
+                        <Text style={styles.btnText}>Save Profile</Text>
+                        {indicatorJsx}
+                    </TouchableOpacity>
+                    <View style={styles.footer}>
+                        {usernameLengthErrorTextJsx}
+                        {usernameCharErrorTextJsx}
+                    </View>
+                </View>
             </ImageBackground>
         );
     }
@@ -209,13 +167,14 @@ const styles = StyleSheet.create({
     },
     headerTitle: {
         color: '#fefefe',
-        fontSize: 16,
+        fontSize: 18,
         marginLeft: 10,
     },
     scrollView: {
         marginTop: 50,
     },
     container: {
+        justifyContent: 'center',
         padding: 20,
 		flex: 1,
         alignItems: 'center',
@@ -229,9 +188,6 @@ const styles = StyleSheet.create({
         color: '#22a7f0',
         marginTop: 25,
         marginBottom: 15,
-    },
-    changePassContainer: {
-        width: '100%',
     },
     textInputWrapper: {
         flexDirection: 'row',
