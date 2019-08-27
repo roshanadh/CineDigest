@@ -16,7 +16,7 @@ import EditIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import db from '../db/db';
 
-export default class SettingsScreen extends Component {
+export default class ProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -171,49 +171,51 @@ export default class SettingsScreen extends Component {
                         />
                     }>
                     <View style={styles.container}>
-                        <AntDesignIcon name="profile" size={80} color="#34495e" style={styles.profileIcon} />
-                        <View style={styles.textInputWrapper}>
-                            <TextInput placeholder="Your Name"
-                                defaultValue={this.state.name}
-                                editable={this.state.isNameEditable}
-                                style={styles.textInput}
-                                autoCapitalize="none"
-                                onChangeText={newName => this.setState({ newName })}
-                                returnKeyType="done" />
-                            <EditIcon name="edit-2"
-                                size={20}
-                                color={this.state.isNameEditable ? '#6bb9f0' : '#67809f'}
-                                onPress={() => this.changeEditable('name')} />
+                        <View style={styles.profileContainer}>
+                            <AntDesignIcon name="profile" size={80} color="#34495e" style={styles.profileIcon} />
+                            <View style={styles.textInputWrapper}>
+                                <TextInput placeholder="Your Name"
+                                    defaultValue={this.state.name}
+                                    editable={this.state.isNameEditable}
+                                    style={styles.textInput}
+                                    autoCapitalize="none"
+                                    onChangeText={newName => this.setState({ newName })}
+                                    returnKeyType="done" />
+                                <EditIcon name="edit-2"
+                                    size={20}
+                                    color={this.state.isNameEditable ? '#6bb9f0' : '#67809f'}
+                                    onPress={() => this.changeEditable('name')} />
+                            </View>
+                            <View style={styles.textInputWrapper}>
+                                <TextInput placeholder="Your Username"
+                                    defaultValue={this.state.username}
+                                    editable={this.state.isUsernameEditable}
+                                    style={styles.textInput}
+                                    autoCapitalize="none"
+                                    onChangeText={newUsername => this.setState({ newUsername })}
+                                    returnKeyType="done" />
+                                <EditIcon name="edit-2"
+                                    size={20}
+                                    color={this.state.isUsernameEditable ? '#6bb9f0' : '#67809f'}
+                                    onPress={() => this.changeEditable('username')} />
+                            </View>
+                            <View style={styles.footer}>
+                                {usernameLengthErrorTextJsx}
+                                {usernameCharErrorTextJsx}
+                            </View>
+                            <TouchableOpacity style={styles.saveProfileBtn}
+                                onPress={() => console.warn('Saved Profile!')}>
+                                <Text style={styles.btnText}>Save Profile</Text>
+                                {indicatorJsx}
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.changePass}
+                                onPress={() =>
+                                    this.props.navigation.navigate('ChangePasswordScreen')
+                                }>
+                                <Text style={styles.changePassText}>Change your password?</Text>
+                            </TouchableOpacity>
                         </View>
-                        <View style={styles.textInputWrapper}>
-                            <TextInput placeholder="Your Username"
-                                defaultValue={this.state.username}
-                                editable={this.state.isUsernameEditable}
-                                style={styles.textInput}
-                                autoCapitalize="none"
-                                onChangeText={newUsername => this.setState({ newUsername })}
-                                returnKeyType="done" />
-                            <EditIcon name="edit-2"
-                                size={20}
-                                color={this.state.isUsernameEditable ? '#6bb9f0' : '#67809f'}
-                                onPress={() => this.changeEditable('username')} />
-                        </View>
-                        <View style={styles.footer}>
-                            {usernameLengthErrorTextJsx}
-                            {usernameCharErrorTextJsx}
-                        </View>
-                        <TouchableOpacity style={styles.saveProfileBtn}
-                            onPress={() => console.warn('Saved Profile!')}>
-                            <Text style={styles.btnText}>Save Profile</Text>
-                            {indicatorJsx}
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.changePass}
-                            onPress={() =>
-                                this.props.navigation.navigate('ChangePasswordScreen')
-                            }>
-                            <Text style={styles.changePassText}>Change your password?</Text>
-                        </TouchableOpacity>
-                        <View style={styles.horizontalRule} />
+                        {/* <View style={styles.horizontalRule} /> */}
                         {statJsx}
                     </View>
                 </ScrollView>
@@ -245,30 +247,34 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     container: {
-        flexDirection: 'column',
-        justifyContent: 'flex-start',
-        padding: 20,
-		flex: 1,
-        alignItems: 'center',
+        paddingTop: 10,
+        paddingBottom: 10,
     },
-    statsContainer: {
+    profileContainer: {
         flexDirection: 'column',
         justifyContent: 'flex-start',
         padding: 20,
         flex: 1,
-    },
-    statWrapper: {
-        textAlign: 'left',
-        flexDirection: 'row',
-        justifyContent: 'center',
         alignItems: 'center',
-        color: '#34495e',
+        backgroundColor: '#fff',
+        marginBottom: 10,
+        borderWidth: 0.1,
+        borderColor: '#013243',
+    },
+    statsContainer: {
+        borderWidth: 0.1,
+        borderColor: '#013243',
+        flexDirection: 'column',
+        padding: 20,
+        paddingBottom: 0,
+        flex: 1,
+        width: '100%',
+        backgroundColor: '#fff',
     },
     statsHeader: {
         fontSize: 13,
         color: '#34495e',
         textAlign: 'center',
-        marginTop: 15,
         marginBottom: 15,
     },
     statNumber: {
@@ -282,7 +288,6 @@ const styles = StyleSheet.create({
     changePassText: {
         color: '#22a7f0',
         marginTop: 25,
-        marginBottom: 15,
     },
     textInputWrapper: {
         flexDirection: 'row',
@@ -317,13 +322,6 @@ const styles = StyleSheet.create({
     },
     indicator: {
         marginLeft: 20,
-    },
-    horizontalRule: {
-        marginTop: 15,
-        borderBottomWidth: 1,
-        borderBottomColor: 'rgba(103, 128, 159, 0.2)',
-        borderRadius: 50,
-        width: '100%',
     },
     footer: {
         marginBottom: 10,
