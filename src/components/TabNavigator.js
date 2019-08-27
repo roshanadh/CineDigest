@@ -37,7 +37,7 @@ const TabNavigator = createMaterialTopTabNavigator(
             navigationOptions: {
                 tabBarLabel: 'Profile',
                 tabBarIcon: ({tintColor}) => (
-                    <MoreIcon name="menu" size={25} color={tintColor} />
+                    <MoreIcon name="person" size={25} color={tintColor} />
                 ),
             },
         },
