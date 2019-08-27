@@ -38,6 +38,7 @@ class Database {
 				});
 		});
 	}
+
 	addUser(username, password, name) {
 		let db;
 		return new Promise((resolve, reject) => {
@@ -482,6 +483,67 @@ class Database {
 					.catch(error => {
 						console.warn(error.message);
 					});
+				})
+				.catch(error => console.warn(error.message));
+		});
+	}
+
+	getStats(username) {
+		let db;
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					db = DB;
+					db.transaction((tx) => {
+						tx.executeSql('SELECT * FROM \'history\' WHERE username=?;', [username], (tx, results) => {
+							console.warn('SQL executed..');
+							let len = results.rows.length;
+							if (len > 0) {
+								let listedMovies = 0;
+								let listedShows = 0;
+								let listedInWishMovies = 0;
+								let listedInWishShows = 0;
+								let listedInWatchedMovies = 0;
+								let listedInWatchedShows = 0;
+								let listedInWatchingShows = 0;
+
+								for (let i = 0; i < len; i++) {
+									let row = results.rows.item(i);
+									if (row.titleType === 'movie') {
+										listedMovies++;
+										if (row.listType === 'wishList') {
+											listedInWishMovies++;
+										} else if (row.listType === 'watchedList') {
+											listedInWatchedMovies++;
+										}
+									} else if (row.titleType === 'show') {
+										listedShows++;
+										if (row.listType === 'wishList') {
+											listedInWishShows++;
+										} else if (row.listType === 'watchedList') {
+											listedInWatchedShows++;
+										} else if (row.listType === 'watchingList') {
+											listedInWatchingShows++;
+										}
+									}
+								}
+								resolve({
+									listedMovies,
+									listedShows,
+									listedInWishMovies,
+									listedInWishShows,
+									listedInWatchedMovies,
+									listedInWatchedShows,
+									listedInWatchingShows,
+								});
+							} else {
+								reject(false);
+							}
+						});
+					})
+						.catch(error => {
+							console.warn(error.message);
+						});
 				})
 				.catch(error => console.warn(error.message));
 		});
