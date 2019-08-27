@@ -59,7 +59,7 @@ class Database {
 								.catch((error) => console.warn('Table users was not created! ' + error.message))
 								.then(() => {
 									db.transaction((tx) => {
-										tx.executeSql(`INSERT INTO users VALUES ('${username}', '${password}', '${name}')`, [username, password, name]);
+										tx.executeSql(`INSERT INTO users(username,password,name) VALUES (?,?,?)`, [username, password, name]);
 									})
 										.then(() =>
 										{
