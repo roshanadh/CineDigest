@@ -42,23 +42,37 @@ export default class SignUpScreen extends Component {
 			if (this.state.password1 < password1) {
 				// Password length increased
 				console.warn('INCREASE!!');
-				this.setState({ password1, passwordProgress: this.state.passwordProgress + (1 / 8) });
+				if (password1.length >= 8) {
+					this.setState({ password1, passwordProgress: 1 });
+				} else {
+					this.setState({ password1, passwordProgress: this.state.passwordProgress + (1 / 8) });
+				}
 			} else {
 				// Password length decreased
 				console.warn('DECREASE!!');
-				this.setState({ password1, passwordProgress: this.state.passwordProgress - (1 / 8) });
+				if (password1.length === 0) {
+					this.setState({ password1, passwordProgress: 0 });
+				} else if (password1.length >= 8) {
+					this.setState({ password1, passwordProgress: 1 });
+				} else {
+					this.setState({ password1, passwordProgress: this.state.passwordProgress - (1 / 8) });
+				}
 			}
 		};
 
 		this.genProgressBarJsx = () => {
-			if (this.state.password1.length > 0 && this.state.password1.length < 6) {
+			if (this.state.password1.length === 0) {
+				return (
+					<View style={styles.horizontalRule} />
+				);
+			} else if (this.state.password1.length > 0 && this.state.password1.length < 6) {
 				return (
 					<ProgressBarAndroid
-					styleAttr="Horizontal"
-					indeterminate={false}
-					progress={this.state.passwordProgress}
-					style={styles.progressBar}
-					color="#e74c3c" />
+						styleAttr="Horizontal"
+						indeterminate={false}
+						progress={this.state.passwordProgress}
+						style={styles.progressBar}
+						color="#e74c3c" />
 				);
 			} else if (this.state.password1.length >= 6 && this.state.password1.length < 8) {
 				return (
@@ -410,6 +424,11 @@ const styles = StyleSheet.create({
 	progressBar: {
 		width: '100%',
 		height: 1,
+	},
+	horizontalRule: {
+		borderBottomWidth: 1,
+		width: '100%',
+		borderColor: '#22a7f0',
 	},
 	errorWrapper: {
 		flexDirection: 'row',
