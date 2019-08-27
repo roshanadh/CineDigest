@@ -7,8 +7,10 @@ import {
     ImageBackground,
     TextInput,
     ActivityIndicator,
+    ScrollView,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
+import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import EditIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import db from '../db/db';
@@ -22,6 +24,9 @@ export default class SettingsScreen extends Component {
             isPasswordEditable: false,
             name: '',
             username: '',
+            stats: {},
+            newName: '',
+            newUsername: '',
         };
 
         this.getUsername = () => {
@@ -50,7 +55,7 @@ export default class SettingsScreen extends Component {
 
     componentDidMount() {
         this.getUsername()
-            .then((result) => {
+            .then(result => {
                 db.getUser(result)
                     .then(details => {
                         this.setState({
@@ -60,6 +65,15 @@ export default class SettingsScreen extends Component {
                         console.warn('User by the username ' + result + ' was not found!');
                     })
                     .catch(error => console.warn(error.message));
+                // Return retrieved username to chained then()
+                return result;
+            })
+            .then(username => {
+                console.warn(username + ' is the user!!');
+                db.getStats(username)
+                    .then(result => {
+                        this.setState({stats: result}, () => console.warn(this.state.stats.listedMovies));
+                    });
             });
     }
 
@@ -69,27 +83,66 @@ export default class SettingsScreen extends Component {
                 style={styles.indicator} /> : null;
 
         let usernameLengthErrorTextJsx =
-            this.state.username.length > 0 && this.state.username.length < 6 ?
+            this.state.newUsername.length > 0 && this.state.newUsername.length < 6 ?
                 <Text style={styles.errorText}>Username must contain atleast 6 characters</Text> : null;
 
         let usernameCharErrorTextJsx =
-            this.state.username.includes('.') || this.state.username.includes('/') ||
-            this.state.username.includes('\\') || this.state.username.includes('|') ||
-            this.state.username.includes('~') || this.state.username.includes('`') ||
-            this.state.username.includes('!') || this.state.username.includes('@') ||
-            this.state.username.includes('+') || this.state.username.includes('-') ||
-            this.state.username.includes('*') || this.state.username.includes('=') ||
-            this.state.username.includes('#') || this.state.username.includes('$') ||
-            this.state.username.includes('%') || this.state.username.includes('^') ||
-            this.state.username.includes('&') || this.state.username.includes('(') ||
-            this.state.username.includes(')') || this.state.username.includes(';') ||
-            this.state.username.includes(':') || this.state.username.includes('{') ||
-            this.state.username.includes('}') || this.state.username.includes('[') ||
-            this.state.username.includes(']') || this.state.username.includes('\'') ||
-            this.state.username.includes('"') || this.state.username.includes('?') ||
-            this.state.username.includes('<') || this.state.username.includes('>') ||
-            this.state.username.includes(',') || this.state.username.includes(' ') ?
+            this.state.newUsername.includes('.') || this.state.newUsername.includes('/') ||
+            this.state.newUsername.includes('\\') || this.state.newUsername.includes('|') ||
+            this.state.newUsername.includes('~') || this.state.newUsername.includes('`') ||
+            this.state.newUsername.includes('!') || this.state.newUsername.includes('@') ||
+            this.state.newUsername.includes('+') || this.state.newUsername.includes('-') ||
+            this.state.newUsername.includes('*') || this.state.newUsername.includes('=') ||
+            this.state.newUsername.includes('#') || this.state.newUsername.includes('$') ||
+            this.state.newUsername.includes('%') || this.state.newUsername.includes('^') ||
+            this.state.newUsername.includes('&') || this.state.newUsername.includes('(') ||
+            this.state.newUsername.includes(')') || this.state.newUsername.includes(';') ||
+            this.state.newUsername.includes(':') || this.state.newUsername.includes('{') ||
+            this.state.newUsername.includes('}') || this.state.newUsername.includes('[') ||
+            this.state.newUsername.includes(']') || this.state.newUsername.includes('\'') ||
+            this.state.newUsername.includes('"') || this.state.newUsername.includes('?') ||
+            this.state.newUsername.includes('<') || this.state.newUsername.includes('>') ||
+            this.state.newUsername.includes(',') || this.state.newUsername.includes(' ') ?
                 <Text style={styles.errorText}>Username must not contain any special characters</Text> : null;
+
+        let statJsx =
+            this.state.stats.listedMovies + this.state.stats.listedShows +
+            this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows +
+            this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows +
+            this.state.stats.listedInWatchingShows > 0 ?
+                <View style={styles.statsContainer}>
+                    <Text style={styles.statsHeader}>Hey, {this.state.username}! Thought you'd like some stats</Text>
+                    {
+                        (this.state.stats.listedMovies + this.state.stats.listedShows) > 0 ?
+                            <Text style={styles.statWrapper}>
+                                <Text style={styles.statNumber}>{this.state.stats.listedMovies + this.state.stats.listedShows}</Text> titles listed!
+                            </Text> : null
+                    }
+                    <Text>
+                        {
+                            (this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows) > 0 ?
+                                <Text style={styles.statWrapper}>
+                                    <Text style={styles.statNumber}>{this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows}</Text> titles in your wish list!
+                                </Text> : null
+                        }
+                    </Text>
+                    <Text>
+                        {
+                            (this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows) > 0 ?
+                                <Text style={styles.statWrapper}>
+                                    <Text style={styles.statNumber}>{this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows}</Text> titles in your watched list!
+                                </Text> : null
+                        }
+                    </Text>
+                    <Text>
+                        {
+                            this.state.stats.listedInWatchingShows > 0 ?
+                                <Text style={styles.statWrapper}>
+                                    <Text style={styles.statNumber}>{this.state.stats.listedInWatchingShows}</Text> titles in your watching list!
+                                </Text> : null
+                        }
+                    </Text>
+                </View> : null;
 
         return (
             <ImageBackground blurRadius={1.3}
@@ -99,50 +152,54 @@ export default class SettingsScreen extends Component {
                     <MaterialIcons name="person" size={25} color="#fefefe" />
                     <Text style={styles.headerTitle}>Update Profile</Text>
                 </View>
-                <View style={styles.container}>
-                    <Text style={styles.editInfo}>Tap the edit icon to change your screen names</Text>
-                    <View style={styles.textInputWrapper}>
-                        <TextInput placeholder="Your Name"
-                            defaultValue={this.state.name}
-                            editable={this.state.isNameEditable}
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={name => this.setState({ name })}
-                            returnKeyType="done" />
-                        <EditIcon name="edit-2"
-                            size={20}
-                            color={this.state.isNameEditable ? '#6bb9f0' : '#67809f'}
-                            onPress={() => this.changeEditable('name')} />
+                <ScrollView style={styles.scrollView}>
+                    <View style={styles.container}>
+                        <AntDesignIcon name="profile" size={80} color="#34495e" style={styles.profileIcon} />
+                        <View style={styles.textInputWrapper}>
+                            <TextInput placeholder="Your Name"
+                                defaultValue={this.state.name}
+                                editable={this.state.isNameEditable}
+                                style={styles.textInput}
+                                autoCapitalize="none"
+                                onChangeText={newName => this.setState({ newName })}
+                                returnKeyType="done" />
+                            <EditIcon name="edit-2"
+                                size={20}
+                                color={this.state.isNameEditable ? '#6bb9f0' : '#67809f'}
+                                onPress={() => this.changeEditable('name')} />
+                        </View>
+                        <View style={styles.textInputWrapper}>
+                            <TextInput placeholder="Your Username"
+                                defaultValue={this.state.username}
+                                editable={this.state.isUsernameEditable}
+                                style={styles.textInput}
+                                autoCapitalize="none"
+                                onChangeText={newUsername => this.setState({ newUsername })}
+                                returnKeyType="done" />
+                            <EditIcon name="edit-2"
+                                size={20}
+                                color={this.state.isUsernameEditable ? '#6bb9f0' : '#67809f'}
+                                onPress={() => this.changeEditable('username')} />
+                        </View>
+                        <View style={styles.footer}>
+                            {usernameLengthErrorTextJsx}
+                            {usernameCharErrorTextJsx}
+                        </View>
+                        <TouchableOpacity style={styles.saveProfileBtn}
+                            onPress={() => console.warn('Saved Profile!')}>
+                            <Text style={styles.btnText}>Save Profile</Text>
+                            {indicatorJsx}
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.changePass}
+                            onPress={() =>
+                                this.props.navigation.navigate('ChangePasswordScreen')
+                            }>
+                            <Text style={styles.changePassText}>Change your password?</Text>
+                        </TouchableOpacity>
+                        <View style={styles.horizontalRule} />
+                        {statJsx}
                     </View>
-                    <View style={styles.textInputWrapper}>
-                        <TextInput placeholder="Your Username"
-                            defaultValue={this.state.username}
-                            editable={this.state.isUsernameEditable}
-                            style={styles.textInput}
-                            autoCapitalize="none"
-                            onChangeText={username => this.setState({ username })}
-                            returnKeyType="done" />
-                        <EditIcon name="edit-2"
-                            size={20}
-                            color={this.state.isUsernameEditable ? '#6bb9f0' : '#67809f'}
-                            onPress={() => this.changeEditable('username')} />
-                    </View>
-                    <TouchableOpacity style={styles.changePass}
-                        onPress={() =>
-                            this.props.navigation.navigate('ChangePasswordScreen')
-                        }>
-                        <Text style={styles.changePassText}>Change your password?</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.saveProfileBtn}
-                        onPress={() => console.warn('Saved Profile!')}>
-                        <Text style={styles.btnText}>Save Profile</Text>
-                        {indicatorJsx}
-                    </TouchableOpacity>
-                    <View style={styles.footer}>
-                        {usernameLengthErrorTextJsx}
-                        {usernameCharErrorTextJsx}
-                    </View>
-                </View>
+                </ScrollView>
             </ImageBackground>
         );
     }
@@ -157,7 +214,7 @@ const styles = StyleSheet.create({
     header: {
         flexDirection: 'row',
         justifyContent: 'center',
-        position: 'absolute',
+        position: 'relative',
         top: 0,
         width: '100%',
         zIndex: 1,
@@ -170,18 +227,37 @@ const styles = StyleSheet.create({
         fontSize: 18,
         marginLeft: 10,
     },
-    scrollView: {
-        marginTop: 50,
-    },
     container: {
-        justifyContent: 'center',
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
         padding: 20,
 		flex: 1,
         alignItems: 'center',
     },
-    editInfo: {
-        marginTop: 25,
+    statsContainer: {
+        flexDirection: 'column',
+        justifyContent: 'flex-start',
+        padding: 20,
+        flex: 1,
+    },
+    statWrapper: {
+        textAlign: 'left',
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        color: '#34495e',
+    },
+    statsHeader: {
+        fontSize: 13,
         marginBottom: 25,
+        color: '#34495e',
+    },
+    statNumber: {
+        fontSize: 25,
+        color: '#013243',
+    },
+    profileIcon: {
+        margin: 25,
         color: '#34495e',
     },
     changePassText: {
@@ -212,7 +288,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'center',
         borderRadius: 50,
-        marginTop: 20,
         padding: 15,
         width: '50%',
         backgroundColor: '#22a7f0',
@@ -224,8 +299,15 @@ const styles = StyleSheet.create({
     indicator: {
         marginLeft: 20,
     },
+    horizontalRule: {
+        marginTop: 15,
+        borderBottomWidth: 1,
+        borderBottomColor: 'rgba(103, 128, 159, 0.2)',
+        borderRadius: 50,
+        width: '100%',
+    },
     footer: {
-        marginTop: 30,
+        marginBottom: 10,
     },
     errorText: {
         color: '#e74c3c',
