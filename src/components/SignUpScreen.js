@@ -51,7 +51,7 @@ export default class SignUpScreen extends Component {
 		};
 
 		this.genProgressBarJsx = () => {
-			if (this.state.password1.length > 0 && this.state.password1.length < 4) {
+			if (this.state.password1.length > 0 && this.state.password1.length < 6) {
 				return (
 					<ProgressBarAndroid
 					styleAttr="Horizontal"
@@ -60,7 +60,7 @@ export default class SignUpScreen extends Component {
 					style={styles.progressBar}
 					color="#e74c3c" />
 				);
-			} else if (this.state.password1.length >= 4 && this.state.password1.length < 8) {
+			} else if (this.state.password1.length >= 6 && this.state.password1.length < 8) {
 				return (
 					<ProgressBarAndroid
 						styleAttr="Horizontal"
@@ -235,8 +235,6 @@ export default class SignUpScreen extends Component {
 			this.setState({isLoading: true});
 			this.checkSignUp();
 		};
-
-		
 	}
 
 	render() {
@@ -263,8 +261,8 @@ export default class SignUpScreen extends Component {
 				<Text style={styles.errorText}>Username must not contain any special characters</Text> : null;
 
 		this.passwordLengthErrorTextJsx =
-			this.state.password1.length > 0 && this.state.password1.length < 8 ?
-				<Text style={styles.errorText}>Password must contain atleast 8 characters</Text> : null;
+			this.state.password1.length > 0 && this.state.password1.length < 6 ?
+				<Text style={styles.errorText}>Password must contain atleast 6 characters</Text> : null;
 		this.confirmPasswordErrorTextJsx =
 			this.state.password2.length > 0 && (this.state.password1 !== this.state.password2) ?
 				<Text style={styles.errorText}>Passwords do not match</Text> : null;
