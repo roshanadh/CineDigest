@@ -321,7 +321,6 @@ export default class MoviesListsScreen extends Component {
 							// is not empty.
 							result.length > 0 ?
 								this.setState({ movieRecoms: this.state.movieRecoms.concat(result) }, () => {
-									console.warn(result.length + ' is the len!');
 								}) : null;
 						}, 3000);
 					}, (error) => console.warn('ERROR in getTitleRecommendations/ MoviesListsScreen' + error))
