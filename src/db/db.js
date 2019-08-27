@@ -9,6 +9,36 @@ SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
 class Database {
+	getUser(username) {
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					let db = DB;
+					console.warn('Database OPEN');
+					db.transaction((tx) => {
+						console.warn('Transaction started..');
+						tx.executeSql('SELECT * FROM users WHERE username=?;', [username], (tx, results) => {
+							// Get user details
+							let len = results.rows.length;
+							if (len > 0) {
+								let details = {};
+								let row = results.rows.item(0);
+								resolve({
+									username,
+									name: row.name,
+								});
+							} else {
+								reject(false);
+							}
+						});
+					});
+				})
+				.catch(error => {
+					console.warn(error.message);
+				});
+		});
+	}
+
 	addUser(username, password, name) {
 		let db;
 		return new Promise((resolve, reject) => {
@@ -29,7 +59,7 @@ class Database {
 								.catch((error) => console.warn('Table users was not created! ' + error.message))
 								.then(() => {
 									db.transaction((tx) => {
-										tx.executeSql(`INSERT INTO users VALUES ('${username}', '${password}', '${name}')`, [username, password, name]);
+										tx.executeSql(`INSERT INTO users(username,password,name) VALUES (?,?,?)`, [username, password, name]);
 									})
 										.then(() =>
 										{
@@ -453,6 +483,67 @@ class Database {
 					.catch(error => {
 						console.warn(error.message);
 					});
+				})
+				.catch(error => console.warn(error.message));
+		});
+	}
+
+	getStats(username) {
+		let db;
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					db = DB;
+					db.transaction((tx) => {
+						tx.executeSql('SELECT * FROM \'history\' WHERE username=?;', [username], (tx, results) => {
+							console.warn('SQL executed..');
+							let len = results.rows.length;
+							if (len > 0) {
+								let listedMovies = 0;
+								let listedShows = 0;
+								let listedInWishMovies = 0;
+								let listedInWishShows = 0;
+								let listedInWatchedMovies = 0;
+								let listedInWatchedShows = 0;
+								let listedInWatchingShows = 0;
+
+								for (let i = 0; i < len; i++) {
+									let row = results.rows.item(i);
+									if (row.titleType === 'movie') {
+										listedMovies++;
+										if (row.listType === 'wishList') {
+											listedInWishMovies++;
+										} else if (row.listType === 'watchedList') {
+											listedInWatchedMovies++;
+										}
+									} else if (row.titleType === 'show') {
+										listedShows++;
+										if (row.listType === 'wishList') {
+											listedInWishShows++;
+										} else if (row.listType === 'watchedList') {
+											listedInWatchedShows++;
+										} else if (row.listType === 'watchingList') {
+											listedInWatchingShows++;
+										}
+									}
+								}
+								resolve({
+									listedMovies,
+									listedShows,
+									listedInWishMovies,
+									listedInWishShows,
+									listedInWatchedMovies,
+									listedInWatchedShows,
+									listedInWatchingShows,
+								});
+							} else {
+								reject(false);
+							}
+						});
+					})
+						.catch(error => {
+							console.warn(error.message);
+						});
 				})
 				.catch(error => console.warn(error.message));
 		});

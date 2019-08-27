@@ -12,6 +12,7 @@ import {
 	Image,
 	StatusBar,
 	Dimensions,
+	ProgressBarAndroid,
 } from 'react-native';
 
 import bcrypt from 'react-native-bcrypt';
@@ -34,7 +35,117 @@ export default class SignUpScreen extends Component {
 			username: '',
 			password1: '',
 			password2: '',
+			passwordProgress: 0,
 		};
+
+		this.updatePassword = (password1) => {
+			if (this.state.password1 < password1) {
+				// Password length increased
+				console.warn('INCREASE!!');
+				this.setState({ password1, passwordProgress: this.state.passwordProgress + (1 / 8) });
+			} else {
+				// Password length decreased
+				console.warn('DECREASE!!');
+				this.setState({ password1, passwordProgress: this.state.passwordProgress - (1 / 8) });
+			}
+		};
+
+		this.genProgressBarJsx = () => {
+			if (this.state.password1.length > 0 && this.state.password1.length < 6) {
+				return (
+					<ProgressBarAndroid
+					styleAttr="Horizontal"
+					indeterminate={false}
+					progress={this.state.passwordProgress}
+					style={styles.progressBar}
+					color="#e74c3c" />
+				);
+			} else if (this.state.password1.length >= 6 && this.state.password1.length < 8) {
+				return (
+					<ProgressBarAndroid
+						styleAttr="Horizontal"
+						indeterminate={false}
+						progress={this.state.passwordProgress}
+						style={styles.progressBar}
+						color="#f4b350" />
+				);
+			} else {
+				return (
+					<ProgressBarAndroid
+						styleAttr="Horizontal"
+						indeterminate={false}
+						progress={this.state.passwordProgress}
+						style={styles.progressBar}
+						color="#22a7f0" />
+				);
+			}
+		};
+
+		this.genPasswordIconJsx = () => {
+			if (this.state.password1.length === 0) {
+				return (
+					<KeyIcon name="key" size={25} color="#ddd" />
+				);
+			} else if (this.state.password1.length > 0 && this.state.password1.length < 6) {
+				return (
+					<KeyIcon name="key" size={25} color="#e74c3c" />
+				);
+			} else if (this.state.password1.length >= 6 && this.state.password1.length < 8) {
+				return (
+					<KeyIcon name="key" size={25} color="#f4b350" />
+				);
+			} else {
+				return (
+					<KeyIcon name="key" size={25} color="#22a7f0" />
+				);
+			}
+		};
+
+		this.genConfirmPasswordIconJsx = () => {
+			if (this.state.password2.length === 0) {
+				return (
+					<KeyIcon name="key" size={25} color="#ddd" />
+				);
+			} else if (this.state.password2.length > 0 && (this.state.password1 !== this.state.password2)) {
+				return (
+					<KeyIcon name="key" size={25} color="#e74c3c" />
+				);
+			} else {
+				return (
+					<KeyIcon name="key" size={25} color="#22a7f0" />
+				);
+			}
+		};
+
+		this.genNameIconJsx = () => {
+			if (this.state.name.length === 0) {
+				return (
+					<TextIcon name="format-text" size={25} color="#ddd" />
+				);
+			} else {
+				return (
+					<TextIcon name="format-text" size={25} color="#22a7f0" />
+				);
+			}
+		};
+
+		this.genUsernameIconJsx = () => {
+			if (this.state.username.length === 0) {
+				return (
+					<TextIcon name="format-text" size={25} color="#ddd" />
+				);
+			} else if (this.usernameLengthErrorTextJsx !== null ||
+				this.usernameCharErrorTextJsx !== null) {
+				return (
+					<TextIcon name="format-text" size={25} color="#e74c3c" />
+				);
+			} else {
+				return (
+					<TextIcon name="format-text" size={25} color="#22a7f0" />
+				);
+			}
+		};
+
 		this.checkSignUp = () => {
 			const {
 				name,
@@ -124,17 +235,9 @@ export default class SignUpScreen extends Component {
 			this.setState({isLoading: true});
 			this.checkSignUp();
 		};
-		this.usernameLengthErrorTextJsx;
-		this.usernameCharErrorTextJsx;
-		this.passwordLengthErrorTextJsx;
-		this.confirmPasswordErrorTextJsx;
 	}
 
 	render() {
-		let indicatorJsx = this.state.isLoading ?
-			<ActivityIndicator size="small" color="#fefefe"
-				style={styles.indicator} /> : null;
-
 		this.usernameLengthErrorTextJsx =
 			this.state.username.length > 0 && this.state.username.length < 6 ?
 				<Text style={styles.errorText}>Username must contain atleast 6 characters</Text> : null;
@@ -164,13 +267,22 @@ export default class SignUpScreen extends Component {
 			this.state.password2.length > 0 && (this.state.password1 !== this.state.password2) ?
 				<Text style={styles.errorText}>Passwords do not match</Text> : null;
 
-		this.noErrorTextJsx = this.usernameCharErrorTextJsx === null && this.usernameLengthErrorTextJsx === null 
+		this.noErrorTextJsx = this.usernameCharErrorTextJsx === null && this.usernameLengthErrorTextJsx === null
 			&& this.passwordLengthErrorTextJsx === null && this.confirmPasswordErrorTextJsx === null ?
 			<Text style={styles.footerText}>
 				By signing up, you can begin making watch-lists for your favourite
 				movies and television titles, and also be on a look-out for more.
 			</Text>
 			: null;
+
+		let indicatorJsx = this.state.isLoading ?
+			<ActivityIndicator size="small" color="#fefefe"
+				style={styles.indicator} /> : null;
+		let nameIconJsx = this.genNameIconJsx();
+		let usernameIconJsx = this.genUsernameIconJsx();
+		let progressBarJsx = this.genProgressBarJsx();
+		let passwordIconJsx = this.genPasswordIconJsx();
+		let confirmPasswordIconJsx = this.genConfirmPasswordIconJsx();
 
 		return (
 			<ImageBackground blurRadius={1.3} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
@@ -189,7 +301,7 @@ export default class SignUpScreen extends Component {
 									placeholder="Name"
 									onChangeText={(name) => this.setState({ name })}
 									returnKeyType="next" />
-								<TextIcon name="format-text" size={25} color="#ddd" />
+								{nameIconJsx}
 							</View>
 						</View>
 						<View style={styles.metaWrapper}>
@@ -205,24 +317,21 @@ export default class SignUpScreen extends Component {
 									autoCapitalize="none"
 									onChangeText={(username) => this.setState({ username })}
 									returnKeyType="next" />
-								<TextIcon name="format-text" size={25} color="#ddd" />
+								{usernameIconJsx}
 							</View>
 						</View>
 						<View style={styles.metaWrapper}>
-							<View style={
-								this.passwordLengthErrorTextJsx !== null ?
-									styles.errorWrapper : styles.passwordWrapper
-							}>
+							<View style={styles.noBorderPasswordWrapper}>
 								<TextInput
 									style={styles.input}
 									placeholder="Password"
 									autoCapitalize="none"
 									secureTextEntry={true}
-									onChangeText={(password1) => this.setState({ password1 })}
+									onChangeText={password1 => this.updatePassword(password1)}
 									returnKeyType="next" />
-
-								<KeyIcon name="key" size={25} color="#ddd" />
+								{passwordIconJsx}
 							</View>
+							{progressBarJsx}
 						</View>
 
 						<View style={styles.metaWrapper}>
@@ -238,8 +347,7 @@ export default class SignUpScreen extends Component {
 									onChangeText={(password2) => this.setState({ password2 })}
 									returnKeyType="done"
 									onSubmitEditing={this.signUpHandler} />
-
-								<KeyIcon name="key" size={25} color="#ddd" />
+								{confirmPasswordIconJsx}
 							</View>
 						</View>
 
@@ -287,6 +395,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-start',
 		alignItems: 'flex-start',
 		marginBottom: 25,
+		width: '100%',
 	},
 	usernameWrapper: {
 		flexDirection: 'row',
@@ -297,6 +406,10 @@ const styles = StyleSheet.create({
 		paddingLeft: 20,
 		paddingRight: 20,
 		backgroundColor: 'rgba(255,255,255,0.3)',
+	},
+	progressBar: {
+		width: '100%',
+		height: 1,
 	},
 	errorWrapper: {
 		flexDirection: 'row',
@@ -321,6 +434,14 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		borderBottomWidth: 1,
 		borderColor: '#22a7f0',
+		paddingLeft: 20,
+		paddingRight: 20,
+		backgroundColor: 'rgba(255,255,255,0.3)',
+	},
+	noBorderPasswordWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
 		paddingLeft: 20,
 		paddingRight: 20,
 		backgroundColor: 'rgba(255,255,255,0.3)',

@@ -6,11 +6,11 @@ import {
 
 import MovieIcon from 'react-native-vector-icons/FontAwesome';
 import TVIcon from 'react-native-vector-icons/FontAwesome';
-import SettingsIcon from 'react-native-vector-icons/SimpleLineIcons';
+import MoreIcon from 'react-native-vector-icons/MaterialIcons';
 
 import MoviesListsScreen from './MoviesListsScreen';
 import ShowsListsScreen from './ShowsListsScreen';
-import SettingsScreen from './SettingsScreen';
+import ProfileScreen from './ProfileScreen';
 
 const TabNavigator = createMaterialTopTabNavigator(
     {
@@ -32,12 +32,12 @@ const TabNavigator = createMaterialTopTabNavigator(
                 ),
             },
         },
-        SettingsScreen: {
-            screen: SettingsScreen,
+        ProfileScreen: {
+            screen: ProfileScreen,
             navigationOptions: {
-                tabBarLabel: 'Settings',
+                tabBarLabel: 'Profile',
                 tabBarIcon: ({tintColor}) => (
-                    <SettingsIcon name="settings" size={21} color={tintColor} />
+                    <MoreIcon name="person" size={25} color={tintColor} />
                 ),
             },
         },
