@@ -8,6 +8,7 @@ import {
     TextInput,
     ActivityIndicator,
     ScrollView,
+    RefreshControl,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -19,6 +20,7 @@ export default class SettingsScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            refreshing: false,
             isNameEditable: false,
             isUsernameEditable: false,
             isPasswordEditable: false,
@@ -77,6 +79,15 @@ export default class SettingsScreen extends Component {
             });
     }
 
+    _onRefresh = () => {
+        this.setState({ refreshing: true }, () => {
+            db.getStats(this.state.username)
+                .then(result => {
+                    this.setState({ stats: result, refreshing: false }, () => console.warn(this.state.stats.listedMovies));
+                });
+        });
+    }
+
     render() {
         let indicatorJsx = this.state.isLoading ?
             <ActivityIndicator size="small" color="#fefefe"
@@ -111,18 +122,18 @@ export default class SettingsScreen extends Component {
             this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows +
             this.state.stats.listedInWatchingShows > 0 ?
                 <View style={styles.statsContainer}>
-                    <Text style={styles.statsHeader}>Hey, {this.state.username}! Thought you'd like some stats</Text>
+                    <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
                     {
                         (this.state.stats.listedMovies + this.state.stats.listedShows) > 0 ?
                             <Text style={styles.statWrapper}>
-                                <Text style={styles.statNumber}>{this.state.stats.listedMovies + this.state.stats.listedShows}</Text> titles listed!
+                                <Text style={styles.statNumber}>{this.state.stats.listedMovies + this.state.stats.listedShows}</Text>{'\t'} titles listed!
                             </Text> : null
                     }
                     <Text>
                         {
                             (this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows) > 0 ?
                                 <Text style={styles.statWrapper}>
-                                    <Text style={styles.statNumber}>{this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows}</Text> titles in your wish list!
+                                    <Text style={styles.statNumber}>{this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows}</Text>{'\t'} titles in your wish list!
                                 </Text> : null
                         }
                     </Text>
@@ -130,7 +141,7 @@ export default class SettingsScreen extends Component {
                         {
                             (this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows) > 0 ?
                                 <Text style={styles.statWrapper}>
-                                    <Text style={styles.statNumber}>{this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows}</Text> titles in your watched list!
+                                    <Text style={styles.statNumber}>{this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows}</Text>{'\t'} titles in your watched list!
                                 </Text> : null
                         }
                     </Text>
@@ -138,7 +149,7 @@ export default class SettingsScreen extends Component {
                         {
                             this.state.stats.listedInWatchingShows > 0 ?
                                 <Text style={styles.statWrapper}>
-                                    <Text style={styles.statNumber}>{this.state.stats.listedInWatchingShows}</Text> titles in your watching list!
+                                    <Text style={styles.statNumber}>{this.state.stats.listedInWatchingShows}</Text>{'\t'} titles in your watching list!
                                 </Text> : null
                         }
                     </Text>
@@ -152,7 +163,13 @@ export default class SettingsScreen extends Component {
                     <MaterialIcons name="person" size={25} color="#fefefe" />
                     <Text style={styles.headerTitle}>Update Profile</Text>
                 </View>
-                <ScrollView style={styles.scrollView}>
+                <ScrollView style={styles.scrollView}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={this.state.refreshing}
+                            onRefresh={this._onRefresh}
+                        />
+                    }>
                     <View style={styles.container}>
                         <AntDesignIcon name="profile" size={80} color="#34495e" style={styles.profileIcon} />
                         <View style={styles.textInputWrapper}>
@@ -249,8 +266,10 @@ const styles = StyleSheet.create({
     },
     statsHeader: {
         fontSize: 13,
-        marginBottom: 25,
         color: '#34495e',
+        textAlign: 'center',
+        marginTop: 15,
+        marginBottom: 15,
     },
     statNumber: {
         fontSize: 25,
