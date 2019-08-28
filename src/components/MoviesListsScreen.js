@@ -325,7 +325,8 @@ export default class MoviesListsScreen extends Component {
 						}, 3000);
 					}, (error) => console.warn('ERROR in getTitleRecommendations/ MoviesListsScreen' + error))
 					.catch(error => console.warn('CAUGHT ERROR in getTitleRecommendations/ MoviesListsScreen' + error));
-				Snackbar.dismiss();
+				fetch('https://api-cine-digest.herokuapp.com/api/v1')
+					.then(() => Snackbar.dismiss());
 			});
 		this.initLists();
 	}
