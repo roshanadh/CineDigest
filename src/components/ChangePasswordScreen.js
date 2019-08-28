@@ -219,7 +219,7 @@ export default class ChangePassword extends Component {
                         </View>
                         <View style={styles.infoContainer}>
                             <Text style={styles.infoText}>You need a password to access your lists stored on this device.</Text>
-                            <Text style={styles.infoText}>Create a strong password that comprises different $ymb0ls and cAsEs.</Text>
+                            <Text style={styles.infoText}>Create a strong password that comprises different <Text style={styles.highlight}>$ymb0ls</Text> and <Text style={styles.highlight}>cAsEs</Text>.</Text>
                         </View>
                     </View>
                 </ScrollView>
@@ -344,5 +344,8 @@ const styles = StyleSheet.create({
         color: '#34495e',
         textAlign: 'center',
         marginBottom: 15,
+    },
+    highlight: {
+        color: '#67809f',
     },
 });
