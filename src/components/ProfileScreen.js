@@ -318,7 +318,9 @@ export default class ProfileScreen extends Component {
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.changePass}
                                 onPress={() =>
-                                    this.props.navigation.navigate('ChangePasswordScreen')
+                                    this.props.navigation.navigate('ChangePasswordScreen', {
+                                        username: this.state.username,
+                                    })
                                 }>
                                 <Text style={styles.changePassText}>Change your password?</Text>
                             </TouchableOpacity>
