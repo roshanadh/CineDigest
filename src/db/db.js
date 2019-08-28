@@ -2,8 +2,10 @@ import SQLite from 'react-native-sqlite-storage';
 import {
 	Alert,
 } from 'react-native';
-
 import bcrypt from 'react-native-bcrypt';
+
+import Snackbar from '../util/Snackbar';
+import { onSignIn, onSignOut } from '../auth/auth';
 
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
@@ -143,6 +145,86 @@ class Database {
 				.catch(error => {
 					Alert.alert('Error', 'Couldn\'t open database!' + error.message);
 				});
+		});
+	}
+
+	updateProfile(username, newName, newUsername) {
+		return new Promise((resolve, reject) => {
+			if (newUsername === null && newName !== null) {
+				console.warn('Name not null, username  null!');
+				SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+					.then(DB => {
+						let db = DB;
+						console.warn('Database OPEN');
+						db.transaction((tx) => {
+							console.warn('Transaction started..');
+							tx.executeSql('UPDATE users SET name=? WHERE username=?;', [newName, username]);
+						}, error => reject(error), success => resolve(true));
+					})
+					.catch(error => {
+						console.warn(error.message);
+					});
+			} else if (newUsername !== null && newName !== null) {
+				console.warn('Name not null, username not null!');
+				SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+					.then(DB => {
+						let db = DB;
+						console.warn('Database OPEN');
+						// Update users table
+						db.transaction((tx) => {
+							console.warn('Transaction started..');
+							tx.executeSql('UPDATE users SET name=?, username=? WHERE username=?;', [newName, newUsername, username]);
+						}, error => reject(error));
+						// Update history table
+						db.transaction((tx) => {
+							console.warn('Transaction started..');
+							tx.executeSql('UPDATE history SET username=? WHERE username=?;', [newUsername, username]);
+						}, error => reject(error), success => {
+							resolve(true);
+							console.warn('Updated second table too!');
+						});
+
+						// Update USER_KEY stored in AsyncStorage
+						onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
+						onSignIn(newUsername).then(() => {
+							console.warn('Set USER_KEY ' + newUsername);
+							Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+						});
+					})
+					.catch(error => {
+						console.warn(error.message);
+					});
+			} else if (newUsername !== null && newName === null) {
+				console.warn('Name null, username not null!');
+				SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+					.then(DB => {
+						let db = DB;
+						console.warn('Database OPEN');
+						// Update users table
+						db.transaction((tx) => {
+							console.warn('Transaction started..');
+							tx.executeSql('UPDATE users SET username=? WHERE username=?;', [newUsername, username]);
+						}, error => reject(error));
+						// Update history table
+						db.transaction((tx) => {
+							console.warn('Transaction started..');
+							tx.executeSql('UPDATE history SET username=? WHERE username=?;', [newUsername, username]);
+						}, error => reject(error), success => {
+							resolve(true);
+							console.warn('Updated second table too!');
+						});
+
+						// Update USER_KEY stored in AsyncStorage
+						onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
+						onSignIn(newUsername).then(() => {
+							console.warn('Set USER_KEY ' + newUsername);
+							Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+						});
+					})
+					.catch(error => {
+						console.warn(error.message);
+					});
+			}
 		});
 	}
 

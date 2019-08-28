@@ -230,19 +230,19 @@ export default class MoviesListsScreen extends Component {
 				</TouchableOpacity>
 			);
 		};
-	}
 
-	_onRefresh = () => {
-		this.setState({
-			refreshing: true,
-			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
-			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
-		});
-		this.initLists().then((result) => {
+		this._onRefresh = () => {
 			this.setState({
-				refreshing: false,
+				refreshing: true,
+				wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+				watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 			});
-		});
+			this.initLists().then((result) => {
+				this.setState({
+					refreshing: false,
+				});
+			});
+		};
 	}
 
 	searchFieldChangedHandler = (newQuery) => {
@@ -325,7 +325,8 @@ export default class MoviesListsScreen extends Component {
 						}, 3000);
 					}, (error) => console.warn('ERROR in getTitleRecommendations/ MoviesListsScreen' + error))
 					.catch(error => console.warn('CAUGHT ERROR in getTitleRecommendations/ MoviesListsScreen' + error));
-				Snackbar.dismiss();
+				fetch('https://api-cine-digest.herokuapp.com/api/v1')
+					.then(() => Snackbar.dismiss());
 			});
 		this.initLists();
 	}
