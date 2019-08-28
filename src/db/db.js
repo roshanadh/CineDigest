@@ -2,8 +2,10 @@ import SQLite from 'react-native-sqlite-storage';
 import {
 	Alert,
 } from 'react-native';
-import { onSignIn, onSignOut } from '../auth/auth';
 import bcrypt from 'react-native-bcrypt';
+
+import Snackbar from '../util/Snackbar';
+import { onSignIn, onSignOut } from '../auth/auth';
 
 SQLite.DEBUG(true);
 SQLite.enablePromise(true);
@@ -184,7 +186,10 @@ class Database {
 
 						// Update USER_KEY stored in AsyncStorage
 						onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
-						onSignIn(newUsername).then(() => console.warn('Set USER_KEY ' + newUsername));
+						onSignIn(newUsername).then(() => {
+							console.warn('Set USER_KEY ' + newUsername);
+							Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+						});
 					})
 					.catch(error => {
 						console.warn(error.message);
@@ -211,7 +216,10 @@ class Database {
 
 						// Update USER_KEY stored in AsyncStorage
 						onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
-						onSignIn(newUsername).then(() => console.warn('Set USER_KEY ' + newUsername));
+						onSignIn(newUsername).then(() => {
+							console.warn('Set USER_KEY ' + newUsername);
+							Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+						});
 					})
 					.catch(error => {
 						console.warn(error.message);
