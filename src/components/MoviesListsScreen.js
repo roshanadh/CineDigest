@@ -230,19 +230,19 @@ export default class MoviesListsScreen extends Component {
 				</TouchableOpacity>
 			);
 		};
-	}
 
-	_onRefresh = () => {
-		this.setState({
-			refreshing: true,
-			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
-			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
-		});
-		this.initLists().then((result) => {
+		this._onRefresh = () => {
 			this.setState({
-				refreshing: false,
+				refreshing: true,
+				wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+				watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 			});
-		});
+			this.initLists().then((result) => {
+				this.setState({
+					refreshing: false,
+				});
+			});
+		};
 	}
 
 	searchFieldChangedHandler = (newQuery) => {
