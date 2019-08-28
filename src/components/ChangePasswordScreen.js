@@ -9,7 +9,10 @@ import {
     ScrollView,
     ImageBackground,
     ProgressBarAndroid,
+    Alert,
 } from 'react-native';
+import bcrypt from 'react-native-bcrypt';
+import db from '../db/db';
 import KeyIcon from 'react-native-vector-icons/Feather';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -30,6 +33,8 @@ export default class ChangePassword extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: false,
+            username: '',
             passwordProgress: 0,
             oldPassword: '',
             newPassword: '',
@@ -143,6 +148,82 @@ export default class ChangePassword extends Component {
                 );
             }
         };
+
+        this.changePassword = () => {
+            this.setState({ isLoading: true });
+            let { oldPassword, newPassword, passwordConfirmation } = this.state;
+            console.warn('change password init');
+            if (oldPassword === '') {
+                this.setState({ isLoading: false });
+                // If password not entered
+                Alert.alert('Error', 'Please enter your current password!', [{
+                    text: 'okay',
+                }]);
+            } else if (newPassword === '') {
+                this.setState({ isLoading: false });
+                Alert.alert('Error', 'Please enter a new password!', [{
+                    text: 'okay',
+                }]);
+            } else if (passwordConfirmation === '') {
+            this.setState({ isLoading: false });
+            Alert.alert('Error', 'Please confirm your new password!', [{
+                text: 'okay',
+            }]);
+            } else if (passwordConfirmation !== newPassword) {
+                this.setState({ isLoading: false });
+                // If Not same return False
+                Alert.alert('Error', 'The passwords did not match!', [{
+                    text: 'okay',
+                }]);
+            } else if (newPassword.length < 6) {
+                Alert.alert('Error', 'Password must contain atleast 6 characters!', [{
+                    text: 'okay',
+                }]);
+            } else {
+                // Check if current password is correct
+                let username = this.props.navigation.getParam('username', null);
+                db.verifyUser(username, oldPassword)
+                    .then(result => {
+                        // Password is correct
+                        // Check if new password if the same as current one
+                        if (newPassword === oldPassword) {
+                            this.setState({ isLoading: false });
+                            Alert.alert(
+                                'Oops',
+                                'Your new password cannot be your current one!', [{
+                                    text: 'OK',
+                                }]
+                            );
+                        } else {
+                            // Generate Salt for hashing (with 5 rounds) / ASYNC
+                            bcrypt.genSalt(5, (_err, salt) => {
+                                // Generate Hash for the password / ASYNC
+                                bcrypt.hash(this.state.newPassword, salt, (_err, hash) => {
+                                    console.warn(hash + ' is the hash!');
+                                    let changePromise = db.changePassword(username, hash);
+                                    changePromise.then(result => {
+                                        this.setState({ isLoading: false });
+                                        console.warn(result);
+                                        Alert.alert(
+                                            'Successful',
+                                            'Your password has been changed!', [{
+                                                text: 'OK',
+                                            }]
+                                        );
+                                    }, err => {
+                                        this.setState({ isLoading: false });
+                                        Alert.alert('Oops', 'Please try again!');
+                                        console.warn(err);
+                                    });
+                                });
+                            });
+                        }
+                    }, error => {
+                        Alert.alert('Error', 'Your current password is incorrect!');
+                        console.warn(error);
+                    });
+            }
+        };
     }
 
     render() {
@@ -212,7 +293,7 @@ export default class ChangePassword extends Component {
                                 {confirmPasswordLengthErrorTextJsx}
                             </View>
                             <TouchableOpacity style={styles.changePassBtn}
-                                onPress={() => console.warn('Pressed!')}>
+                                onPress={() => this.changePassword()}>
                                 <Text style={styles.btnText}>Change Password</Text>
                                 {indicatorJsx}
                             </TouchableOpacity>
