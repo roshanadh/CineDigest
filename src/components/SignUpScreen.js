@@ -63,7 +63,12 @@ export default class SignUpScreen extends Component {
 		this.genProgressBarJsx = () => {
 			if (this.state.password1.length === 0) {
 				return (
-					<View style={styles.horizontalRule} />
+					<ProgressBarAndroid
+						styleAttr="Horizontal"
+						indeterminate={false}
+						progress={1}
+						style={styles.progressBar}
+						color="#22a7f0" />
 				);
 			} else if (this.state.password1.length > 0 && this.state.password1.length < 6) {
 				return (
