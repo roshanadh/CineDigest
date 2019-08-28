@@ -215,7 +215,6 @@ export default class ProfileScreen extends Component {
                                 <Text style={styles.changePassText}>Change your password?</Text>
                             </TouchableOpacity>
                         </View>
-                        {/* <View style={styles.horizontalRule} /> */}
                         {statJsx}
                     </View>
                 </ScrollView>
@@ -277,9 +276,13 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 15,
     },
+    statWrapper: {
+        fontSize: 14,
+        color: '#22313f',
+    },
     statNumber: {
-        fontSize: 25,
-        color: '#013243',
+        fontSize: 18,
+        color: '#67809f',
     },
     profileIcon: {
         margin: 25,
