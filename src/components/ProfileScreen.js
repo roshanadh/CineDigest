@@ -21,6 +21,7 @@ export default class ProfileScreen extends Component {
     constructor(props) {
         super(props);
         this.state = {
+            isLoading: false,
             refreshing: false,
             isNameEditable: false,
             isUsernameEditable: false,
@@ -52,16 +53,17 @@ export default class ProfileScreen extends Component {
         };
 
         this.updateProfile = () => {
+            this.setState({ isLoading: true });
             let {name, username, newName, newUsername} = this.state;
             if (!!this.state.isNameEditable && newName === '') {
                 // Name field is editable
-                // this.setState({ isLoading: false });
+                this.setState({ isLoading: false });
                 Alert.alert('Error', 'Please change your screen name for editing!', [{
                     text: 'okay',
                 }]);
             } else if (!!this.state.isUsernameEditable && username === '') {
                 // Username field is editable
-                // this.setState({ isLoading: false });
+                this.setState({ isLoading: false });
                 Alert.alert('Error', 'Please fill up your username!', [{
                     text: 'okay',
                 }]);
@@ -83,11 +85,12 @@ export default class ProfileScreen extends Component {
                 this.state.newUsername.includes(',') || this.state.newUsername.includes(' ') ||
                 this.state.newUsername.length < 6)) {
 
-                // this.setState({ isLoading: false });
+                this.setState({ isLoading: false });
                 Alert.alert('Error', 'Some fields may have errors!', [{
                     text: 'okay',
                 }]);
             } else {
+                this.setState({ isLoading: false });
                 if (!!this.state.isNameEditable) {
                     // Name field is editable
                     if (!!this.state.isUsernameEditable) {
@@ -120,6 +123,7 @@ export default class ProfileScreen extends Component {
                             });
                     }
                 } else {
+                    this.setState({ isLoading: false });
                     // Name field is not editable
                     if (!!this.state.isUsernameEditable) {
                         // Only username field is editable
