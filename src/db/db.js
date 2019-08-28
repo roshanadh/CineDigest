@@ -228,6 +228,28 @@ class Database {
 		});
 	}
 
+	changePassword(username, newPassword) {
+		let db;
+		return new Promise((resolve, reject) => {
+			SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+				.then(DB => {
+					db = DB;
+					db.transaction((tx) => {
+						tx.executeSql('UPDATE users SET password=? WHERE username=?;', [newPassword, username]);
+					}, error => {
+						reject(false);
+						console.warn(error.message);
+					}, success => {
+						resolve(true);
+						console.warn('Password changed!');
+					});
+				})
+				.catch(error => {
+					console.warn('Could not open DB ' + error.message);
+				});
+		});
+	}
+
 	addMovieToWishList(request) {
 		// Inserts into 'History' Table
 		return new Promise((resolve, reject) => {
