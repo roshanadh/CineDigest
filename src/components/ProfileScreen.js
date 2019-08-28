@@ -9,6 +9,7 @@ import {
     ActivityIndicator,
     ScrollView,
     RefreshControl,
+    Alert,
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
@@ -23,7 +24,6 @@ export default class ProfileScreen extends Component {
             refreshing: false,
             isNameEditable: false,
             isUsernameEditable: false,
-            isPasswordEditable: false,
             name: '',
             username: '',
             stats: {},
@@ -42,17 +42,115 @@ export default class ProfileScreen extends Component {
         this.changeEditable = (field) => {
             switch (field) {
                 case 'name':
-                    this.setState({isNameEditable: true});
+                    this.setState({isNameEditable: !this.state.isNameEditable});
                     break;
                 case 'username':
-                    this.setState({ isUsernameEditable: true });
-                    break;
-                case 'password':
-                    this.setState({ isPasswordEditable: true });
+                    this.setState({ isUsernameEditable: !this.state.isUsernameEditable });
                     break;
                 default: null;
             }
         };
+
+        this.updateProfile = () => {
+            let {name, username, newName, newUsername} = this.state;
+            if (!!this.state.isNameEditable && newName === '') {
+                // Name field is editable
+                // this.setState({ isLoading: false });
+                Alert.alert('Error', 'Please change your screen name for editing!', [{
+                    text: 'okay',
+                }]);
+            } else if (!!this.state.isUsernameEditable && username === '') {
+                // Username field is editable
+                // this.setState({ isLoading: false });
+                Alert.alert('Error', 'Please fill up your username!', [{
+                    text: 'okay',
+                }]);
+            } else if (!!this.state.isUsernameEditable && (this.state.newUsername.includes('.') || this.state.newUsername.includes('/') ||
+                this.state.newUsername.includes('\\') || this.state.newUsername.includes('|') ||
+                this.state.newUsername.includes('~') || this.state.newUsername.includes('`') ||
+                this.state.newUsername.includes('!') || this.state.newUsername.includes('@') ||
+                this.state.newUsername.includes('+') || this.state.newUsername.includes('-') ||
+                this.state.newUsername.includes('*') || this.state.newUsername.includes('=') ||
+                this.state.newUsername.includes('#') || this.state.newUsername.includes('$') ||
+                this.state.newUsername.includes('%') || this.state.newUsername.includes('^') ||
+                this.state.newUsername.includes('&') || this.state.newUsername.includes('(') ||
+                this.state.newUsername.includes(')') || this.state.newUsername.includes(';') ||
+                this.state.newUsername.includes(':') || this.state.newUsername.includes('{') ||
+                this.state.newUsername.includes('}') || this.state.newUsername.includes('[') ||
+                this.state.newUsername.includes(']') || this.state.newUsername.includes('\'') ||
+                this.state.newUsername.includes('"') || this.state.newUsername.includes('?') ||
+                this.state.newUsername.includes('<') || this.state.newUsername.includes('>') ||
+                this.state.newUsername.includes(',') || this.state.newUsername.includes(' ') ||
+                this.state.newUsername.length < 6)) {
+
+                // this.setState({ isLoading: false });
+                Alert.alert('Error', 'Some fields may have errors!', [{
+                    text: 'okay',
+                }]);
+            } else {
+                if (!!this.state.isNameEditable) {
+                    // Name field is editable
+                    if (!!this.state.isUsernameEditable) {
+                        // Username field is editable
+                        db.updateProfile(username, newName, newUsername)
+                            .then(result => {
+                                Alert.alert('Success', 'Your profile has been updated!', [{
+                                    text: 'okay',
+                                    onPress: () => this.setState({name: newName, username: newUsername}, this._onRefresh()),
+                                }]);
+                            }, error => {
+                                console.warn(error.message);
+                                Alert.alert('Error', 'Please try again!', [{
+                                    text: 'okay',
+                                }]);
+                            });
+                    } else {
+                        // Only Name field is editable
+                        db.updateProfile(username, newName, null)
+                            .then(result => {
+                                Alert.alert('Success', 'Your profile has been updated!', [{
+                                    text: 'okay',
+                                    onPress: () => this.setState({ name: newName }, this._onRefresh()),
+                                }]);
+                            }, error => {
+                                console.warn(error.message);
+                                Alert.alert('Error', 'Please try again!', [{
+                                    text: 'okay',
+                                }]);
+                            });
+                    }
+                } else {
+                    // Name field is not editable
+                    if (!!this.state.isUsernameEditable) {
+                        // Only username field is editable
+                        db.updateProfile(username, null, newUsername)
+                            .then(result => {
+                                Alert.alert('Success', 'Your profile has been updated!', [{
+                                    text: 'okay',
+                                    onPress: () => this.setState({ username: newUsername }, this._onRefresh()),
+                                }]);
+                            }, error => {
+                                console.warn(error.message);
+                                Alert.alert('Error', 'Please try again!', [{
+                                    text: 'okay',
+                                }]);
+                            });
+                    } else {
+                        Alert.alert('Oops', 'Please tap on the edit icon to edit a field!', [{
+                            text: 'okay',
+                        }]);
+                    }
+                }
+                console.warn('Your new details: ' + this.state.name + this.state.username);
+            }
+        };
+
+        this.didBlurSubscription = this.props.navigation.addListener(
+            'didBlur',
+            payload => {
+                this.setState({ isNameEditable: false, isUsernameEditable: false });
+            }
+        );
     }
 
     componentDidMount() {
@@ -81,10 +179,20 @@ export default class ProfileScreen extends Component {
 
     _onRefresh = () => {
         this.setState({ refreshing: true }, () => {
-            db.getStats(this.state.username)
-                .then(result => {
-                    this.setState({ stats: result, refreshing: false }, () => console.warn(this.state.stats.listedMovies));
-                });
+            this.getUsername()
+                .then(username => {
+                    db.getStats(username)
+                        .then(result => {
+                            this.setState({
+                                isNameEditable: !this.state.isNameEditable ? false : false,
+                                isUsernameEditable: !this.state.isUsernameEditable ? false : false,
+                                stats: result,
+                                refreshing: false,
+                            }, () => console.warn(this.state.stats.listedMovies));
+                        })
+                        .catch(error => console.warn(error.message));
+                })
+                .catch(error => console.warn(error.message));
         });
     }
 
@@ -173,7 +281,7 @@ export default class ProfileScreen extends Component {
                     <View style={styles.container}>
                         <View style={styles.profileContainer}>
                             <AntDesignIcon name="profile" size={80} color="#34495e" style={styles.profileIcon} />
-                            <View style={styles.textInputWrapper}>
+                            <View style={!this.state.isNameEditable ? styles.textInputBlurWrapper : styles.textInputActiveWrapper}>
                                 <TextInput placeholder="Your Name"
                                     defaultValue={this.state.name}
                                     editable={this.state.isNameEditable}
@@ -186,7 +294,7 @@ export default class ProfileScreen extends Component {
                                     color={this.state.isNameEditable ? '#6bb9f0' : '#67809f'}
                                     onPress={() => this.changeEditable('name')} />
                             </View>
-                            <View style={styles.textInputWrapper}>
+                            <View style={!this.state.isUsernameEditable ? styles.textInputBlurWrapper : styles.textInputActiveWrapper}>
                                 <TextInput placeholder="Your Username"
                                     defaultValue={this.state.username}
                                     editable={this.state.isUsernameEditable}
@@ -204,7 +312,7 @@ export default class ProfileScreen extends Component {
                                 {usernameCharErrorTextJsx}
                             </View>
                             <TouchableOpacity style={styles.saveProfileBtn}
-                                onPress={() => console.warn('Saved Profile!')}>
+                                onPress={() => this.updateProfile()}>
                                 <Text style={styles.btnText}>Save Profile</Text>
                                 {indicatorJsx}
                             </TouchableOpacity>
@@ -292,12 +400,23 @@ const styles = StyleSheet.create({
         color: '#22a7f0',
         marginTop: 25,
     },
-    textInputWrapper: {
+    textInputBlurWrapper: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomWidth: 1,
         borderColor: 'rgba(103, 128, 159, 0.5)',
+        paddingLeft: 20,
+        paddingRight: 20,
+        marginBottom: 25,
+        backgroundColor: 'rgba(255,255,255,0.3)',
+    },
+    textInputActiveWrapper: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        borderBottomWidth: 1,
+        borderColor: '#22a7f0',
         paddingLeft: 20,
         paddingRight: 20,
         marginBottom: 25,
