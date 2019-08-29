@@ -317,7 +317,7 @@ class Database {
 									'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?);',
 									[request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
 									(tx, results) => {
-										// Added to watchedList, now check of movie is present in wishList
+										// Added to watchedList, now check if movie is present in wishList
 										this.isInList('wishList', request.titleId, request.username, request.titleType)
 											.then(result => {
 												console.warn('Movie was in wishList, so deletion needed');
