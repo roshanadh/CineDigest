@@ -303,11 +303,16 @@ export default class MoviesListsScreen extends Component {
 
 	componentDidMount() {
 		Snackbar.show({
-			title: 'Initializing the app',
+			title: 'Initializing the app...',
 			duration: Snackbar.LENGTH_INDEFINITE,
 			color: '#fefefe',
 			fontSize: 16,
 			backgroundColor: '#3fc380',
+			action: {
+				title: 'Hide',
+				color: '#fefefe',
+				onPress: () => { },
+			},
 		});
 		// Get recommendations from recently listed movies for the current user
 		this.getUsername()
