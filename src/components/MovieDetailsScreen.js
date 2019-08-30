@@ -14,7 +14,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionButton from 'react-native-action-button';
 
-import db from '../db/db';
+import db from '../db/db_exp';
 
 export default class MovieDetails extends Component {
     static navigationOptions = ({ navigation }) => {
