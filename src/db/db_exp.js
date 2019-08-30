@@ -544,24 +544,6 @@ class Database {
                     reject(error.message);
                 });
         });
-        //     SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-        //         .then(DB => {
-        //             db = DB;
-        //             db.transaction((tx) => {
-        //                 tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND listType=? AND titleType=?;', [username, listType, titleType], (tx, results) => {
-        //                     console.warn('SQL executed..');
-        //                     let len = results.rows.length;
-        //                     let rows = [];
-        //                     for (let i = 0; i < len; i++) { rows.push(results.rows.item(i)); }
-        //                     resolve(rows);
-        //                 });
-        //             })
-        //                 .catch(error => {
-        //                     console.warn(error.message);
-        //                 });
-        //         })
-        //         .catch(error => console.warn(error.message));
-        // });
     }
 
     getStats(username) {

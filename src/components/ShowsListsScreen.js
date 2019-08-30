@@ -19,7 +19,7 @@ import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
 
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
-import db from '../db/db';
+import db from '../db/db_exp';
 import netCon from '../util/NetCon';
 import { onSignOut } from '../auth/auth';
 
@@ -100,8 +100,6 @@ export default class ShowsListsScreen extends Component {
 									let partialOverview = fullOverview.length <= 100 ? fullOverview :
 										fullOverview.slice(0, 150) + '...';
 									// Set latest addition to state
-
-									console.warn('LENGTH: ' + result.length);
 									this.setState({
 										wishList: {
 											titleId: result[len - 1].titleId,
@@ -139,19 +137,37 @@ export default class ShowsListsScreen extends Component {
 										],
 									});
 								}
-							}, error => console.warn(error));
+							}, error => {
+								if (error === 'NOT-FOUND') {
+									// If there are no titles in wishList, display an empty box
+									this.setState({
+										wishListJsx: [
+											<ListItem
+												titleId=""
+												title=""
+												overview=""
+												voteCount=""
+												voteAverage=""
+												posterPath=""
+												onItemPressed=""
+												listType="Wish-list"
+											/>,
+										],
+									});
+								}
+								console.warn(error);
+							});
 
 						db.getHistory(result, 'watchingList', 'show')
 							.then(result => {
 								let len = result.length;
 								if (len > 0) {
-									// If there's atleast one title in the wishList, display it
+									// If there's atleast one title in the watchingList, display it
 									let fullOverview = result[len - 1].titleOverview;
 									// Limit overview to 150 characters or less
 									let partialOverview = fullOverview.length <= 100 ? fullOverview :
 										fullOverview.slice(0, 150) + '...';
 									// Set latest addition to state
-
 									console.warn('LENGTH: ' + result.length);
 									this.setState({
 										watchingList: {
@@ -174,6 +190,24 @@ export default class ShowsListsScreen extends Component {
 											/>,
 									});
 								} else {
+									// If there are no titles in watchingList, display an empty box
+									this.setState({
+										watchingListJsx: [
+											<ListItem
+												titleId=""
+												title=""
+												overview=""
+												voteCount=""
+												voteAverage=""
+												posterPath=""
+												onItemPressed=""
+												listType="Watching-list"
+											/>,
+										],
+									});
+								}
+							}, error => {
+								if (error === 'NOT-FOUND') {
 									// If there are no titles in wishList, display an empty box
 									this.setState({
 										watchingListJsx: [
@@ -190,7 +224,8 @@ export default class ShowsListsScreen extends Component {
 										],
 									});
 								}
-							}, error => console.warn(error));
+								console.warn(error);
+							});
 
 						db.getHistory(result, 'watchedList', 'show')
 							.then(result => {
@@ -209,66 +244,67 @@ export default class ShowsListsScreen extends Component {
 								if (len >= 4) { safeMinus = 3; }
 								else { safeMinus = len; }
 
-								if (len > 0) {
-									// If atleast one movie is listed in watchedList display it
-									for (let i = len - 1; i >= len - safeMinus; i--) {
-										titleIds.push(result[i].titleId);
-										titles.push(result[i].titleName);
+								// If atleast one movie is listed in watchedList display it
+								for (let i = len - 1; i >= len - safeMinus; i--) {
+									titleIds.push(result[i].titleId);
+									titles.push(result[i].titleName);
 
-										let fullOverview = result[i].titleOverview;
-										// Limit overview to 150 characters or less
+									let fullOverview = result[i].titleOverview;
+									// Limit overview to 150 characters or less
 
-										let partialOverview = fullOverview.length <= 100 ? fullOverview :
-											fullOverview.slice(0, 150) + '...';
+									let partialOverview = fullOverview.length <= 100 ? fullOverview :
+										fullOverview.slice(0, 150) + '...';
 
-										partialOverviews.push(partialOverview);
-										voteCounts.push(result[i].titleVoteCount);
-										voteAverages.push(result[i].titleVoteAverage);
-										posterPaths.push(result[i].titlePosterPath);
+									partialOverviews.push(partialOverview);
+									voteCounts.push(result[i].titleVoteCount);
+									voteAverages.push(result[i].titleVoteAverage);
+									posterPaths.push(result[i].titlePosterPath);
 
-										newWatchedListJsx.push(<ListItem
-											titleId={result[i].titleId}
-											title={result[i].titleName}
-											overview={partialOverview}
-											voteCount={result[i].titleVoteCount}
-											voteAverage={result[i].titleVoteAverage}
-											posterPath={result[i].titlePosterPath}
-											onItemPressed={() => this.onListItemSelected(result[i].titleId, result[i].titleName)}
-										/>);
-									}
-
-									// Set latest addition to state
-									this.setState({
-										watchedList: {
-											titleIds,
-											titles,
-											overviews: partialOverviews,
-											voteCounts,
-											voteAverages,
-											posterPaths,
-										},
-										watchedListJsx: newWatchedListJsx,
-									});
-									resolve(true);
-								} else {
-									// If there are no movies in WatchedList, display empty box
-									this.setState({
-										watchedListJsx: [
-											<ListItem
-												titleId=""
-												title=""
-												overview=""
-												voteCount=""
-												voteAverage=""
-												posterPath=""
-												onItemPressed=""
-												listType="Watched-list"
-											/>,
-										],
-									});
-									resolve(true);
+									newWatchedListJsx.push(<ListItem
+										titleId={result[i].titleId}
+										title={result[i].titleName}
+										overview={partialOverview}
+										voteCount={result[i].titleVoteCount}
+										voteAverage={result[i].titleVoteAverage}
+										posterPath={result[i].titlePosterPath}
+										onItemPressed={() => this.onListItemSelected(result[i].titleId, result[i].titleName)}
+									/>);
 								}
-							}, error => console.warn(error));
+
+								// Set latest addition to state
+								this.setState({
+									watchedList: {
+										titleIds,
+										titles,
+										overviews: partialOverviews,
+										voteCounts,
+										voteAverages,
+										posterPaths,
+									},
+									watchedListJsx: newWatchedListJsx,
+								});
+								resolve(true);
+							}, error => {
+									if (error === 'NOT-FOUND') {
+										// If there are no movies in WatchedList, display empty box
+										this.setState({
+											watchedListJsx: [
+												<ListItem
+													titleId=""
+													title=""
+													overview=""
+													voteCount=""
+													voteAverage=""
+													posterPath=""
+													onItemPressed=""
+													listType="Watched-list"
+												/>,
+											],
+										});
+									}
+									console.warn(error);
+									resolve(true);
+								});
 					}, error => console.warn(error));
 			});
 		};
