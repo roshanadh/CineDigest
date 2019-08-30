@@ -96,8 +96,6 @@ export default class MoviesListsScreen extends Component {
 									let partialOverview = fullOverview.length <= 100 ? fullOverview :
 										fullOverview.slice(0, 150) + '...';
 									// Set latest addition to state
-
-									console.warn('LENGTH: ' + result.length);
 									this.setState({
 										wishList: {
 											titleId: result[len - 1].titleId,
