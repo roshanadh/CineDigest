@@ -12,10 +12,9 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
-import FABIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import ActionButton from 'react-native-action-button';
 
-import db from '../db/db';
+import db from '../db/db_exp';
 import netCon from '../util/NetCon';
 
 export default class ShowDetailsScreen extends Component {
