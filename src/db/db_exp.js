@@ -380,31 +380,32 @@ class Database {
     }
 
     removeFromList(request) {
-        // Inserts into 'History' Table
+        // Removes into 'History' Table
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                .then(DB => {
-                    let db = DB;
-                    db.transaction(tx => {
-                        tx.executeSql(
-                            'DELETE FROM history WHERE listType=? AND titleId=? AND username=?;',
-                            [request.listType, request.titleId, request.username],
-                            (tx, results) => {
-                                resolve(true);
-                            });
-                    });
-                    db.transaction(tx => {
-                        tx.executeSql(
-                            'SELECT * FROM history WHERE listType=? AND titleId=? AND username=?;',
-                            [request.listType, request.titleId, request.username],
-                            (tx, results) => {
-                                let len = results.rows.length;
-                                console.warn('OH OH len: ' + len);
-                            });
-                    });
+            const payload = {
+                username: request.username,
+                listType: request.listType,
+                titleId: request.titleId,
+                titleType: request.titleType,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            console.warn(formBody);
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/removeFromList', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status === 'success') {
+                        resolve(true);
+                    } else {
+                        reject(false);
+                    }
                 })
                 .catch(error => {
-                    resolve(error.message);
+                    console.warn(error.message);
+                    reject(error.message);
                 });
         });
     }
