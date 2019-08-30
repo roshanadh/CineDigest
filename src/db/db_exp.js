@@ -518,26 +518,50 @@ class Database {
     }
 
     getHistory(username, listType, titleType) {
-        let db;
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                .then(DB => {
-                    db = DB;
-                    db.transaction((tx) => {
-                        tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND listType=? AND titleType=?;', [username, listType, titleType], (tx, results) => {
-                            console.warn('SQL executed..');
-                            let len = results.rows.length;
-                            let rows = [];
-                            for (let i = 0; i < len; i++) { rows.push(results.rows.item(i)); }
-                            resolve(rows);
-                        });
-                    })
-                        .catch(error => {
-                            console.warn(error.message);
-                        });
+            const payload = {
+                username,
+                listType,
+                titleType,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            console.warn(formBody);
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/getHistory', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status !== 'NOT-FOUND') {
+                        resolve(jsonResponse);
+                    } else {
+                        reject(jsonResponse.status);
+                    }
                 })
-                .catch(error => console.warn(error.message));
+                .catch(error => {
+                    console.warn(error.message);
+                    reject(error.message);
+                });
         });
+        //     SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+        //         .then(DB => {
+        //             db = DB;
+        //             db.transaction((tx) => {
+        //                 tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND listType=? AND titleType=?;', [username, listType, titleType], (tx, results) => {
+        //                     console.warn('SQL executed..');
+        //                     let len = results.rows.length;
+        //                     let rows = [];
+        //                     for (let i = 0; i < len; i++) { rows.push(results.rows.item(i)); }
+        //                     resolve(rows);
+        //                 });
+        //             })
+        //                 .catch(error => {
+        //                     console.warn(error.message);
+        //                 });
+        //         })
+        //         .catch(error => console.warn(error.message));
+        // });
     }
 
     getStats(username) {
