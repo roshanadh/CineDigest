@@ -17,7 +17,7 @@ import {
 import UsernameIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
-import db from '../db/db';
+import db from '../db/db_exp.js';
 import {onSignIn} from '../auth/auth';
 
 const { width, height } = Dimensions.get('window');
@@ -48,9 +48,9 @@ class SignInScreen extends Component {
 					onSignIn(this.state.username).then(() => props.navigation.navigate('SignedIn'));
 				}, error => {
 						this.setState({isLoading: false});
-						error.status === 'password mismatch' ?
-							Alert.alert('Password Error', `Incorrect password for '${error.username}'!`) :
-							Alert.alert('Username Error', `'${error.username}' is not a registered user!`);
+						error === 'PASSWORD-MISMATCH' ?
+							Alert.alert('Password Error', `Incorrect password for '${this.state.username}'!`) :
+							Alert.alert('Username Error', `'${this.state.username}' is not a registered user!`);
 				});
 			}
 		};
