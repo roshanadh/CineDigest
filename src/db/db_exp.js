@@ -202,40 +202,36 @@ class Database {
     addMovieToWishList(request) {
         // Inserts into 'History' Table
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                .then(DB => {
-                    let db = DB;
-                    db.transaction(tx => {
-                        tx.executeSql(`CREATE TABLE IF NOT EXISTS "history" (
-							"id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-							"titleId"	TEXT NOT NULL,
-							"titleType"	INTEGER NOT NULL,
-							"username"	TEXT NOT NULL,
-							"listType"	TEXT NOT NULL,
-							"titleOverview"	TEXT,
-							"titleName"	TEXT NOT NULL,
-							"titleVoteCount"	INTEGER NOT NULL,
-							"titleVoteAverage"	REAL NOT NULL,
-							"titlePosterPath"	INTEGER
-						);`)
-                            .catch(error => Alert.alert('Error', error.message));
-                    })
-                        .then(() => {
-                            db.transaction(tx => {
-                                tx.executeSql(
-                                    'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?);',
-                                    [request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
-                                    (tx, results) => {
-                                        resolve(true);
-                                    })
-                                    .catch(error => {
-                                        console.warn(error + ' at db.js/206');
-                                        resolve(false);
-                                    });
-                            });
-                        });
+            const payload = {
+                username: request.username,
+                listType: request.listType,
+                titleId: request.titleId,
+                titleType: request.titleType,
+                titleName: request.titleName,
+                titleOverview: request.titleOverview,
+                titleVoteAverage: request.titleVoteAverage,
+                titleVoteCount: request.titleVoteCount,
+                titlePosterPath: request.titlePosterPath,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            console.warn(formBody);
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/addMovieToWishList', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status === 'success') {
+                        resolve(true);
+                    } else {
+                        reject(false);
+                    }
                 })
-                .catch(error => console.warn(error.message));
+                .catch(error => {
+                    console.warn(error.message);
+                    reject(error.message);
+                });
         });
     }
 
@@ -609,23 +605,30 @@ class Database {
 
     isInList(listType, titleId, username, titleType) {
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                .then(DB => {
-                    let db = DB;
-                    console.warn('Database OPEN');
-                    db.transaction((tx) => {
-                        console.warn('Transaction started..');
-                        tx.executeSql('SELECT * FROM \'history\' WHERE username=? AND listType=? AND titleId=? AND titleType=?;', [username, listType, titleId, titleType], (tx, results) => {
-                            console.warn('SQL executed..');
-                            results.rows.length > 0 ? resolve(true) : reject(false);
-                        });
-                    })
-                        .catch(error => {
-                            console.log(error.message);
-                        });
+            const payload = {
+                username,
+                listType,
+                titleId,
+                titleType,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            console.warn(formBody);
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/isInList', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status !== 'NOT-FOUND') {
+                        resolve(jsonResponse);
+                    } else {
+                        reject(jsonResponse.status);
+                    }
                 })
                 .catch(error => {
                     console.warn(error.message);
+                    reject(error.message);
                 });
         });
     }
