@@ -238,84 +238,36 @@ class Database {
     addMovieToWatchedList(request) {
         // Inserts into 'History' Table
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                .then(DB => {
-                    let db = DB;
-                    db.transaction(tx => {
-                        tx.executeSql(`CREATE TABLE IF NOT EXISTS "history" (
-							"id"	INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE,
-							"titleId"	TEXT NOT NULL,
-							"titleType"	INTEGER NOT NULL,
-							"username"	TEXT NOT NULL,
-							"listType"	TEXT NOT NULL,
-							"titleOverview"	TEXT,
-							"titleName"	TEXT NOT NULL,
-							"titleVoteCount"	INTEGER NOT NULL,
-							"titleVoteAverage"	REAL NOT NULL,
-							"titlePosterPath"	INTEGER
-						);`)
-                            .catch(error => Alert.alert('Error', error.message));
-                    })
-                        .then(() => {
-                            db.transaction(tx => {
-                                tx.executeSql(
-                                    'INSERT INTO history(listType, titleId, titleName,titleOverview, titleVoteCount, titleVoteAverage,titlePosterPath, titleType, username) VALUES (?,?,?,?,?,?,?,?,?);',
-                                    [request.listType, request.titleId, request.titleName, request.titleOverview, request.titleVoteCount, request.titleVoteAverage, request.titlePosterPath, request.titleType, request.username],
-                                    (tx, results) => {
-                                        // Added to watchedList, now check if movie is present in wishList
-                                        this.isInList('wishList', request.titleId, request.username, request.titleType)
-                                            .then(result => {
-                                                console.warn('Movie was in wishList, so deletion needed');
-                                                // Movie is present in wishList, proceed to removing from wishList
-                                                db.transaction(tx => {
-                                                    // Remove from wishList
-                                                    tx.executeSql(
-                                                        'DELETE FROM history WHERE listType=? AND titleId=? AND username=? AND titleType=?;',
-                                                        ['wishList', request.titleId, request.username, request.titleType],
-                                                        (tx, results) => {
-
-                                                            // Removed from wishList, and added to watchedList
-                                                            db.transaction(tx => {
-                                                                tx.executeSql(
-                                                                    'SELECT * FROM history WHERE listType=? AND titleId=? AND username=?;',
-                                                                    ['wishList', request.titleId, request.username],
-                                                                    (tx, results) => {
-                                                                        let len = results.rows.length;
-                                                                        console.warn('IS IT REMAINING IN WISHLIST? len: ' + len);
-                                                                    });
-                                                            });
-                                                            resolve(true);
-                                                        });
-                                                });
-                                            }, error => {
-                                                // Movie was not present in wishList,
-                                                // no need to remove. Added to watchedList
-                                                console.warn('Movie was not in wishList, so only added to watchedList');
-                                                db.transaction(tx => {
-                                                    tx.executeSql(
-                                                        'SELECT * FROM history WHERE listType=? AND titleId=? AND username=?;',
-                                                        ['watchedList', request.titleId, request.username],
-                                                        (tx, results) => {
-                                                            let len = results.rows.length;
-                                                            console.warn('OH OH len: ' + len);
-                                                        });
-                                                });
-                                                resolve(true);
-                                            })
-                                            .catch(error => {
-                                                reject(error);
-                                            });
-                                    })
-                                    .catch(error => {
-                                        reject(error);
-                                    });
-                            })
-                                .catch(error => {
-                                    reject(error);
-                                });
-                        });
+            const payload = {
+                username: request.username,
+                listType: request.listType,
+                titleId: request.titleId,
+                titleType: request.titleType,
+                titleName: request.titleName,
+                titleOverview: request.titleOverview,
+                titleVoteAverage: request.titleVoteAverage,
+                titleVoteCount: request.titleVoteCount,
+                titlePosterPath: request.titlePosterPath,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            console.warn(formBody);
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/addMovieToWatchedList', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status === 'success') {
+                        resolve(true);
+                    } else {
+                        reject(false);
+                    }
                 })
-                .catch(error => console.warn(error.message));
+                .catch(error => {
+                    console.warn(error.message);
+                    reject(error.message);
+                });
         });
     }
 
