@@ -71,57 +71,28 @@ class Database {
 
     verifyUser(username, password) {
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                .then(DB => {
-                    let db = DB;
-                    db.transaction(tx => {
-                        // Check if user exists
-                        tx.executeSql(
-                            'SELECT password FROM users WHERE username=?;', [username], (tx, results) => {
-                                let len = results.rows.length;
-                                if (len > 0) {
-                                    // Generate Salt for hashing (with 10 rounds) / ASYNC
-                                    bcrypt.genSalt(5, (_err, salt) => {
-                                        // Generate Hash for the password / ASYNC
-                                        bcrypt.hash(password, salt, (_err, hash) => {
-                                            let retrievedHash = results.rows.item(0).password;
-
-                                            // Compare plain password with retrieved hash
-                                            bcrypt.compare(password, retrievedHash, function (_err, res) {
-                                                if (res === true) {
-                                                    resolve({
-                                                        status: 'ok',
-                                                        username,
-                                                        password,
-                                                    });
-                                                } else {
-                                                    // User exists but incorrect password
-                                                    reject({
-                                                        status: 'password mismatch',
-                                                        username,
-                                                        password,
-                                                    });
-                                                }
-                                            });
-                                        });
-                                    });
-                                } else {
-                                    // User doesn't exist
-                                    reject({
-                                        status: 'user mismatch',
-                                        username,
-                                        password,
-                                    });
-                                }
-                            }
-                        )
-                            .catch(error => {
-                                Alert.alert('Error', error.message);
-                            });
-                    });
+            const payload = {
+                username,
+                password,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            console.warn(formBody);
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/verify', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status === 'success') {
+                        resolve(payload);
+                    } else {
+                        reject(jsonResponse.status);
+                    }
                 })
                 .catch(error => {
-                    Alert.alert('Error', 'Couldn\'t open database!' + error.message);
+                    console.warn(error.message);
+                    reject(error.message);
                 });
         });
     }
