@@ -20,7 +20,7 @@ import bcrypt from 'react-native-bcrypt';
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
-import db from '../db/db.js';
+import db from '../db/db_exp.js';
 
 const { width, height } = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
@@ -41,7 +41,6 @@ export default class SignUpScreen extends Component {
 		this.updatePassword = (password1) => {
 			if (this.state.password1 < password1) {
 				// Password length increased
-				console.warn('INCREASE!!');
 				if (password1.length >= 8) {
 					this.setState({ password1, passwordProgress: 1 });
 				} else {
@@ -49,7 +48,6 @@ export default class SignUpScreen extends Component {
 				}
 			} else {
 				// Password length decreased
-				console.warn('DECREASE!!');
 				if (password1.length === 0) {
 					this.setState({ password1, passwordProgress: 0 });
 				} else if (password1.length >= 8) {
@@ -242,8 +240,13 @@ export default class SignUpScreen extends Component {
 							);
 						}, err => {
 							this.setState({ isLoading: false });
-							Alert.alert('Oops', `Username ${err.username} already exists!`);
-							console.warn(err);
+							if (err === 'ER_DUP_ENTRY') {
+								Alert.alert('Oops', `Username ${this.state.username} already exists!`);
+								console.warn(err);
+							} else {
+								Alert.alert('Error', 'Error message: ' + err);
+								console.warn(err);
+							}
 						});
 					});
 				});
