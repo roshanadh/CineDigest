@@ -193,23 +193,29 @@ class Database {
     }
 
     changePassword(username, newPassword) {
-        let db;
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                .then(DB => {
-                    db = DB;
-                    db.transaction((tx) => {
-                        tx.executeSql('UPDATE users SET password=? WHERE username=?;', [newPassword, username]);
-                    }, error => {
-                        reject(false);
-                        console.warn(error.message);
-                    }, success => {
+            const payload = {
+                username,
+                newPassword,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            console.warn(formBody);
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/changePassword', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status === 'success') {
                         resolve(true);
-                        console.warn('Password changed!');
-                    });
+                    } else {
+                        reject(jsonResponse.status);
+                    }
                 })
                 .catch(error => {
-                    console.warn('Could not open DB ' + error.message);
+                    console.warn(error.status);
+                    reject(error);
                 });
         });
     }
