@@ -20,7 +20,9 @@ import bcrypt from 'react-native-bcrypt';
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
+import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
+import netCon from '../util/NetCon.js';
 
 const { width, height } = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
@@ -164,93 +166,101 @@ export default class SignUpScreen extends Component {
 		};
 
 		this.checkSignUp = () => {
-			const {
-				name,
-				username,
-				password1,
-				password2,
-			} = this.state;
+			netCon.checkNetCon()
+				.then(success => {
+					// Internet connection is available
+					const {
+						name,
+						username,
+						password1,
+						password2,
+					} = this.state;
 
-			if (name === '') {
-				this.setState({isLoading: false});
-				Alert.alert('Error', 'Please fill up your name!', [{
-					text: 'okay',
-				}]);
-			} else if (username === '') {
-				this.setState({isLoading: false});
-				Alert.alert('Error', 'Please fill up your username!', [{
-					text: 'okay',
-				}]);
-			} else if (password1 === '') {
-				this.setState({isLoading: false});
-				// If password not entered
-				Alert.alert('Error', 'Please enter your password!', [{
-					text: 'okay',
-				}]);
-			} else if (password2 === '') {
-				this.setState({isLoading: false});
-				Alert.alert('Error', 'Please confirm your password!', [{
-					text: 'okay',
-				}]);
-			} else if (password1 !== password2) {
-				this.setState({isLoading: false});
-				// If Not same return False
-				Alert.alert('Error', 'The passwords did not match!', [{
-					text: 'okay',
-				}]);
-			}
-			else if (this.state.username.includes('.') || this.state.username.includes('/') ||
-				this.state.username.includes('\\') || this.state.username.includes('|') ||
-				this.state.username.includes('~') || this.state.username.includes('`') ||
-				this.state.username.includes('!') || this.state.username.includes('@') ||
-				this.state.username.includes('+') || this.state.username.includes('-') ||
-				this.state.username.includes('*') || this.state.username.includes('=') ||
-				this.state.username.includes('#') || this.state.username.includes('$') ||
-				this.state.username.includes('%') || this.state.username.includes('^') ||
-				this.state.username.includes('&') || this.state.username.includes('(') ||
-				this.state.username.includes(')') || this.state.username.includes(';') ||
-				this.state.username.includes(':') || this.state.username.includes('{') ||
-				this.state.username.includes('}') || this.state.username.includes('[') ||
-				this.state.username.includes(']') || this.state.username.includes('\'') ||
-				this.state.username.includes('"') || this.state.username.includes('?') ||
-				this.state.username.includes('<') || this.state.username.includes('>') ||
-				this.state.username.includes(',') || this.state.username.includes(' ') ||
-				this.state.username.length < 6 || this.state.password1.length < 6) {
+					if (name === '') {
+						this.setState({ isLoading: false });
+						Alert.alert('Error', 'Please fill up your name!', [{
+							text: 'okay',
+						}]);
+					} else if (username === '') {
+						this.setState({ isLoading: false });
+						Alert.alert('Error', 'Please fill up your username!', [{
+							text: 'okay',
+						}]);
+					} else if (password1 === '') {
+						this.setState({ isLoading: false });
+						// If password not entered
+						Alert.alert('Error', 'Please enter your password!', [{
+							text: 'okay',
+						}]);
+					} else if (password2 === '') {
+						this.setState({ isLoading: false });
+						Alert.alert('Error', 'Please confirm your password!', [{
+							text: 'okay',
+						}]);
+					} else if (password1 !== password2) {
+						this.setState({ isLoading: false });
+						// If Not same return False
+						Alert.alert('Error', 'The passwords did not match!', [{
+							text: 'okay',
+						}]);
+					}
+					else if (this.state.username.includes('.') || this.state.username.includes('/') ||
+						this.state.username.includes('\\') || this.state.username.includes('|') ||
+						this.state.username.includes('~') || this.state.username.includes('`') ||
+						this.state.username.includes('!') || this.state.username.includes('@') ||
+						this.state.username.includes('+') || this.state.username.includes('-') ||
+						this.state.username.includes('*') || this.state.username.includes('=') ||
+						this.state.username.includes('#') || this.state.username.includes('$') ||
+						this.state.username.includes('%') || this.state.username.includes('^') ||
+						this.state.username.includes('&') || this.state.username.includes('(') ||
+						this.state.username.includes(')') || this.state.username.includes(';') ||
+						this.state.username.includes(':') || this.state.username.includes('{') ||
+						this.state.username.includes('}') || this.state.username.includes('[') ||
+						this.state.username.includes(']') || this.state.username.includes('\'') ||
+						this.state.username.includes('"') || this.state.username.includes('?') ||
+						this.state.username.includes('<') || this.state.username.includes('>') ||
+						this.state.username.includes(',') || this.state.username.includes(' ') ||
+						this.state.username.length < 6 || this.state.password1.length < 6) {
 
-				this.setState({isLoading: false});
-				Alert.alert('Error', 'Some fields may have errors!', [{
-					text: 'okay',
-				}]);
-			} else {
-				// Generate Salt for hashing (with 10 rounds) / ASYNC
-				bcrypt.genSalt(5, (_err, salt) => {
-					// Generate Hash for the password / ASYNC
-					bcrypt.hash(this.state.password1, salt, (_err, hash) => {
-						console.warn(hash + ' is the hash!');
-						let addPromise = db.addUser(this.state.username, hash, this.state.name);
-						addPromise.then(result => {
-							this.setState({ isLoading: false });
-							console.warn(result);
-							Alert.alert(
-								'Successful',
-								`${result.username} has been registered!`, [{
-									text: 'OK',
-									onPress: () => props.navigation.navigate('SignIn'),
-								}]
-							);
-						}, err => {
-							this.setState({ isLoading: false });
-							if (err === 'ER_DUP_ENTRY') {
-								Alert.alert('Oops', `Username ${this.state.username} already exists!`);
-								console.warn(err);
-							} else {
-								Alert.alert('Error', 'Error message: ' + err);
-								console.warn(err);
-							}
+						this.setState({ isLoading: false });
+						Alert.alert('Error', 'Some fields may have errors!', [{
+							text: 'okay',
+						}]);
+					} else {
+						// Generate Salt for hashing (with 10 rounds) / ASYNC
+						bcrypt.genSalt(5, (_err, salt) => {
+							// Generate Hash for the password / ASYNC
+							bcrypt.hash(this.state.password1, salt, (_err, hash) => {
+								console.warn(hash + ' is the hash!');
+								let addPromise = db.addUser(this.state.username, hash, this.state.name);
+								addPromise.then(result => {
+									this.setState({ isLoading: false });
+									console.warn(result);
+									Alert.alert(
+										'Successful',
+										`${result.username} has been registered!`, [{
+											text: 'OK',
+											onPress: () => props.navigation.navigate('SignIn'),
+										}]
+									);
+								}, err => {
+									this.setState({ isLoading: false });
+									if (err === 'ER_DUP_ENTRY') {
+										Alert.alert('Oops', `Username ${this.state.username} already exists!`);
+										console.warn(err);
+									} else {
+										Alert.alert('Error', 'Error message: ' + err);
+										console.warn(err);
+									}
+								});
+							});
 						});
-					});
+					}
+				}, error => {
+					// Internet connection is unavailable
+					this.setState({ isLoading: false });
+					CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
 				});
-			}
 		};
 
 		this.signUpHandler = () => {
