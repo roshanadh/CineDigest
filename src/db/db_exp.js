@@ -13,30 +13,29 @@ SQLite.enablePromise(true);
 class Database {
     getUser(username) {
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                .then(DB => {
-                    let db = DB;
-                    console.warn('Database OPEN');
-                    db.transaction((tx) => {
-                        console.warn('Transaction started..');
-                        tx.executeSql('SELECT * FROM users WHERE username=?;', [username], (tx, results) => {
-                            // Get user details
-                            let len = results.rows.length;
-                            if (len > 0) {
-                                let details = {};
-                                let row = results.rows.item(0);
-                                resolve({
-                                    username,
-                                    name: row.name,
-                                });
-                            } else {
-                                reject(false);
-                            }
+            const payload = {
+                username,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/getUser', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status !== 'NOT-FOUND') {
+                        resolve({
+                            username: jsonResponse.username,
+                            name: jsonResponse.name,
                         });
-                    });
+                    } else {
+                        reject(jsonResponse.status);
+                    }
                 })
                 .catch(error => {
                     console.warn(error.message);
+                    reject(error.message);
                 });
         });
     }
@@ -101,78 +100,94 @@ class Database {
         return new Promise((resolve, reject) => {
             if (newUsername === null && newName !== null) {
                 console.warn('Name not null, username  null!');
-                SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                    .then(DB => {
-                        let db = DB;
-                        console.warn('Database OPEN');
-                        db.transaction((tx) => {
-                            console.warn('Transaction started..');
-                            tx.executeSql('UPDATE users SET name=? WHERE username=?;', [newName, username]);
-                        }, error => reject(error), success => resolve(true));
+                const payload = {
+                    username,
+                    newName,
+                };
+                const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+                console.warn(formBody);
+                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formBody,
+                })
+                    .then(response => response.json())
+                    .then(jsonResponse => {
+                        if (jsonResponse.status === 'success') {
+                            resolve(true);
+                        } else {
+                            reject(jsonResponse.status);
+                        }
                     })
                     .catch(error => {
                         console.warn(error.message);
+                        reject(error.message);
                     });
             } else if (newUsername !== null && newName !== null) {
                 console.warn('Name not null, username not null!');
-                SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                    .then(DB => {
-                        let db = DB;
-                        console.warn('Database OPEN');
-                        // Update users table
-                        db.transaction((tx) => {
-                            console.warn('Transaction started..');
-                            tx.executeSql('UPDATE users SET name=?, username=? WHERE username=?;', [newName, newUsername, username]);
-                        }, error => reject(error));
-                        // Update history table
-                        db.transaction((tx) => {
-                            console.warn('Transaction started..');
-                            tx.executeSql('UPDATE history SET username=? WHERE username=?;', [newUsername, username]);
-                        }, error => reject(error), success => {
+                const payload = {
+                    username,
+                    newName,
+                    newUsername,
+                };
+                const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+                console.warn(formBody);
+                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formBody,
+                })
+                    .then(response => response.json())
+                    .then(jsonResponse => {
+                        if (jsonResponse.status === 'success') {
                             resolve(true);
-                            console.warn('Updated second table too!');
-                        });
-
-                        // Update USER_KEY stored in AsyncStorage
-                        onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
-                        onSignIn(newUsername).then(() => {
-                            console.warn('Set USER_KEY ' + newUsername);
-                            Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
-                        });
+                        } else {
+                            reject(jsonResponse.status);
+                        }
                     })
                     .catch(error => {
                         console.warn(error.message);
+                        reject(error.message);
                     });
+
+                // Update USER_KEY stored in AsyncStorage
+                onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
+                onSignIn(newUsername).then(() => {
+                    console.warn('Set USER_KEY ' + newUsername);
+                    Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+                });
             } else if (newUsername !== null && newName === null) {
                 console.warn('Name null, username not null!');
-                SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                    .then(DB => {
-                        let db = DB;
-                        console.warn('Database OPEN');
-                        // Update users table
-                        db.transaction((tx) => {
-                            console.warn('Transaction started..');
-                            tx.executeSql('UPDATE users SET username=? WHERE username=?;', [newUsername, username]);
-                        }, error => reject(error));
-                        // Update history table
-                        db.transaction((tx) => {
-                            console.warn('Transaction started..');
-                            tx.executeSql('UPDATE history SET username=? WHERE username=?;', [newUsername, username]);
-                        }, error => reject(error), success => {
+                const payload = {
+                    username,
+                    newUsername,
+                };
+                const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+                console.warn(formBody);
+                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formBody,
+                })
+                    .then(response => response.json())
+                    .then(jsonResponse => {
+                        if (jsonResponse.status === 'success') {
                             resolve(true);
-                            console.warn('Updated second table too!');
-                        });
-
-                        // Update USER_KEY stored in AsyncStorage
-                        onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
-                        onSignIn(newUsername).then(() => {
-                            console.warn('Set USER_KEY ' + newUsername);
-                            Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
-                        });
+                        } else {
+                            reject(jsonResponse.status);
+                        }
                     })
                     .catch(error => {
                         console.warn(error.message);
+                        reject(error.message);
                     });
+
+                // Update USER_KEY stored in AsyncStorage
+                onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
+                onSignIn(newUsername).then(() => {
+                    console.warn('Set USER_KEY ' + newUsername);
+                    Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+                });
             }
         });
     }
@@ -464,64 +479,6 @@ class Database {
                     reject(error.message);
                 });
         });
-        // let db;
-        // return new Promise((resolve, reject) => {
-        //     SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-        //         .then(DB => {
-        //             db = DB;
-        //             db.transaction((tx) => {
-        //                 tx.executeSql('SELECT * FROM \'history\' WHERE username=?;', [username], (tx, results) => {
-        //                     console.warn('SQL executed..');
-        //                     let len = results.rows.length;
-        //                     if (len > 0) {
-        //                         let listedMovies = 0;
-        //                         let listedShows = 0;
-        //                         let listedInWishMovies = 0;
-        //                         let listedInWishShows = 0;
-        //                         let listedInWatchedMovies = 0;
-        //                         let listedInWatchedShows = 0;
-        //                         let listedInWatchingShows = 0;
-
-        //                         for (let i = 0; i < len; i++) {
-        //                             let row = results.rows.item(i);
-        //                             if (row.titleType === 'movie') {
-        //                                 listedMovies++;
-        //                                 if (row.listType === 'wishList') {
-        //                                     listedInWishMovies++;
-        //                                 } else if (row.listType === 'watchedList') {
-        //                                     listedInWatchedMovies++;
-        //                                 }
-        //                             } else if (row.titleType === 'show') {
-        //                                 listedShows++;
-        //                                 if (row.listType === 'wishList') {
-        //                                     listedInWishShows++;
-        //                                 } else if (row.listType === 'watchedList') {
-        //                                     listedInWatchedShows++;
-        //                                 } else if (row.listType === 'watchingList') {
-        //                                     listedInWatchingShows++;
-        //                                 }
-        //                             }
-        //                         }
-        //                         resolve({
-        //                             listedMovies,
-        //                             listedShows,
-        //                             listedInWishMovies,
-        //                             listedInWishShows,
-        //                             listedInWatchedMovies,
-        //                             listedInWatchedShows,
-        //                             listedInWatchingShows,
-        //                         });
-        //                     } else {
-        //                         reject(false);
-        //                     }
-        //                 });
-        //             })
-        //                 .catch(error => {
-        //                     console.warn(error.message);
-        //                 });
-        //         })
-        //         .catch(error => console.warn(error.message));
-        // });
     }
 
     isInList(listType, titleId, username, titleType) {
@@ -733,25 +690,51 @@ class Database {
 
     deleteAllListItems(username, listType, titleType) {
         return new Promise((resolve, reject) => {
-            SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
-                .then(DB => {
-                    let db = DB;
-                    console.warn('Database OPEN');
-                    db.transaction((tx) => {
-                        console.warn('Transaction started..');
-                        tx.executeSql('DELETE FROM history WHERE username=? AND listType=? AND titleType=?;', [username, listType, titleType], (tx, results) => {
-                            console.warn('DELETED all ' + listType + ' items for ' + username + '/' + titleType);
-                            resolve(true);
-                        });
-                    })
-                        .catch(error => {
-                            reject(error);
-                        });
+            const payload = {
+                username,
+                listType,
+                titleType,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            console.warn(formBody);
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/removeFromList', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status === 'success') {
+                        resolve(true);
+                    } else {
+                        reject(false);
+                    }
                 })
                 .catch(error => {
                     console.warn(error.message);
+                    reject(error.message);
                 });
         });
+        // return new Promise((resolve, reject) => {
+        //     SQLite.openDatabase({ name: 'CineDigest.db', createFromLocation: '~CineDigest.db', location: 'Library' })
+        //         .then(DB => {
+        //             let db = DB;
+        //             console.warn('Database OPEN');
+        //             db.transaction((tx) => {
+        //                 console.warn('Transaction started..');
+        //                 tx.executeSql('DELETE FROM history WHERE username=? AND listType=? AND titleType=?;', [username, listType, titleType], (tx, results) => {
+        //                     console.warn('DELETED all ' + listType + ' items for ' + username + '/' + titleType);
+        //                     resolve(true);
+        //                 });
+        //             })
+        //                 .catch(error => {
+        //                     reject(error);
+        //                 });
+        //         })
+        //         .catch(error => {
+        //             console.warn(error.message);
+        //         });
+        // });
     }
 }
 

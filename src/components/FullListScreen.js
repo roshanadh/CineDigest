@@ -119,6 +119,7 @@ export default class FullListScreen extends Component {
 
                 db.getHistory(username, listType, titleType)
                     .then(result => {
+                        // If atleast one title is listed in watchedList display it
                         let len = result.length;
                         let titleIds = [];
                         let titles = [];
@@ -126,116 +127,115 @@ export default class FullListScreen extends Component {
                         let voteAverages = [];
                         let posterPaths = [];
                         let partialOverviews = [];
+                        
+                        for (let i = len - 1; i >= 0; i--) {
+                            titleIds.push(result[i].titleId);
+                            titles.push(result[i].titleName);
 
-                        if (len > 0) {
-                            // If atleast one title is listed in watchedList display it
-                            for (let i = len - 1; i >= 0; i--) {
-                                titleIds.push(result[i].titleId);
-                                titles.push(result[i].titleName);
+                            let fullOverview = result[i].titleOverview;
+                            // Limit overview to 150 characters or less
 
-                                let fullOverview = result[i].titleOverview;
-                                // Limit overview to 150 characters or less
+                            let partialOverview = fullOverview.length <= 100 ? fullOverview :
+                                fullOverview.slice(0, 150) + '...';
 
-                                let partialOverview = fullOverview.length <= 100 ? fullOverview :
-                                    fullOverview.slice(0, 150) + '...';
+                            partialOverviews.push(partialOverview);
+                            voteCounts.push(result[i].titleVoteCount);
+                            voteAverages.push(result[i].titleVoteAverage);
+                            posterPaths.push(result[i].titlePosterPath);
+                        }
 
-                                partialOverviews.push(partialOverview);
-                                voteCounts.push(result[i].titleVoteCount);
-                                voteAverages.push(result[i].titleVoteAverage);
-                                posterPaths.push(result[i].titlePosterPath);
-                            }
+                        let list = {
+                            titleIds,
+                            titles,
+                            overviews: partialOverviews,
+                            voteCounts,
+                            voteAverages,
+                            posterPaths,
+                        };
 
-                            let list = {
+                        // Set listContainerJsx
+                        let listContainerJsx = '';
+                        switch (this.state.listType) {
+                            case 'wishList':
+                                listContainerJsx =
+                                    <FullListContainer
+                                        source={list}
+                                        sourceLength={len}
+                                        onIdSelected={this.onIdSelected}
+                                        listType={this.state.listType}
+                                    />;
+                                break;
+                            case 'watchingList':
+                                listContainerJsx =
+                                    <FullListContainer
+                                        source={list}
+                                        sourceLength={len}
+                                        onIdSelected={this.onIdSelected}
+                                        listType={this.state.listType}
+                                    />;
+                                break;
+                            case 'watchedList':
+                                listContainerJsx =
+                                    <FullListContainer
+                                        source={list}
+                                        sourceLength={len}
+                                        onIdSelected={this.onIdSelected}
+                                        listType={this.state.listType}
+                                    />;
+                                break;
+                            default:
+                                listContainerJsx = '';
+                        }
+
+                        // Set latest addition to state
+                        this.setState({
+                            isEmpty: false,
+                            refreshing: false,
+                            [listType]: {
                                 titleIds,
                                 titles,
                                 overviews: partialOverviews,
                                 voteCounts,
                                 voteAverages,
                                 posterPaths,
-                            };
-
-                            // Set listContainerJsx
-                            let listContainerJsx = '';
-                            switch (this.state.listType) {
-                                case 'wishList':
-                                    listContainerJsx =
-                                        <FullListContainer
-                                            source={list}
-                                            sourceLength={len}
-                                            onIdSelected={this.onIdSelected}
-                                            listType={this.state.listType}
-                                        />;
-                                    break;
-                                case 'watchingList':
-                                    listContainerJsx =
-                                        <FullListContainer
-                                            source={list}
-                                            sourceLength={len}
-                                            onIdSelected={this.onIdSelected}
-                                            listType={this.state.listType}
-                                        />;
-                                    break;
-                                case 'watchedList':
-                                    listContainerJsx =
-                                        <FullListContainer
-                                            source={list}
-                                            sourceLength={len}
-                                            onIdSelected={this.onIdSelected}
-                                            listType={this.state.listType}
-                                        />;
-                                    break;
-                                default:
-                                    listContainerJsx = '';
-                            }
-
-                            // Set latest addition to state
-                            this.setState({
-                                isEmpty: false,
-                                refreshing: false,
-                                [listType]: {
-                                    titleIds,
-                                    titles,
-                                    overviews: partialOverviews,
-                                    voteCounts,
-                                    voteAverages,
-                                    posterPaths,
-                                },
-                                listLength: len,
-                                listContainerJsx,
-                            });
-                            resolve(true);
-                        } else {
-                            // The list is empty
-                            let listName = '';
-                            switch (this.state.listType) {
-                                case 'wishList':
-                                    listName = 'Wish List';
-                                    break;
-                                case 'watchingList':
-                                    listName = 'Watching List';
-                                    break;
-                                case 'watchedList':
-                                    listName = 'Watched List';
-                                    break;
-                                default:
-                                    null;
-                            }
-
-                            Snackbar.show({
-                                title: `${listName} is empty!`,
-                                duration: Snackbar.LENGTH_LONG,
-                                action: {
-                                    title: 'OK',
-                                    color: '#fefefe',
-                                    onPress: () => { },
-                                },
-                                color: '#fefefe',
-                                fontSize: 16,
-                                backgroundColor: '#e74c3c',
-                            });
-                            this.props.navigation.goBack();
-                        }
+                            },
+                            listLength: len,
+                            listContainerJsx,
+                        });
                         resolve(true);
+                    })
+                    .catch(error => {
+                        // The list is empty
+                        console.warn('List is empty!')
+                        let listName = '';
+                        switch (this.state.listType) {
+                            case 'wishList':
+                                listName = 'Wish List';
+                                break;
+                            case 'watchingList':
+                                listName = 'Watching List';
+                                break;
+                            case 'watchedList':
+                                listName = 'Watched List';
+                                break;
+                            default:
+                                null;
+                        }
+
+                        Snackbar.show({
+                            title: `${listName} is empty!`,
+                            duration: Snackbar.LENGTH_LONG,
+                            action: {
+                                title: 'OK',
+                                color: '#fefefe',
+                                onPress: () => { },
+                            },
+                            color: '#fefefe',
+                            fontSize: 16,
+                            backgroundColor: '#e74c3c',
+                        });
+                        this.props.navigation.goBack();
+                        reject(false);
                     });
             });
         };
@@ -269,13 +269,15 @@ export default class FullListScreen extends Component {
         this.initList()
             .then(() => {
                 this.setState({refreshing: false});
+            })
+            .catch(error => {
+                this.setState({ refreshing: false });
             });
     }
 
     componentDidMount() {
         this.initState()
-            .then(() => this.initList())
-            .catch(error => alert(error.message));
+            .then(() => this.initList());
     }
 
     render() {
