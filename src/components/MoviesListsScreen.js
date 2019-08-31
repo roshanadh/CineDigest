@@ -340,24 +340,29 @@ export default class MoviesListsScreen extends Component {
 	};
 
 	viewAllPressedHandler = (listType) => {
-		let isListEmpty = false;
-		switch (listType) {
-			case 'wishList':
-				if (this.state.wishList.titleId === '') { isListEmpty = true; }
-				break;
-			case 'watchedList':
-				if (this.state.watchedList.titleIds.length === 0) { isListEmpty = true; }
-				break;
-			default: null;
-		}
-		if (!isListEmpty) {
-			// Handle button press only is list isn't empty
-			this.props.navigation.navigate('FullListScreen', {
-				listType,
-				titleType: 'movie',
-				username: this.state.username,
+		netCon.checkNetCon()
+			.then((result) => {
+				let isListEmpty = false;
+				switch (listType) {
+					case 'wishList':
+						if (this.state.wishList.titleId === '') { isListEmpty = true; }
+						break;
+					case 'watchedList':
+						if (this.state.watchedList.titleIds.length === 0) { isListEmpty = true; }
+						break;
+					default: null;
+				}
+				if (!isListEmpty) {
+					// Handle button press only is list isn't empty
+					this.props.navigation.navigate('FullListScreen', {
+						listType,
+						titleType: 'movie',
+						username: this.state.username,
+					});
+				}
+			}, (error) => {
+				netCon.showSnackBar('An internet connection is required!');
 			});
-		}
 	}
 
 	componentDidMount() {
