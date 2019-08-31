@@ -24,6 +24,7 @@ class Database {
                         resolve({
                             username: jsonResponse.username,
                             name: jsonResponse.name,
+                            uuid: jsonResponse.uuid,
                         });
                     } else {
                         reject(jsonResponse.status);
