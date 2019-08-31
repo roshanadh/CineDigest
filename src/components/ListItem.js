@@ -26,17 +26,9 @@ export default class ListItem extends Component {
 
     render() {
         if (this.state.titleId === '') {
-            if (this.props.isLoading) {
-                // Display an indicator, if all props but one (isLoading) are empty
-                return (
-                    <TouchableOpacity style={styles.listItem}
-                        onPress={this.props.onItemPressed}>
-                        <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />
-                    </TouchableOpacity>
-                );
-            } else {
                 // If the props are all empty except listType prop, display an empty box
                 let listType = this.props.listType;
+                console.warn('here mate ' + listType)
                 return (
                     <TouchableOpacity style={styles.listItem}
                         onPress={this.props.onItemPressed}>
@@ -46,7 +38,6 @@ export default class ListItem extends Component {
                         </View>
                     </TouchableOpacity>
                 );
-            }
         } else {
             return (
                 <TouchableOpacity style={styles.listItem}

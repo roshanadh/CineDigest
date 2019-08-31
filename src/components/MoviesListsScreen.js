@@ -15,7 +15,6 @@ import {
 
 import ActionButton from 'react-native-action-button';
 import AsyncStorage from '@react-native-community/async-storage';
-import Snackbar from 'react-native-snackbar';
 import Carousel from 'react-native-snap-carousel';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -69,29 +68,8 @@ export default class MoviesListsScreen extends Component {
 				voteAverages: [],
 				voteCounts: [],
 			},
-			wishListJsx:
-				<ListItem
-					titleId=""
-					title=""
-					overview=""
-					voteCount=""
-					voteAverage=""
-					posterPath=""
-					onItemPressed=""
-					isLoading="true"
-				/>,
-			watchedListJsx: [
-				<ListItem
-					titleId=""
-					title=""
-					overview=""
-					voteCount=""
-					voteAverage=""
-					posterPath=""
-					onItemPressed=""
-					isLoading="true"
-				/>,
-			],
+			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 		};
 
 		this.getUsername = () => {
@@ -273,29 +251,8 @@ export default class MoviesListsScreen extends Component {
 		this._onRefresh = () => {
 			this.setState({
 				refreshing: true,
-				wishListJsx:
-					<ListItem
-						titleId=""
-						title=""
-						overview=""
-						voteCount=""
-						voteAverage=""
-						posterPath=""
-						onItemPressed=""
-						isLoading="true"
-					/>,
-				watchedListJsx: [
-					<ListItem
-						titleId=""
-						title=""
-						overview=""
-						voteCount=""
-						voteAverage=""
-						posterPath=""
-						onItemPressed=""
-						isLoading="true"
-					/>,
-				],
+				wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+				watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 			});
 			this.initLists().then((result) => {
 				this.setState({
@@ -313,7 +270,7 @@ export default class MoviesListsScreen extends Component {
 
 	filterYearChangedHandler = (newYear) => {
 		this.setState({
-			filterYear: newYear,
+			filterYear: newYear.replace(/[^0-9]/g, ''),
 		});
 	};
 
@@ -329,36 +286,45 @@ export default class MoviesListsScreen extends Component {
 	searchBtnPressedHandler = () => {
 		netCon.checkNetCon()
 			.then((result) => {
-				this.props.navigation.navigate('SearchScreen', {
-					searchQuery: this.state.searchQuery,
-					releaseYear: this.state.filterYear,
-					searchType: 'm',
-					username: this.state.username,
-				});
+				if (this.state.searchQuery.trim() === '') {
+					// Search query is empty
+				} else {
+					this.props.navigation.navigate('SearchScreen', {
+						searchQuery: this.state.searchQuery,
+						releaseYear: this.state.filterYear,
+						searchType: 'm',
+						username: this.state.username,
+					});
+				}
 			}, (error) => {
 				netCon.showSnackBar('An internet connection is required!');
 			});
 	};
 
 	viewAllPressedHandler = (listType) => {
-		let isListEmpty = false;
-		switch (listType) {
-			case 'wishList':
-				if (this.state.wishList.titleId === '') { isListEmpty = true; }
-				break;
-			case 'watchedList':
-				if (this.state.watchedList.titleIds.length === 0) { isListEmpty = true; }
-				break;
-			default: null;
-		}
-		if (!isListEmpty) {
-			// Handle button press only is list isn't empty
-			this.props.navigation.navigate('FullListScreen', {
-				listType,
-				titleType: 'movie',
-				username: this.state.username,
+		netCon.checkNetCon()
+			.then((result) => {
+				let isListEmpty = false;
+				switch (listType) {
+					case 'wishList':
+						if (this.state.wishList.titleId === '') { isListEmpty = true; }
+						break;
+					case 'watchedList':
+						if (this.state.watchedList.titleIds.length === 0) { isListEmpty = true; }
+						break;
+					default: null;
+				}
+				if (!isListEmpty) {
+					// Handle button press only is list isn't empty
+					this.props.navigation.navigate('FullListScreen', {
+						listType,
+						titleType: 'movie',
+						username: this.state.username,
+					});
+				}
+			}, (error) => {
+				netCon.showSnackBar('An internet connection is required!');
 			});
-		}
 	}
 
 	componentDidMount() {
@@ -387,7 +353,8 @@ export default class MoviesListsScreen extends Component {
 					});
 				this.initLists();
 			}, (error) => {
-				CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+				// Display SignedOut layout if no internet connection
+				this.props.navigation.navigate('SignedOut');
 			});
 	}
 

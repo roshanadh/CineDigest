@@ -71,6 +71,7 @@ export default class SearchItem extends Component{
 						onChangeText={this.props.onChangeYear}
 						onSubmitEditing={this.props.onSubmitEditing}
 						placeholderTextColor="#fefefe"
+						keyboardType="decimal-pad"
 						returnKeyType="search" />
 					<Icon name="filter" size={20}
 						color="#fefefe" style={styles.filterIcon}
