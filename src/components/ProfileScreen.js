@@ -15,7 +15,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import EditIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import db from '../db/db';
+import db from '../db/db_exp';
 
 export default class ProfileScreen extends Component {
     constructor(props) {
@@ -379,7 +379,7 @@ const styles = StyleSheet.create({
         borderColor: '#013243',
         flexDirection: 'column',
         padding: 20,
-        paddingBottom: 0,
+        paddingBottom: 10,
         flex: 1,
         width: '100%',
         backgroundColor: '#fff',
