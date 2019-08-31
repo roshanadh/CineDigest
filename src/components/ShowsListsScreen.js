@@ -422,7 +422,6 @@ export default class ShowsListsScreen extends Component {
 							// is not empty.
 							result.length > 0 ?
 								this.setState({ showRecoms: this.state.showRecoms.concat(result) }, () => {
-									console.warn(result.length + ' is the len!');
 								}) : null;
 						}, 3000);
 					}, (error) => console.warn('ERROR in getTitleRecommendations/ ShowsListsScreen' + error))

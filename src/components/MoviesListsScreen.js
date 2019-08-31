@@ -334,9 +334,11 @@ export default class MoviesListsScreen extends Component {
 
 				// Get recommendations from recently listed movies for the current user
 				this.getUsername()
-					.then((result) => {
+					.then(result => {
+						console.warn('getTitleR going to be called!');
 						db.getTitleRecommendations(result, 'movie')
-							.then((result) => {
+							.then(result => {
+								console.warn('getTitleR called!');
 								// Promise takes time to resolve..
 								// wait 5 seconds before updating state.
 								setTimeout(() => {
@@ -346,8 +348,9 @@ export default class MoviesListsScreen extends Component {
 										this.setState({ movieRecoms: this.state.movieRecoms.concat(result) }, () => {
 										}) : null;
 								}, 3000);
-							}, (error) => console.warn('ERROR in getTitleRecommendations/ MoviesListsScreen' + error))
+							}, error => console.warn('ERROR in getTitleRecommendations/ MoviesListsScreen' + error))
 							.catch(error => console.warn('CAUGHT ERROR in getTitleRecommendations/ MoviesListsScreen' + error));
+
 						fetch('https://api-cine-digest.herokuapp.com/api/v1')
 							.then(() => CustomSnackbar.dismiss());
 					});
