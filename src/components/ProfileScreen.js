@@ -193,7 +193,7 @@ export default class ProfileScreen extends Component {
                                 stats: result,
                                 refreshing: false,
                             }, () => console.warn(this.state.stats.listedMovies));
-                        })
+                        }, this.setState({ refreshing: false }))
                         .catch(error => console.warn(error.message));
                 })
                 .catch(error => console.warn(error.message));
