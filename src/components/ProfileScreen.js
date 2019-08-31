@@ -58,13 +58,23 @@ export default class ProfileScreen extends Component {
             if (!!this.state.isNameEditable && newName === '') {
                 // Name field is editable
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'Please change your screen name for editing!', [{
+                Alert.alert('Error', 'Please change your screen name for updating!', [{
                     text: 'okay',
                 }]);
-            } else if (!!this.state.isUsernameEditable && username === '') {
+            } else if (name === newName) {
+                this.setState({ isLoading: false });
+                Alert.alert('Error', 'Please change your screen name for updating!', [{
+                    text: 'okay',
+                }]);
+            } else if (!!this.state.isUsernameEditable && newUsername === '') {
                 // Username field is editable
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'Please fill up your username!', [{
+                Alert.alert('Error', 'Please change your username for updating!', [{
+                    text: 'okay',
+                }]);
+            } else if (username === newUsername) {
+                this.setState({ isLoading: false });
+                Alert.alert('Error', 'Please change your username for updating!', [{
                     text: 'okay',
                 }]);
             } else if (!!this.state.isUsernameEditable && (this.state.newUsername.includes('.') || this.state.newUsername.includes('/') ||
