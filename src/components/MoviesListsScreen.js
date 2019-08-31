@@ -312,7 +312,7 @@ export default class MoviesListsScreen extends Component {
 
 	filterYearChangedHandler = (newYear) => {
 		this.setState({
-			filterYear: newYear,
+			filterYear: newYear.replace(/[^0-9]/g, ''),
 		});
 	};
 
@@ -328,12 +328,16 @@ export default class MoviesListsScreen extends Component {
 	searchBtnPressedHandler = () => {
 		netCon.checkNetCon()
 			.then((result) => {
-				this.props.navigation.navigate('SearchScreen', {
-					searchQuery: this.state.searchQuery,
-					releaseYear: this.state.filterYear,
-					searchType: 'm',
-					username: this.state.username,
-				});
+				if (this.state.searchQuery.trim() === '') {
+					// Search query is empty
+				} else {
+					this.props.navigation.navigate('SearchScreen', {
+						searchQuery: this.state.searchQuery,
+						releaseYear: this.state.filterYear,
+						searchType: 'm',
+						username: this.state.username,
+					});
+				}
 			}, (error) => {
 				netCon.showSnackBar('An internet connection is required!');
 			});

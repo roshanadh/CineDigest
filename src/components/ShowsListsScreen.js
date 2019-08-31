@@ -408,11 +408,15 @@ export default class ShowsListsScreen extends Component {
 	searchBtnPressedHandler = () => {
 		netCon.checkNetCon()
 			.then((result) => {
-				this.props.navigation.navigate('SearchScreen', {
-					searchQuery: this.state.searchQuery,
-					searchType: 's',
-					username: this.state.username,
-				});
+				if (this.state.searchQuery.trim() === '') {
+					// Search query is empty
+				} else {
+					this.props.navigation.navigate('SearchScreen', {
+						searchQuery: this.state.searchQuery,
+						searchType: 's',
+						username: this.state.username,
+					});
+				}
 			}, (error) => {
 				netCon.showSnackBar('An internet connection is required!');
 			});
