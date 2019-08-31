@@ -20,6 +20,7 @@ import KeyIcon from 'react-native-vector-icons/Feather';
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
 import {onSignIn} from '../auth/auth';
+import netCon from '../util/NetCon';
 
 const { width, height } = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
@@ -35,29 +36,36 @@ class SignInScreen extends Component {
 		};
 
 		this.signInBtnPressedHandler = () => {
-			if (this.state.username.trim() === '') {
-				CustomSnackbar.showSnackBar('Username cannot be blank!', 'long', '#e74c3c', 'OK');
-			} else if (this.state.password.trim() === '') {
-				CustomSnackbar.showSnackBar('Password cannot be blank!', 'long', '#e74c3c', 'OK');
-			} else {
-				this.setState({
-					isLoading: true,
-				});
+			netCon.checkNetCon()
+				.then(success => {
+					// Internet connection is available
+					if (this.state.username.trim() === '') {
+						CustomSnackbar.showSnackBar('Username cannot be blank!', 'long', '#e74c3c', 'OK');
+					} else if (this.state.password.trim() === '') {
+						CustomSnackbar.showSnackBar('Password cannot be blank!', 'long', '#e74c3c', 'OK');
+					} else {
+						this.setState({
+							isLoading: true,
+						});
 
-				let verifyPromise = db.verifyUser(this.state.username, this.state.password);
-				verifyPromise.then(result => {
-					onSignIn(this.state.username).then(() => props.navigation.navigate('SignedIn'));
+						let verifyPromise = db.verifyUser(this.state.username, this.state.password);
+						verifyPromise.then(result => {
+							onSignIn(this.state.username).then(() => props.navigation.navigate('SignedIn'));
+						}, error => {
+							this.setState({ isLoading: false });
+							if (error === 'PASSWORD-MISMATCH') {
+								CustomSnackbar.showSnackBar(`Incorrect password for '${this.state.username}'!`, 'long', '#e74c3c', 'OK');
+							} else if (error === 'USERNAME-NOT-FOUND') {
+								CustomSnackbar.showSnackBar(`'${this.state.username}' is not a registered user!`, 'long', '#e74c3c', 'OK');
+							} else {
+								CustomSnackbar.showSnackBar('Server is currently down for maintenance!', 'always', '#e74c3c', 'OK');
+							}
+						});
+					}
 				}, error => {
-						this.setState({isLoading: false});
-						if (error === 'PASSWORD-MISMATCH') {
-							CustomSnackbar.showSnackBar(`Incorrect password for '${this.state.username}'!`, 'long', '#e74c3c', 'OK');
-						} else if (error === 'USERNAME-NOT-FOUND') {
-							CustomSnackbar.showSnackBar(`'${this.state.username}' is not a registered user!`, 'long', '#e74c3c', 'OK');
-						} else {
-							CustomSnackbar.showSnackBar('Server is currently down for maintenance!', 'always', '#e74c3c', 'OK');
-						}
+					// Internet connection is unavailable
+						CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
 				});
-			}
 		};
     }
     static navigationOptions = {
@@ -77,29 +85,36 @@ class SignInScreen extends Component {
 	}
 
 	componentDidMount() {
-		Snackbar.show({
-			title: 'Initializing the app...',
-			duration: Snackbar.LENGTH_INDEFINITE,
-			color: '#fefefe',
-			fontSize: 16,
-			backgroundColor: '#3fc380',
-			action: {
-				title: 'Hide',
-				color: '#fefefe',
-				onPress: () => { },
-			},
-		});
-		fetch('https://api-cine-digest.herokuapp.com/api/v1')
-			.then(response => {
-				Snackbar.dismiss();
-				if (response.status === 503) {
-					CustomSnackbar.showSnackBar('Server is currently down for maintenance!', 'always', '#e74c3c', 'OK');
-				} else if (response.status !== 200) {
-					CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'always', '#e74c3c', 'OK');
-				}
-			})
-			.catch(error => {
-				CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'always', '#e74c3c', 'OK');
+		netCon.checkNetCon()
+			.then(success => {
+				// Internet connection available
+				Snackbar.show({
+					title: 'Initializing the app...',
+					duration: Snackbar.LENGTH_INDEFINITE,
+					color: '#fefefe',
+					fontSize: 16,
+					backgroundColor: '#3fc380',
+					action: {
+						title: 'Hide',
+						color: '#fefefe',
+						onPress: () => { },
+					},
+				});
+				fetch('https://api-cine-digest.herokuapp.com/api/v1')
+					.then(response => {
+						Snackbar.dismiss();
+						if (response.status === 503) {
+							CustomSnackbar.showSnackBar('Server is currently down for maintenance!', 'always', '#e74c3c', 'OK');
+						} else if (response.status !== 200) {
+							CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'always', '#e74c3c', 'OK');
+						}
+					})
+					.catch(error => {
+						CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'always', '#e74c3c', 'OK');
+					});
+			}, error => {
+				// Internet connection unavailable
+				CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
 			});
 	}
 
