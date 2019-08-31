@@ -8,7 +8,7 @@ class CustomSnackbar {
                     title: message,
                     duration: Snackbar.LENGTH_SHORT,
                     action: {
-                        title: 'OK',
+                        title: actionTitle,
                         color: '#fefefe',
                         onPress: () => { },
                     },
@@ -21,7 +21,7 @@ class CustomSnackbar {
                     title: message,
                     duration: Snackbar.LENGTH_LONG,
                     action: {
-                        title: 'OK',
+                        title: actionTitle,
                         color: '#fefefe',
                         onPress: () => { },
                     },
@@ -34,7 +34,7 @@ class CustomSnackbar {
                     title: message,
                     duration: Snackbar.LENGTH_INDEFINITE,
                     action: {
-                        title: 'OK',
+                        title: actionTitle,
                         color: '#fefefe',
                         onPress: () => { },
                     },
@@ -43,6 +43,10 @@ class CustomSnackbar {
                     backgroundColor: bgColor,
                 });
             }
+        };
+
+        this.dismiss = () => {
+            Snackbar.dismiss();
         };
     }
 }
