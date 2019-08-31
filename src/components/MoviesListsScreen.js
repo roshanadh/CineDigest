@@ -15,7 +15,6 @@ import {
 
 import ActionButton from 'react-native-action-button';
 import AsyncStorage from '@react-native-community/async-storage';
-import Snackbar from 'react-native-snackbar';
 import Carousel from 'react-native-snap-carousel';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
@@ -387,7 +386,8 @@ export default class MoviesListsScreen extends Component {
 					});
 				this.initLists();
 			}, (error) => {
-				CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+				// Display SignedOut layout if no internet connection
+				this.props.navigation.navigate('SignedOut');
 			});
 	}
 
