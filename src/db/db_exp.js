@@ -85,7 +85,11 @@ class Database {
                 .then(response => response.json())
                 .then(jsonResponse => {
                     if (jsonResponse.status === 'success') {
-                        resolve(payload);
+                        resolve({
+                            username,
+                            password,
+                            uuid: jsonResponse.uuid,
+                        });
                     } else {
                         reject(jsonResponse.status);
                     }
