@@ -12,7 +12,7 @@ import Snackbar from 'react-native-snackbar';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import FullListContainer from './FullListContainer';
-import db from '../db/db';
+import db from '../db/db_exp';
 import netCon from '../util/NetCon';
 
 export default class FullListScreen extends Component {
