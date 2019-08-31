@@ -6,7 +6,6 @@ import {
 	TouchableOpacity,
 	StatusBar,
 	TextInput,
-	Alert,
 	Dimensions,
 	ActivityIndicator,
 	ImageBackground,
@@ -14,9 +13,11 @@ import {
 	Image,
 } from 'react-native';
 
+import Snackbar from 'react-native-snackbar';
 import UsernameIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import KeyIcon from 'react-native-vector-icons/Feather';
 
+import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
 import {onSignIn} from '../auth/auth';
 
@@ -35,9 +36,9 @@ class SignInScreen extends Component {
 
 		this.signInBtnPressedHandler = () => {
 			if (this.state.username.trim() === '') {
-				Alert.alert('Sign-in Error', 'Username cannot be blank!');
+				CustomSnackbar.showSnackBar('Username cannot be blank!', 'long', '#e74c3c', 'OK');
 			} else if (this.state.password.trim() === '') {
-				Alert.alert('Sign-in Error', 'Password cannot be blank!');
+				CustomSnackbar.showSnackBar('Password cannot be blank!', 'long', '#e74c3c', 'OK');
 			} else {
 				this.setState({
 					isLoading: true,
@@ -49,11 +50,11 @@ class SignInScreen extends Component {
 				}, error => {
 						this.setState({isLoading: false});
 						if (error === 'PASSWORD-MISMATCH') {
-							Alert.alert('Password Error', `Incorrect password for '${this.state.username}'!`);
+							CustomSnackbar.showSnackBar(`Incorrect password for '${this.state.username}'!`, 'long', '#e74c3c', 'OK');
 						} else if (error === 'USERNAME-NOT-FOUND') {
-							Alert.alert('Username Error', `'${this.state.username}' is not a registered user!`);
+							CustomSnackbar.showSnackBar(`'${this.state.username}' is not a registered user!`, 'long', '#e74c3c', 'OK');
 						} else {
-							Alert.alert('Server Down', 'Please try again later!');
+							CustomSnackbar.showSnackBar('Server is currently down for maintenance!', 'always', '#e74c3c', 'OK');
 						}
 				});
 			}
@@ -73,6 +74,33 @@ class SignInScreen extends Component {
 
 	redirectToSignUp = () => {
 		this.props.navigation.navigate('SignUp');
+	}
+
+	componentDidMount() {
+		Snackbar.show({
+			title: 'Initializing the app...',
+			duration: Snackbar.LENGTH_INDEFINITE,
+			color: '#fefefe',
+			fontSize: 16,
+			backgroundColor: '#3fc380',
+			action: {
+				title: 'Hide',
+				color: '#fefefe',
+				onPress: () => { },
+			},
+		});
+		fetch('https://api-cine-digest.herokuapp.com/api/v1')
+			.then(response => {
+				Snackbar.dismiss();
+				if (response.status === 503) {
+					CustomSnackbar.showSnackBar('Server is currently down for maintenance!', 'always', '#e74c3c', 'OK');
+				} else if (response.status !== 200) {
+					CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'always', '#e74c3c', 'OK');
+				}
+			})
+			.catch(error => {
+				CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'always', '#e74c3c', 'OK');
+			});
 	}
 
 	render() {
