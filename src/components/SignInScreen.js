@@ -48,9 +48,13 @@ class SignInScreen extends Component {
 					onSignIn(this.state.username).then(() => props.navigation.navigate('SignedIn'));
 				}, error => {
 						this.setState({isLoading: false});
-						error === 'PASSWORD-MISMATCH' ?
-							Alert.alert('Password Error', `Incorrect password for '${this.state.username}'!`) :
+						if (error === 'PASSWORD-MISMATCH') {
+							Alert.alert('Password Error', `Incorrect password for '${this.state.username}'!`);
+						} else if (error === 'USERNAME-NOT-FOUND') {
 							Alert.alert('Username Error', `'${this.state.username}' is not a registered user!`);
+						} else {
+							Alert.alert('Server Down', 'Please try again later!');
+						}
 				});
 			}
 		};
