@@ -12,7 +12,7 @@ import {
     Alert,
 } from 'react-native';
 import bcrypt from 'react-native-bcrypt';
-import db from '../db/db';
+import db from '../db/db_exp';
 import KeyIcon from 'react-native-vector-icons/Feather';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -165,10 +165,10 @@ export default class ChangePassword extends Component {
                     text: 'okay',
                 }]);
             } else if (passwordConfirmation === '') {
-            this.setState({ isLoading: false });
-            Alert.alert('Error', 'Please confirm your new password!', [{
-                text: 'okay',
-            }]);
+                this.setState({ isLoading: false });
+                Alert.alert('Error', 'Please confirm your new password!', [{
+                    text: 'okay',
+                }]);
             } else if (passwordConfirmation !== newPassword) {
                 this.setState({ isLoading: false });
                 // If Not same return False
@@ -208,6 +208,7 @@ export default class ChangePassword extends Component {
                                             'Successful',
                                             'Your password has been changed!', [{
                                                 text: 'OK',
+                                                onPress: () => this.props.navigation.goBack(),
                                             }]
                                         );
                                     }, err => {
@@ -219,8 +220,13 @@ export default class ChangePassword extends Component {
                             });
                         }
                     }, error => {
-                        Alert.alert('Error', 'Your current password is incorrect!');
-                        console.warn(error);
+                            this.setState({ isLoading: false });
+                            if (error === 'PASSWORD-MISMATCH') {
+                                Alert.alert('Error', 'Your current password is incorrect!');
+                            } else {
+                                Alert.alert('Error', 'Error message: ' + error);
+                            }
+                            console.warn(error);
                     });
             }
         };
