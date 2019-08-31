@@ -71,40 +71,9 @@ export default class ShowsListsScreen extends Component {
 				voteAverages: [],
 				voteCounts: [],
 			},
-			wishListJsx:
-				<ListItem
-					titleId=""
-					title=""
-					overview=""
-					voteCount=""
-					voteAverage=""
-					posterPath=""
-					onItemPressed=""
-					isLoading="true"
-				/>,
-			watchingListJsx:
-				<ListItem
-					titleId=""
-					title=""
-					overview=""
-					voteCount=""
-					voteAverage=""
-					posterPath=""
-					onItemPressed=""
-					isLoading="true"
-				/>,
-			watchedListJsx: [
-				<ListItem
-					titleId=""
-					title=""
-					overview=""
-					voteCount=""
-					voteAverage=""
-					posterPath=""
-					onItemPressed=""
-					isLoading="true"
-				/>,
-			],
+			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+			watchingListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 		};
 
 		this.getUsername = () => {
@@ -356,40 +325,9 @@ export default class ShowsListsScreen extends Component {
 		this._onRefresh = () => {
 			this.setState({
 				refreshing: true,
-				wishListJsx:
-					<ListItem
-						titleId=""
-						title=""
-						overview=""
-						voteCount=""
-						voteAverage=""
-						posterPath=""
-						onItemPressed=""
-						isLoading="true"
-					/>,
-				watchingListJsx:
-					<ListItem
-						titleId=""
-						title=""
-						overview=""
-						voteCount=""
-						voteAverage=""
-						posterPath=""
-						onItemPressed=""
-						isLoading="true"
-					/>,
-				watchedListJsx: [
-					<ListItem
-						titleId=""
-						title=""
-						overview=""
-						voteCount=""
-						voteAverage=""
-						posterPath=""
-						onItemPressed=""
-						isLoading="true"
-					/>,
-				],
+				wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+				watchingListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+				watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 			});
 			this.initLists().then((result) => {
 				this.setState({
