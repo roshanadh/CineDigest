@@ -203,7 +203,11 @@ export default class ProfileScreen extends Component {
                                 stats: result,
                                 refreshing: false,
                             }, () => console.warn(this.state.stats.listedMovies));
-                        }, this.setState({ refreshing: false }))
+                        }, this.setState({
+                            refreshing: false,
+                            isNameEditable: !this.state.isNameEditable ? false : false,
+                            isUsernameEditable: !this.state.isUsernameEditable ? false : false,
+                        }))
                         .catch(error => console.warn(error.message));
                 })
                 .catch(error => console.warn(error.message));
