@@ -5,6 +5,7 @@ import {
     StyleSheet,
     View,
     Image,
+    ActivityIndicator,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
 
@@ -25,17 +26,27 @@ export default class ListItem extends Component {
 
     render() {
         if (this.state.titleId === '') {
-            // If the props are all empty, display an empty box
-            let listType = this.props.listType;
-            return (
-                <TouchableOpacity style={styles.listItem}
-                    onPress={this.props.onItemPressed}>
-                    <Text style={styles.title}>{listType} is empty!</Text>
-                    <View style={styles.infoWrapper}>
-                        <Text style={styles.emptyMessage}>Try adding some titles to your {listType}!</Text>
-                    </View>
-                </TouchableOpacity>
-            );
+            if (this.props.isLoading) {
+                // Display an indicator, if all props but one (isLoading) are empty
+                return (
+                    <TouchableOpacity style={styles.listItem}
+                        onPress={this.props.onItemPressed}>
+                        <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />
+                    </TouchableOpacity>
+                );
+            } else {
+                // If the props are all empty except listType prop, display an empty box
+                let listType = this.props.listType;
+                return (
+                    <TouchableOpacity style={styles.listItem}
+                        onPress={this.props.onItemPressed}>
+                        <Text style={styles.title}>{listType} is empty!</Text>
+                        <View style={styles.infoWrapper}>
+                            <Text style={styles.emptyMessage}>Try adding some titles to your {listType}!</Text>
+                        </View>
+                    </TouchableOpacity>
+                );
+            }
         } else {
             return (
                 <TouchableOpacity style={styles.listItem}
@@ -83,6 +94,9 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
+    },
+    indicator: {
+        alignSelf: 'center',
     },
     title: {
         color: '#19b5fe',
