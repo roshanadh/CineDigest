@@ -24,6 +24,7 @@ import ListItem from './ListItem';
 import SearchItem from './SearchItem';
 import db from '../db/db_exp';
 import netCon from '../util/NetCon';
+import CustomSnackbar from '../util/Snackbar';
 import { onSignOut } from '../auth/auth';
 
 export default class MoviesListsScreen extends Component {
@@ -68,8 +69,29 @@ export default class MoviesListsScreen extends Component {
 				voteAverages: [],
 				voteCounts: [],
 			},
-			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
-			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
+			wishListJsx:
+				<ListItem
+					titleId=""
+					title=""
+					overview=""
+					voteCount=""
+					voteAverage=""
+					posterPath=""
+					onItemPressed=""
+					isLoading="true"
+				/>,
+			watchedListJsx: [
+				<ListItem
+					titleId=""
+					title=""
+					overview=""
+					voteCount=""
+					voteAverage=""
+					posterPath=""
+					onItemPressed=""
+					isLoading="true"
+				/>,
+			],
 		};
 
 		this.getUsername = () => {
@@ -251,8 +273,29 @@ export default class MoviesListsScreen extends Component {
 		this._onRefresh = () => {
 			this.setState({
 				refreshing: true,
-				wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
-				watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
+				wishListJsx:
+					<ListItem
+						titleId=""
+						title=""
+						overview=""
+						voteCount=""
+						voteAverage=""
+						posterPath=""
+						onItemPressed=""
+						isLoading="true"
+					/>,
+				watchedListJsx: [
+					<ListItem
+						titleId=""
+						title=""
+						overview=""
+						voteCount=""
+						voteAverage=""
+						posterPath=""
+						onItemPressed=""
+						isLoading="true"
+					/>,
+				],
 			});
 			this.initLists().then((result) => {
 				this.setState({
@@ -319,38 +362,33 @@ export default class MoviesListsScreen extends Component {
 	}
 
 	componentDidMount() {
-		Snackbar.show({
-			title: 'Initializing the app...',
-			duration: Snackbar.LENGTH_INDEFINITE,
-			color: '#fefefe',
-			fontSize: 16,
-			backgroundColor: '#3fc380',
-			action: {
-				title: 'Hide',
-				color: '#fefefe',
-				onPress: () => { },
-			},
-		});
-		// Get recommendations from recently listed movies for the current user
-		this.getUsername()
+		netCon.checkNetCon()
 			.then((result) => {
-				db.getTitleRecommendations(result, 'movie')
+				CustomSnackbar.showSnackBar('Initializing the app...', 'always', '#3fc380', 'Hide');
+
+				// Get recommendations from recently listed movies for the current user
+				this.getUsername()
 					.then((result) => {
-						// Promise takes time to resolve..
-						// wait 5 seconds before updating state.
-						setTimeout(() => {
-							// Update state only if the resolved promise..
-							// is not empty.
-							result.length > 0 ?
-								this.setState({ movieRecoms: this.state.movieRecoms.concat(result) }, () => {
-								}) : null;
-						}, 3000);
-					}, (error) => console.warn('ERROR in getTitleRecommendations/ MoviesListsScreen' + error))
-					.catch(error => console.warn('CAUGHT ERROR in getTitleRecommendations/ MoviesListsScreen' + error));
-				fetch('https://api-cine-digest.herokuapp.com/api/v1')
-					.then(() => Snackbar.dismiss());
+						db.getTitleRecommendations(result, 'movie')
+							.then((result) => {
+								// Promise takes time to resolve..
+								// wait 5 seconds before updating state.
+								setTimeout(() => {
+									// Update state only if the resolved promise..
+									// is not empty.
+									result.length > 0 ?
+										this.setState({ movieRecoms: this.state.movieRecoms.concat(result) }, () => {
+										}) : null;
+								}, 3000);
+							}, (error) => console.warn('ERROR in getTitleRecommendations/ MoviesListsScreen' + error))
+							.catch(error => console.warn('CAUGHT ERROR in getTitleRecommendations/ MoviesListsScreen' + error));
+						fetch('https://api-cine-digest.herokuapp.com/api/v1')
+							.then(() => CustomSnackbar.dismiss());
+					});
+				this.initLists();
+			}, (error) => {
+				CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
 			});
-		this.initLists();
 	}
 
 	onListItemSelected = (itemId, itemTitle) => {
