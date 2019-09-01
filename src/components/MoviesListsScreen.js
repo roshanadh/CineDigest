@@ -94,7 +94,7 @@ export default class MoviesListsScreen extends Component {
 				this.getUserId()
 					.then(result => {
 						this.setState({ username: result.username, uuid: result.uuid });
-						db.getHistory(result, 'wishList', 'movie')
+						db.getHistory(result.uuid, 'wishList', 'movie')
 							.then(result => {
 								let len = result.length;
 								if (len > 0) {
@@ -162,7 +162,7 @@ export default class MoviesListsScreen extends Component {
 								console.warn(error);
 							});
 
-						db.getHistory(result, 'watchedList', 'movie')
+						db.getHistory(result.uuid, 'watchedList', 'movie')
 							.then(result => {
 								let len = result.length;
 								let titleIds = [];
@@ -346,7 +346,7 @@ export default class MoviesListsScreen extends Component {
 				this.getUserId()
 					.then(result => {
 						console.warn('getTitleR going to be called!');
-						db.getTitleRecommendations(result, 'movie')
+						db.getTitleRecommendations(result.uuid, 'movie')
 							.then(result => {
 								console.warn('getTitleR called!');
 								// Promise takes time to resolve..

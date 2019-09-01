@@ -99,7 +99,7 @@ export default class ShowsListsScreen extends Component {
 					.then(result => {
 						this.setState({ username: result.username, uuid: result.uuid });
 						console.warn(result);
-						db.getHistory(result, 'wishList', 'show')
+						db.getHistory(result.uuid, 'wishList', 'show')
 							.then(result => {
 								let len = result.length;
 								if (len > 0) {
@@ -167,7 +167,7 @@ export default class ShowsListsScreen extends Component {
 								console.warn(error);
 							});
 
-						db.getHistory(result, 'watchingList', 'show')
+						db.getHistory(result.uuid, 'watchingList', 'show')
 							.then(result => {
 								let len = result.length;
 								if (len > 0) {
@@ -236,7 +236,7 @@ export default class ShowsListsScreen extends Component {
 								console.warn(error);
 							});
 
-						db.getHistory(result, 'watchedList', 'show')
+						db.getHistory(result.uuid, 'watchedList', 'show')
 							.then(result => {
 								let len = result.length;
 								let titleIds = [];
@@ -420,7 +420,7 @@ export default class ShowsListsScreen extends Component {
 		// Get recently listed shows for the current user
 		this.getUserId()
 			.then((result) => {
-				db.getTitleRecommendations(result, 'show')
+				db.getTitleRecommendations(result.uuid, 'show')
 					.then((result) => {
 						// Promise takes time to resolve..
 						// wait 5 seconds before updating state.

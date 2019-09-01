@@ -7,10 +7,11 @@ SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
 class Database {
-    getUser(username) {
+    getUser(username, uuid) {
         return new Promise((resolve, reject) => {
             const payload = {
                 username,
+                uuid,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
             fetch('http://api-cine-digest.herokuapp.com/api/v1/getUser', {
@@ -101,12 +102,13 @@ class Database {
         });
     }
 
-    updateProfile(username, newName, newUsername) {
+    updateProfile(username, uuid, newName, newUsername) {
         return new Promise((resolve, reject) => {
             if (newUsername === null && newName !== null) {
                 console.warn('Name not null, username  null!');
                 const payload = {
                     username,
+                    uuid,
                     newName,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
@@ -131,6 +133,7 @@ class Database {
                 console.warn('Name not null, username not null!');
                 const payload = {
                     username,
+                    uuid,
                     newName,
                     newUsername,
                 };
@@ -163,6 +166,7 @@ class Database {
                 console.warn('Name null, username not null!');
                 const payload = {
                     username,
+                    uuid,
                     newUsername,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
@@ -225,7 +229,7 @@ class Database {
         // Inserts into 'History' Table
         return new Promise((resolve, reject) => {
             const payload = {
-                username: request.username,
+                username: request.uuid,
                 listType: request.listType,
                 titleId: request.titleId,
                 titleType: request.titleType,
@@ -260,7 +264,7 @@ class Database {
         // Inserts into 'History' Table
         return new Promise((resolve, reject) => {
             const payload = {
-                username: request.username,
+                uuid: request.uuid,
                 listType: request.listType,
                 titleId: request.titleId,
                 titleType: request.titleType,
@@ -295,7 +299,7 @@ class Database {
         // Inserts into 'History' Table
         return new Promise((resolve, reject) => {
             const payload = {
-                username: request.username,
+                uuid: request.uuid,
                 listType: request.listType,
                 titleId: request.titleId,
                 titleType: request.titleType,
@@ -330,7 +334,7 @@ class Database {
         // Inserts into 'History' Table
         return new Promise((resolve, reject) => {
             const payload = {
-                username: request.username,
+                uuid: request.uuid,
                 listType: request.listType,
                 titleId: request.titleId,
                 titleType: request.titleType,
@@ -365,7 +369,7 @@ class Database {
         // Inserts into 'History' Table
         return new Promise((resolve, reject) => {
             const payload = {
-                username: request.username,
+                uuid: request.uuid,
                 listType: request.listType,
                 titleId: request.titleId,
                 titleType: request.titleType,
@@ -400,7 +404,7 @@ class Database {
         // Removes into 'History' Table
         return new Promise((resolve, reject) => {
             const payload = {
-                username: request.username,
+                uuid: request.uuid,
                 listType: request.listType,
                 titleId: request.titleId,
                 titleType: request.titleType,
@@ -426,10 +430,10 @@ class Database {
         });
     }
 
-    getHistory(username, listType, titleType) {
+    getHistory(uuid, listType, titleType) {
         return new Promise((resolve, reject) => {
             const payload = {
-                username,
+                uuid,
                 listType,
                 titleType,
             };
@@ -454,10 +458,10 @@ class Database {
         });
     }
 
-    getStats(username) {
+    getStats(uuid) {
         return new Promise((resolve, reject) => {
             const payload = {
-                username,
+                uuid,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
             fetch('http://api-cine-digest.herokuapp.com/api/v1/getStats', {
@@ -480,10 +484,10 @@ class Database {
         });
     }
 
-    isInList(listType, titleId, username, titleType) {
+    isInList(listType, titleId, uuid, titleType) {
         return new Promise((resolve, reject) => {
             const payload = {
-                username,
+                uuid,
                 listType,
                 titleId,
                 titleType,
@@ -509,10 +513,10 @@ class Database {
         });
     }
 
-    getRecentTitles(username, titleType) {
+    getRecentTitles(uuid, titleType) {
         return new Promise((resolve, reject) => {
             const payload = {
-                username,
+                uuid,
                 titleType,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
@@ -536,9 +540,9 @@ class Database {
         });
     }
 
-    getTitleRecommendations(username, titleType) {
+    getTitleRecommendations(uuid, titleType) {
         return new Promise((resolve, reject) => {
-            this.getRecentTitles(username, titleType)
+            this.getRecentTitles(uuid, titleType)
                 // Get last 5 entries to history table
                 .then((result) => {
                     if (result.length > 2) {
@@ -557,7 +561,7 @@ class Database {
                                     let upperLimit = jsonResponse.titleIds.length < 3 ?
                                         jsonResponse.titleIds.length : 3;
                                     const payload = {
-                                        username,
+                                        uuid,
                                         titleType,
                                         titleId: titleIds[index],
                                     };
@@ -598,10 +602,10 @@ class Database {
         });
     }
 
-    deleteAllListItems(username, listType, titleType) {
+    deleteAllListItems(uuid, listType, titleType) {
         return new Promise((resolve, reject) => {
             const payload = {
-                username,
+                uuid,
                 listType,
                 titleType,
             };

@@ -73,7 +73,7 @@ export default class MovieDetails extends Component {
                     contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
                 },);
                 // Check if movie is in Wish-list
-                db.isInList('wishList', titleId, username, 'movie')
+                db.isInList('wishList', titleId, uuid, 'movie')
                     .then(result => {
                         // Movie is already in Wish-list
                         console.warn(`Movie ${titleId} is already in wish list`);
@@ -97,7 +97,7 @@ export default class MovieDetails extends Component {
                     }, error => {
                         // Movie is not in Wish-list
                         // Check if it is in Watched-list
-                        db.isInList('watchedList', titleId, username, 'movie')
+                        db.isInList('watchedList', titleId, uuid, 'movie')
                             .then(result => {
                                 // Movie is in Watched-list
                                 console.warn(`Movie ${titleId} is already in watched list`);
@@ -170,7 +170,7 @@ export default class MovieDetails extends Component {
                     titleVoteAverage: this.state.voteAverage,
                     titlePosterPath: this.state.posterPath,
                     titleType: 'movie',
-                    username: this.state.username,
+                    uuid: this.state.uuid,
                 })
                     .then(result => {
                         console.warn('OK added to wishList! ' + this.state.title);
@@ -201,7 +201,7 @@ export default class MovieDetails extends Component {
                     titleVoteAverage: this.state.voteAverage,
                     titlePosterPath: this.state.posterPath,
                     titleType: 'movie',
-                    username: this.state.username,
+                    uuid: this.state.uuid,
                 })
                     .then(result => {
                         Alert.alert('Success', this.state.title + ' has been added to your watched-list!',
@@ -231,7 +231,7 @@ export default class MovieDetails extends Component {
                     titleVoteAverage: this.state.voteAverage,
                     titlePosterPath: this.state.posterPath,
                     titleType: 'movie',
-                    username: this.state.username,
+                    uuid: this.state.uuid,
                 })
                     .then(result => {
                         let message = '';

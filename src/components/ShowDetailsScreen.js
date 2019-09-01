@@ -73,7 +73,7 @@ export default class ShowDetailsScreen extends Component {
                     contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
                 });
                 // Check if show is in Wish-list
-                db.isInList('wishList', this.state.titleId, username, 'show')
+                db.isInList('wishList', this.state.titleId, uuid, 'show')
                     .then(result => {
                         // Show is already in Wish-list
                         this.setState({
@@ -102,7 +102,7 @@ export default class ShowDetailsScreen extends Component {
                     }, error => {
                         // Show is not in Wish-list
                         // Check if it is in Watching-list
-                        db.isInList('watchingList', this.state.titleId, username, 'show')
+                        db.isInList('watchingList', this.state.titleId, uuid, 'show')
                             .then(result => {
                                 // Show is in Watching-list
                                 // Add to Wish-list btn is disabled,
@@ -132,7 +132,7 @@ export default class ShowDetailsScreen extends Component {
                             }, error => {
                                 // Show is not in Watching-list
                                 // Check if it is in Watched-list
-                                    db.isInList('watchedList', this.state.titleId, username, 'show')
+                                    db.isInList('watchedList', this.state.titleId, uuid, 'show')
                                         .then(result => {
                                             // Show is in Watched-list
                                             // Add to Wish-list and
@@ -215,7 +215,7 @@ export default class ShowDetailsScreen extends Component {
                     titleVoteAverage: this.state.voteAverage,
                     titlePosterPath: this.state.posterPath,
                     titleType: 'show',
-                    username: this.state.username,
+                    uuid: this.state.uuid,
                 })
                     .then(result => {
                         Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
@@ -244,7 +244,7 @@ export default class ShowDetailsScreen extends Component {
                     titleVoteAverage: this.state.voteAverage,
                     titlePosterPath: this.state.posterPath,
                     titleType: 'show',
-                    username: this.state.username,
+                    uuid: this.state.uuid,
                 })
                     .then(result => {
                         Alert.alert('Success', this.state.title + ' has been added to your watching-list!',
@@ -273,7 +273,7 @@ export default class ShowDetailsScreen extends Component {
                     titleVoteAverage: this.state.voteAverage,
                     titlePosterPath: this.state.posterPath,
                     titleType: 'show',
-                    username: this.state.username,
+                    uuid: this.state.uuid,
                 })
                     .then(result => {
                         Alert.alert('Success', this.state.title + ' has been added to your watched-list!',
@@ -303,7 +303,7 @@ export default class ShowDetailsScreen extends Component {
                     titleVoteAverage: this.state.voteAverage,
                     titlePosterPath: this.state.posterPath,
                     titleType: 'show',
-                    username: this.state.username,
+                    uuid: this.state.uuid,
                 })
                     .then(result => {
                         let message = '';
