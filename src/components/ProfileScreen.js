@@ -64,24 +64,27 @@ export default class ProfileScreen extends Component {
         this.updateProfile = () => {
             this.setState({ isLoading: true });
             let {name, username, uuid, newName, newUsername} = this.state;
-            if (!!this.state.isNameEditable && newName === '') {
-                // Name field is editable
+
+            if (this.state.isNameEditable && newName === '') {
+                // Name field is editable but name has not been changed
                 this.setState({ isLoading: false });
                 Alert.alert('Error', 'Please change your screen name for updating!', [{
                     text: 'okay',
                 }]);
-            } else if (name === newName) {
+            } else if (this.state.isNameEditable && newName === name) {
+                // Name field is editable but name has not been changed
                 this.setState({ isLoading: false });
                 Alert.alert('Error', 'Please change your screen name for updating!', [{
                     text: 'okay',
                 }]);
-            } else if (!!this.state.isUsernameEditable && newUsername === '') {
-                // Username field is editable
+            } else if (this.state.isUsernameEditable && newUsername === '') {
+                // Username field is editable but username has not been changed
                 this.setState({ isLoading: false });
                 Alert.alert('Error', 'Please change your username for updating!', [{
                     text: 'okay',
                 }]);
-            } else if (username === newUsername) {
+            } else if (this.state.isUsernameEditable && username === newUsername) {
+                // Username is same as before
                 this.setState({ isLoading: false });
                 Alert.alert('Error', 'Please change your username for updating!', [{
                     text: 'okay',
@@ -109,18 +112,19 @@ export default class ProfileScreen extends Component {
                     text: 'okay',
                 }]);
             } else {
-                this.setState({ isLoading: false });
-                if (!!this.state.isNameEditable) {
+                if (this.state.isNameEditable) {
                     // Name field is editable
-                    if (!!this.state.isUsernameEditable) {
+                    if (this.state.isUsernameEditable) {
                         // Username field is editable
                         db.updateProfile(username, uuid, newName, newUsername)
                             .then(result => {
+                                this.setState({ isLoading: false });
                                 Alert.alert('Success', 'Your profile has been updated!', [{
                                     text: 'okay',
                                     onPress: () => this.setState({name: newName, username: newUsername}, this._onRefresh()),
                                 }]);
                             }, error => {
+                                this.setState({ isLoading: false });
                                 console.warn(error.message);
                                 Alert.alert('Error', 'Please try again!', [{
                                     text: 'okay',
@@ -130,11 +134,13 @@ export default class ProfileScreen extends Component {
                         // Only Name field is editable
                         db.updateProfile(username, uuid, newName, null)
                             .then(result => {
+                                this.setState({ isLoading: false });
                                 Alert.alert('Success', 'Your profile has been updated!', [{
                                     text: 'okay',
                                     onPress: () => this.setState({ name: newName }, this._onRefresh()),
                                 }]);
                             }, error => {
+                                this.setState({ isLoading: false });
                                 console.warn(error.message);
                                 Alert.alert('Error', 'Please try again!', [{
                                     text: 'okay',
@@ -142,23 +148,25 @@ export default class ProfileScreen extends Component {
                             });
                     }
                 } else {
-                    this.setState({ isLoading: false });
                     // Name field is not editable
-                    if (!!this.state.isUsernameEditable) {
+                    if (this.state.isUsernameEditable) {
                         // Only username field is editable
                         db.updateProfile(username, uuid, null, newUsername)
                             .then(result => {
+                                this.setState({ isLoading: false });
                                 Alert.alert('Success', 'Your profile has been updated!', [{
                                     text: 'okay',
                                     onPress: () => this.setState({ username: newUsername }, this._onRefresh()),
                                 }]);
                             }, error => {
+                                this.setState({ isLoading: false });
                                 console.warn(error.message);
                                 Alert.alert('Error', 'Please try again!', [{
                                     text: 'okay',
                                 }]);
                             });
                     } else {
+                        this.setState({ isLoading: false });
                         Alert.alert('Oops', 'Please tap on the edit icon to edit a field!', [{
                             text: 'okay',
                         }]);
