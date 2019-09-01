@@ -38,6 +38,7 @@ export default class ShowDetailsScreen extends Component {
         ];
         this.state = {
             username: '',
+            uuid: '',
             titleId: '',
             title: '',
             backdropPath: '',
@@ -63,7 +64,7 @@ export default class ShowDetailsScreen extends Component {
         this.noBackdrop = false;
         this.noPoster = false;
 
-        this.initButtons = (username, titleId) => {
+        this.initButtons = (username, uuid, titleId) => {
             return new Promise((resolve, reject) => {
                 this.setState({
                     wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
@@ -188,11 +189,12 @@ export default class ShowDetailsScreen extends Component {
                     });
         };
 
-        this.getUsername = () => {
+        this.getUserId = () => {
             return new Promise((resolve, reject) => {
                 let username = this.props.navigation.getParam('username', null);
-                this.setState({ username }, () => {
-                    this.initButtons(username, this.state.titleId)
+                let uuid = this.props.navigation.getParam('uuid', null);
+                this.setState({ username, uuid }, () => {
+                    this.initButtons(username, uuid, this.state.titleId)
                         .then(() => resolve(true))
                         .catch(error => console.warn(error.message));
                 });
@@ -219,7 +221,7 @@ export default class ShowDetailsScreen extends Component {
                         Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -248,7 +250,7 @@ export default class ShowDetailsScreen extends Component {
                         Alert.alert('Success', this.state.title + ' has been added to your watching-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -277,7 +279,7 @@ export default class ShowDetailsScreen extends Component {
                         Alert.alert('Success', this.state.title + ' has been added to your watched-list!',
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.statetitleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -317,7 +319,7 @@ export default class ShowDetailsScreen extends Component {
                         Alert.alert('Success', message,
                             [{
                                 text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.titleId),
+                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
                             }]
                         );
                     }, error => {
@@ -337,6 +339,7 @@ export default class ShowDetailsScreen extends Component {
             } else {
                 this.props.navigation.navigate('RecommendationsScreen', {
                     username: this.state.username,
+                    uuid: this.state.uuid,
                     titleId: this.state.titleId,
                     title: this.state.title,
                     recomType: 'show',
@@ -504,7 +507,7 @@ export default class ShowDetailsScreen extends Component {
     componentDidMount() {
         let titleId = this.props.navigation.getParam('titleId', null);
         console.warn('Mount titleID: ' + titleId);
-        this.getUsername()
+        this.getUserId()
             .then(() => {
                 this.fetchShowDetails(titleId)
                     .catch(error => console.warn(error));
@@ -530,7 +533,7 @@ export default class ShowDetailsScreen extends Component {
             console.warn('DID FOCUS titleID: ' + titleId);
             this.setState({ titleId }, () => {
                 console.warn('Added to state: ' + this.state.titleId);
-                this.getUsername()
+                this.getUserId()
                     .then(() => {
                         this.fetchShowDetails(titleId)
                             .catch(error => console.warn(error));

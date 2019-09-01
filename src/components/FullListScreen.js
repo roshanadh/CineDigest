@@ -48,6 +48,7 @@ export default class FullListScreen extends Component {
                     size={28}
                     onPress={() => {
                         let username = navigation.getParam('username', null);
+                        let uuid = navigation.getParam('uuid', null);
                         let listType = navigation.getParam('listType', null);
                         let titleType = navigation.getParam('titleType', null);
                         db.deleteAllListItems(username, listType, titleType)
@@ -66,6 +67,7 @@ export default class FullListScreen extends Component {
             titleType: '',
             listType: '',
             username: '',
+            uuid: '',
             listLength: '',
             wishList: {
                 titleIds: [],
@@ -99,9 +101,10 @@ export default class FullListScreen extends Component {
                 const listType = this.props.navigation.getParam('listType', null);
                 const titleType = this.props.navigation.getParam('titleType', null);
                 const username = this.props.navigation.getParam('username', null);
-
+                const uuid = this.props.navigation.getParam('uuid', null);
                 this.setState({
                     username,
+                    uuid,
                     listType,
                     titleType,
                 });
@@ -115,6 +118,7 @@ export default class FullListScreen extends Component {
                     listType,
                     titleType,
                     username,
+                    uuid,
                 } = this.state;
 
                 db.getHistory(username, listType, titleType)
@@ -249,11 +253,13 @@ export default class FullListScreen extends Component {
                         titleId: itemId,
                         screenName: itemTitle,
                         username: this.state.username,
+                        uuid: this.state.uuid,
                     }) :
                     this.props.navigation.navigate('ShowDetailsScreen', {
                         screenName: itemTitle,
                         titleId: itemId,
                         username: this.state.username,
+                        uuid: this.state.uuid,
                     });
             }, (error) => {
                 netCon.showSnackBar('An internet connection is required!');
