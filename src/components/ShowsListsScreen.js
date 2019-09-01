@@ -29,6 +29,7 @@ export default class ShowsListsScreen extends Component {
 		this.state = {
 			refreshing: false,
 			username: '',
+			uuid: '',
 			searchQuery: '',
 			showRecoms: [
 				{
@@ -76,19 +77,27 @@ export default class ShowsListsScreen extends Component {
 			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 		};
 
-		this.getUsername = () => {
+		this.getUserId = () => {
 			return new Promise((resolve, reject) => {
-				let username = AsyncStorage.getItem('USER_KEY');
-				resolve(username)
-					.catch(error => console.warn('ERROR in getUsername ' + error.message));
+				AsyncStorage.multiGet(['USER_KEY', 'UUID'])
+					.then(storedValues => {
+						// storedValues is a 2D array
+						let username = storedValues[0][1];
+						let uuid = storedValues[1][1];
+						resolve({
+							username,
+							uuid,
+						});
+					})
+					.catch(error => console.warn(error.message));
 			});
 		};
 
 		this.initLists = () => {
 			return new Promise((resolve, reject) => {
-				this.getUsername()
+				this.getUserId()
 					.then(result => {
-						this.setState({ username: result });
+						this.setState({ username: result.username, uuid: result.uuid });
 						console.warn(result);
 						db.getHistory(result, 'wishList', 'show')
 							.then(result => {
@@ -353,17 +362,13 @@ export default class ShowsListsScreen extends Component {
 						searchQuery: this.state.searchQuery,
 						searchType: 's',
 						username: this.state.username,
+						uuid: this.state.uuid,
 					});
 				}
 			}, (error) => {
 				netCon.showSnackBar('An internet connection is required!');
 			});
 	};
-
-	getUsername = async () => {
-		let username = await AsyncStorage.getItem('USER_KEY');
-		this.setState({ username });
-	}
 
 	onListItemSelected = (itemId, itemTitle) => {
 		netCon.checkNetCon()
@@ -372,6 +377,7 @@ export default class ShowsListsScreen extends Component {
 					titleId: itemId,
 					screenName: itemTitle,
 					username: this.state.username,
+					uuid: this.state.uuid,
 				});
 			}, (error) => {
 				netCon.showSnackBar('An internet connection is required!');
@@ -401,6 +407,7 @@ export default class ShowsListsScreen extends Component {
 						listType,
 						titleType: 'show',
 						username: this.state.username,
+						uuid: this.state.uuid,
 					});
 				}
 			}, (error) => {
@@ -411,7 +418,7 @@ export default class ShowsListsScreen extends Component {
 
 	componentDidMount() {
 		// Get recently listed shows for the current user
-		this.getUsername()
+		this.getUserId()
 			.then((result) => {
 				db.getTitleRecommendations(result, 'show')
 					.then((result) => {
