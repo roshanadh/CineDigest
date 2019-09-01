@@ -34,6 +34,7 @@ export default class SearchScreen extends Component {
             releaseYear: this.props.navigation.getParam('releaseYear', null),
             searchResponse: {},
             username: this.props.navigation.getParam('username', null),
+            uuid: this.props.navigation.getParam('uuid', null),
         };
         this.searchQuery = this.props.navigation.getParam('searchQuery', null);
         this.releaseYear = this.props.navigation.getParam('releaseYear', null);
@@ -48,11 +49,13 @@ export default class SearchScreen extends Component {
                         titleId: itemId,
                         screenName: itemTitle,
                         username: this.state.username,
+                        uuid: this.state.uuid,
                     }) :
                     this.props.navigation.navigate('ShowDetailsScreen', {
                         screenName: itemTitle,
                         titleId: itemId,
                         username: this.state.username,
+                        uuid: this.state.uuid,
                     });
             }, (error) => {
                 netCon.showSnackBar('An internet connection is required!');
