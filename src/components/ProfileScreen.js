@@ -27,16 +27,25 @@ export default class ProfileScreen extends Component {
             isUsernameEditable: false,
             name: '',
             username: '',
+            uuid: '',
             stats: {},
             newName: '',
             newUsername: '',
         };
 
-        this.getUsername = () => {
+        this.getUserId = () => {
             return new Promise((resolve, reject) => {
-                let username = AsyncStorage.getItem('USER_KEY');
-                resolve(username)
-                    .catch(error => console.warn('ERROR in getUsername ' + error.message));
+                AsyncStorage.multiGet(['USER_KEY', 'UUID'])
+                    .then(storedValues => {
+                        // storedValues is a 2D array
+                        let username = storedValues[0][1];
+                        let uuid = storedValues[1][1];
+                        resolve({
+                            username,
+                            uuid,
+                        });
+                    })
+                    .catch(error => console.warn(error.message));
             });
         };
 
@@ -54,7 +63,7 @@ export default class ProfileScreen extends Component {
 
         this.updateProfile = () => {
             this.setState({ isLoading: true });
-            let {name, username, newName, newUsername} = this.state;
+            let {name, username, uuid, newName, newUsername} = this.state;
             if (!!this.state.isNameEditable && newName === '') {
                 // Name field is editable
                 this.setState({ isLoading: false });
@@ -168,12 +177,12 @@ export default class ProfileScreen extends Component {
     }
 
     componentDidMount() {
-        this.getUsername()
+        this.getUserId()
             .then(result => {
                 db.getUser(result)
                     .then(details => {
                         this.setState({
-                            username: details.username, name: details.name,
+                            username: details.username, uuid: result.uuid, name: details.name,
                         }, () => {console.warn('User ' + this.state.name + ' retrieved successfully!');});
                     }, error => {
                         console.warn('User by the username ' + result + ' was not found!');
@@ -193,7 +202,7 @@ export default class ProfileScreen extends Component {
 
     _onRefresh = () => {
         this.setState({ refreshing: true }, () => {
-            this.getUsername()
+            this.getUserId()
                 .then(username => {
                     db.getStats(username)
                         .then(result => {
@@ -338,6 +347,7 @@ export default class ProfileScreen extends Component {
                                 onPress={() =>
                                     this.props.navigation.navigate('ChangePasswordScreen', {
                                         username: this.state.username,
+                                        uuid: this.state.uuid,
                                     })
                                 }>
                                 <Text style={styles.changePassText}>Change your password?</Text>
