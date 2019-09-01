@@ -114,7 +114,7 @@ export default class ProfileScreen extends Component {
                     // Name field is editable
                     if (!!this.state.isUsernameEditable) {
                         // Username field is editable
-                        db.updateProfile(username, newName, newUsername)
+                        db.updateProfile(username, uuid, newName, newUsername)
                             .then(result => {
                                 Alert.alert('Success', 'Your profile has been updated!', [{
                                     text: 'okay',
@@ -128,7 +128,7 @@ export default class ProfileScreen extends Component {
                             });
                     } else {
                         // Only Name field is editable
-                        db.updateProfile(username, newName, null)
+                        db.updateProfile(username, uuid, newName, null)
                             .then(result => {
                                 Alert.alert('Success', 'Your profile has been updated!', [{
                                     text: 'okay',
@@ -146,7 +146,7 @@ export default class ProfileScreen extends Component {
                     // Name field is not editable
                     if (!!this.state.isUsernameEditable) {
                         // Only username field is editable
-                        db.updateProfile(username, null, newUsername)
+                        db.updateProfile(username, uuid, null, newUsername)
                             .then(result => {
                                 Alert.alert('Success', 'Your profile has been updated!', [{
                                     text: 'okay',
@@ -179,7 +179,7 @@ export default class ProfileScreen extends Component {
     componentDidMount() {
         this.getUserId()
             .then(result => {
-                db.getUser(result)
+                db.getUser(result.uuid)
                     .then(details => {
                         this.setState({
                             username: details.username, uuid: result.uuid, name: details.name,
@@ -191,11 +191,11 @@ export default class ProfileScreen extends Component {
                 // Return retrieved username to chained then()
                 return result;
             })
-            .then(username => {
-                console.warn(username + ' is the user!!');
-                db.getStats(username)
-                    .then(result => {
-                        this.setState({stats: result}, () => console.warn(this.state.stats.listedMovies));
+            .then(result => {
+                console.warn(result.username + ' is the user!!');
+                db.getStats(result.uuid)
+                    .then(stats => {
+                        this.setState({ stats }, () => console.warn(this.state.stats.listedMovies));
                     });
             });
     }
@@ -203,8 +203,8 @@ export default class ProfileScreen extends Component {
     _onRefresh = () => {
         this.setState({ refreshing: true }, () => {
             this.getUserId()
-                .then(username => {
-                    db.getStats(username)
+                .then(result => {
+                    db.getStats(result.uuid)
                         .then(result => {
                             this.setState({
                                 isNameEditable: !this.state.isNameEditable ? false : false,

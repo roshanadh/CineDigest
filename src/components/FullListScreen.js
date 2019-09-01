@@ -47,11 +47,10 @@ export default class FullListScreen extends Component {
                     style={styles.trashIcon}
                     size={28}
                     onPress={() => {
-                        let username = navigation.getParam('username', null);
                         let uuid = navigation.getParam('uuid', null);
                         let listType = navigation.getParam('listType', null);
                         let titleType = navigation.getParam('titleType', null);
-                        db.deleteAllListItems(username, listType, titleType)
+                        db.deleteAllListItems(uuid, listType, titleType)
                             .then((result) => {
                                 Alert.alert('Success', `Your ${listTypeForHeader} has been cleared!`);
                             }, (error) => Alert.alert('Oops', 'Please try again!'));
@@ -117,11 +116,10 @@ export default class FullListScreen extends Component {
                 const {
                     listType,
                     titleType,
-                    username,
                     uuid,
                 } = this.state;
 
-                db.getHistory(username, listType, titleType)
+                db.getHistory(uuid, listType, titleType)
                     .then(result => {
                         // If atleast one title is listed in watchedList display it
                         let len = result.length;
