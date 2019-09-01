@@ -32,6 +32,7 @@ export default class MoviesListsScreen extends Component {
 		this.state = {
 			refreshing: false,
 			username: '',
+			uuid: '',
 			searchQuery: '',
 			filterYear: '',
 			movieRecoms: [
@@ -72,20 +73,27 @@ export default class MoviesListsScreen extends Component {
 			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 		};
 
-		this.getUsername = () => {
+		this.getUserId = () => {
 			return new Promise((resolve, reject) => {
-				let username = AsyncStorage.getItem('USER_KEY');
-				resolve(username)
-				.catch(error => console.warn('ERROR in getUsername ' + error.message));
+				AsyncStorage.multiGet(['USER_KEY', 'UUID'])
+					.then(storedValues => {
+						// storedValues is a 2D array
+						let username = storedValues[0][1];
+						let uuid = storedValues[1][1];
+						resolve({
+							username,
+							uuid,
+						});
+					})
+					.catch(error => console.warn(error.message));
 			});
 		};
 
 		this.initLists = () => {
 			return new Promise((resolve, reject) => {
-				this.getUsername()
+				this.getUserId()
 					.then(result => {
-						this.setState({ username: result });
-						console.warn(result);
+						this.setState({ username: result.username, uuid: result.uuid });
 						db.getHistory(result, 'wishList', 'movie')
 							.then(result => {
 								let len = result.length;
@@ -294,6 +302,7 @@ export default class MoviesListsScreen extends Component {
 						releaseYear: this.state.filterYear,
 						searchType: 'm',
 						username: this.state.username,
+						uuid: this.state.uuid,
 					});
 				}
 			}, (error) => {
@@ -320,6 +329,7 @@ export default class MoviesListsScreen extends Component {
 						listType,
 						titleType: 'movie',
 						username: this.state.username,
+						uuid: this.state.uuid,
 					});
 				}
 			}, (error) => {
@@ -333,7 +343,7 @@ export default class MoviesListsScreen extends Component {
 				CustomSnackbar.showSnackBar('Initializing the app...', 'always', '#3fc380', 'Hide');
 
 				// Get recommendations from recently listed movies for the current user
-				this.getUsername()
+				this.getUserId()
 					.then(result => {
 						console.warn('getTitleR going to be called!');
 						db.getTitleRecommendations(result, 'movie')
@@ -368,6 +378,7 @@ export default class MoviesListsScreen extends Component {
 					titleId: itemId,
 					screenName: itemTitle,
 					username: this.state.username,
+					uuid: this.state.uuid,
 				});
 			}, (error) => {
 				netCon.showSnackBar('An internet connection is required!');

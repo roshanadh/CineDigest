@@ -35,6 +35,7 @@ export default class ChangePassword extends Component {
         this.state = {
             isLoading: false,
             username: '',
+            uuid: '',
             passwordProgress: 0,
             oldPassword: '',
             newPassword: '',
@@ -182,6 +183,7 @@ export default class ChangePassword extends Component {
             } else {
                 // Check if current password is correct
                 let username = this.props.navigation.getParam('username', null);
+                let user = this.props.navigation.getParam('uuid', null);
                 db.verifyUser(username, oldPassword)
                     .then(result => {
                         // Password is correct

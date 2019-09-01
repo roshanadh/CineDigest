@@ -32,6 +32,7 @@ export default class RecommendationsScreen extends Component {
             isEmpty: true,
             searchResponse: {},
             username: this.props.navigation.getParam('username', null),
+            uuid: this.props.navigation.getParam('uuid', null),
         };
         this.titleId = this.props.navigation.getParam('titleId', null);
         this.title = this.props.navigation.getParam('title', null);
@@ -48,11 +49,13 @@ export default class RecommendationsScreen extends Component {
                         screenName: itemTitle,
                         titleId: itemId,
                         username: this.state.username,
+                        uuid: this.state.uuid,
                     }) :
                     this.props.navigation.navigate('ShowDetailsScreen', {
                         screenName: itemTitle,
                         titleId: itemId,
                         username: this.state.username,
+                        uuid: this.state.uuid,
                     });
             }, (error) => {
                 netCon.showSnackBar('An internet connection is required!');
