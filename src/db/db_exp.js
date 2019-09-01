@@ -7,10 +7,9 @@ SQLite.DEBUG(true);
 SQLite.enablePromise(true);
 
 class Database {
-    getUser(username, uuid) {
+    getUser(uuid) {
         return new Promise((resolve, reject) => {
             const payload = {
-                username,
                 uuid,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
@@ -229,7 +228,7 @@ class Database {
         // Inserts into 'History' Table
         return new Promise((resolve, reject) => {
             const payload = {
-                username: request.uuid,
+                uuid: request.uuid,
                 listType: request.listType,
                 titleId: request.titleId,
                 titleType: request.titleType,
