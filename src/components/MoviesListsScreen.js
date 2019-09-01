@@ -73,7 +73,7 @@ export default class MoviesListsScreen extends Component {
 			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 		};
 
-		this.getUserID = async() => {
+		this.getUserId = () => {
 			return new Promise((resolve, reject) => {
 				AsyncStorage.multiGet(['USER_KEY', 'UUID'])
 					.then(storedValues => {
@@ -91,7 +91,7 @@ export default class MoviesListsScreen extends Component {
 
 		this.initLists = () => {
 			return new Promise((resolve, reject) => {
-				this.getUserID()
+				this.getUserId()
 					.then(result => {
 						this.setState({ username: result.username, uuid: result.uuid });
 						db.getHistory(result, 'wishList', 'movie')
@@ -343,7 +343,7 @@ export default class MoviesListsScreen extends Component {
 				CustomSnackbar.showSnackBar('Initializing the app...', 'always', '#3fc380', 'Hide');
 
 				// Get recommendations from recently listed movies for the current user
-				this.getUserID()
+				this.getUserId()
 					.then(result => {
 						console.warn('getTitleR going to be called!');
 						db.getTitleRecommendations(result, 'movie')
