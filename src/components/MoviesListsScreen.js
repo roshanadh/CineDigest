@@ -32,6 +32,7 @@ export default class MoviesListsScreen extends Component {
 		this.state = {
 			refreshing: false,
 			username: '',
+			uuid: '',
 			searchQuery: '',
 			filterYear: '',
 			movieRecoms: [
@@ -72,11 +73,19 @@ export default class MoviesListsScreen extends Component {
 			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
 		};
 
-		this.getUsername = () => {
+		this.getUsername = async() => {
 			return new Promise((resolve, reject) => {
-				let username = AsyncStorage.getItem('USER_KEY');
-				resolve(username)
-				.catch(error => console.warn('ERROR in getUsername ' + error.message));
+				AsyncStorage.multiGet(['USER_KEY', 'UUID'])
+					.then(storedValues => {
+						// storedValues is a 2D array
+						let username = storedValues[0][1];
+						let uuid = storedValues[1][1];
+						resolve({
+							username,
+							uuid,
+						});
+					})
+					.catch(error => console.warn(error.message));
 			});
 		};
 
@@ -84,8 +93,7 @@ export default class MoviesListsScreen extends Component {
 			return new Promise((resolve, reject) => {
 				this.getUsername()
 					.then(result => {
-						this.setState({ username: result });
-						console.warn(result);
+						this.setState({ username: result.username, uuid: result.uuid });
 						db.getHistory(result, 'wishList', 'movie')
 							.then(result => {
 								let len = result.length;
