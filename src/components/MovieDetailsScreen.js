@@ -49,6 +49,8 @@ export default class MovieDetails extends Component {
             genres: [],
             credits: [],
             creditsProfilePath: [],
+            directors: [],
+            directorsProfilePath: [],
             backdropPath: '',
             budget: '',
             revenue: '',
@@ -288,13 +290,24 @@ export default class MovieDetails extends Component {
                 <Text style={styles.tagline}>{this.state.tagline}</Text>
                 : null;
 
+            let directorsJsx = this.state.directors.length > 0 ?
+                <View style={styles.directorsWrapper}>
+                    <Text style={styles.directors}>Directed by
+                        {' ' + this.state.directors.join(' | ')}
+                    </Text>
+                </View> : null;
+
+            let runtimeJsx = this.state.runtime !== null ?
+                <Text style={styles.runtime}>{this.state.runtime} minutes</Text>
+                : null;
+
             let genresJsx = this.state.genres.length !== 0 ?
                 <Text style={styles.genres}>
                     Genres:
                 {' ' + this.state.genres.join(' | ')}
                 </Text> : null;
 
-            let releaseDateJsx = this.state.releaseDate !== null ?
+            let releaseDateJsx = this.state.releaseDate !== '' ?
                 (new Date(this.state.releaseDate) > new Date() ?
                     <Text style={styles.releaseDate}>
                         Releases
@@ -306,6 +319,14 @@ export default class MovieDetails extends Component {
                 {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
                         {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
                     </Text>) : null;
+
+            let detailsJsx =
+                <View style={styles.detailsWrapper}>
+                    {directorsJsx}
+                    {runtimeJsx}
+                    {genresJsx}
+                    {releaseDateJsx}
+                </View>;
 
             let overviewJsx = this.state.overview !== null ?
                 <Text style={styles.text}>{this.state.overview}</Text>
@@ -331,16 +352,15 @@ export default class MovieDetails extends Component {
                         <View style={styles.container}>
                             {posterJsx}
                             <Text style={styles.title}>{this.state.title}</Text>
+                            {taglineJsx}
                             <View style={styles.voteWrapper}>
                                 <Text style={styles.text}>{this.state.voteAverage}</Text>
                                 <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
                                 <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                             </View>
-                            {taglineJsx}
-                            {genresJsx}
+                            {detailsJsx}
                             {this.state.wishListBtnJsx}
                             {this.state.watchedListBtnJsx}
-                            {releaseDateJsx}
                             {overviewJsx}
                             {backdropPathJsx}
                             {castJsx}
@@ -375,6 +395,8 @@ export default class MovieDetails extends Component {
                                     genres: genres,
                                     credits: jsonResponse.credits,
                                     creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
+                                    directors: jsonResponse.directors,
+                                    directorsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.directorsProfilePath}`,
                                     backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
                                     originalLanguage: jsonResponse.original_language,
                                     overview: jsonResponse.overview,
@@ -472,14 +494,34 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     tagline: {
+        color: '#6c7a89',
         fontStyle: 'italic',
         marginBottom: 15,
         fontSize: 15,
     },
+    directors: {
+        marginBottom: 15,
+        fontSize: 15,
+    },
+    runtime: {
+        marginBottom: 15,
+        fontSize: 15,
+    },
     genres: {
-        marginBottom: 30,
+        marginBottom: 15,
         fontSize: 15,
         textAlign: 'justify',
+    },
+    releaseDate: {
+        marginBottom: 15,
+        fontSize: 15,
+        textAlign: 'justify',
+    },
+    detailsWrapper: {
+        backgroundColor: 'rgba(218, 223, 225, 0.1)',
+        width: '100%',
+        padding: 10,
+        marginBottom: 30,
     },
     wishListBtn: {
         alignSelf: 'center',
@@ -524,11 +566,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#22a7f0',
         marginBottom: 30,
     },
-    releaseDate: {
-        marginBottom: 15,
-        fontSize: 15,
-        textAlign: 'justify',
-    },
     voteWrapper: {
         flexDirection: 'row',
         alignSelf: 'flex-end',
@@ -553,6 +590,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     castHeader: {
+        color: '#db0a5b',
         fontSize: 15,
         marginTop: 10,
         marginBottom: 10,

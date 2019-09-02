@@ -379,14 +379,14 @@ export default class ShowDetailsScreen extends Component {
                 {' ' + this.state.networks.join(' | ')}
                 </Text> : null;
 
-            let firstAirDateJsx = this.state.firstAirDate !== null ?
+            let firstAirDateJsx = this.state.firstAirDate !== '' ?
                 <Text style={styles.airDate}>
                     First aired on
                 {' ' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
                     {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
                 </Text> : null;
 
-            let lastAirDateJsx = this.state.lastAirDate !== null ?
+            let lastAirDateJsx = this.state.lastAirDate !== '' ?
                 <Text style={styles.airDate}>
                     Last aired on
                 {' ' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
