@@ -458,7 +458,7 @@ export default class MovieDetails extends Component {
 
     render() {
         return (
-            <ImageBackground blurRadius={1.5}
+            <ImageBackground blurRadius={2}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
                 {this.state.contentJsx}
@@ -518,10 +518,10 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
     },
     detailsWrapper: {
-        backgroundColor: 'rgba(218, 223, 225, 0.1)',
+        backgroundColor: 'rgba(218, 223, 225, 0.2)',
         width: '100%',
         padding: 10,
-        marginBottom: 30,
+        marginBottom: 15,
         borderRadius: 10,
     },
     wishListBtn: {
