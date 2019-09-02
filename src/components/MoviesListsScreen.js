@@ -405,7 +405,7 @@ export default class MoviesListsScreen extends Component {
 				</ActionButton.Item>
 			</ActionButton>;
 		return (
-			<ImageBackground blurRadius={1.3}
+			<ImageBackground blurRadius={2}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
 				<StatusBar barStyle="light-content"

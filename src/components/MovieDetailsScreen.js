@@ -49,6 +49,8 @@ export default class MovieDetails extends Component {
             genres: [],
             credits: [],
             creditsProfilePath: [],
+            directors: [],
+            directorsProfilePath: [],
             backdropPath: '',
             budget: '',
             revenue: '',
@@ -288,24 +290,52 @@ export default class MovieDetails extends Component {
                 <Text style={styles.tagline}>{this.state.tagline}</Text>
                 : null;
 
-            let genresJsx = this.state.genres.length !== 0 ?
-                <Text style={styles.genres}>
-                    Genres:
-                {' ' + this.state.genres.join(' | ')}
-                </Text> : null;
+            let directorsJsx = this.state.directors.length > 0 ?
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Directed by</Text>
+                    <Text style={styles.directors}>{'\t' + this.state.directors.join(' | ')}</Text>
+                </View> : null;
 
-            let releaseDateJsx = this.state.releaseDate !== null ?
+            let runtimeJsx = this.state.runtime !== null ?
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Runtime</Text>
+                    <Text style={styles.runtime}>{'\t' + this.state.runtime} minutes</Text>
+                </View>
+                : null;
+
+            let genresJsx = this.state.genres.length !== 0 ?
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Genres</Text>
+                    <Text style={styles.runtime}>{'\t' + this.state.genres.join(' | ') }</Text>
+                </View> : null;
+
+            let releaseDateJsx = this.state.releaseDate !== '' ?
                 (new Date(this.state.releaseDate) > new Date() ?
-                    <Text style={styles.releaseDate}>
-                        Releases
-                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                        {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-                    </Text> :
-                    <Text style={styles.releaseDate}>
-                        Released
-                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                        {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-                    </Text>) : null;
+                    <View style={styles.detailsContentWrapper}>
+                        <Text style={styles.detailsTitle}>Releases</Text>
+                        <Text style={styles.releaseDate}>
+                            {'\t' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                            {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+                        </Text>
+                    </View> :
+                    <View style={styles.detailsContentWrapper}>
+                        <Text style={styles.detailsTitle}>Released</Text>
+                        <Text style={styles.releaseDate}>
+                            {'\t' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                            {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+                        </Text>
+                    </View>
+                ) : null;
+
+            let detailsJsx =
+                <View style={styles.detailsWrapper}>
+                    {directorsJsx}
+                    {runtimeJsx}
+                    {genresJsx}
+                    {releaseDateJsx}
+                    {this.state.wishListBtnJsx}
+                    {this.state.watchedListBtnJsx}
+                </View>;
 
             let overviewJsx = this.state.overview !== null ?
                 <Text style={styles.text}>{this.state.overview}</Text>
@@ -331,16 +361,13 @@ export default class MovieDetails extends Component {
                         <View style={styles.container}>
                             {posterJsx}
                             <Text style={styles.title}>{this.state.title}</Text>
+                            {taglineJsx}
                             <View style={styles.voteWrapper}>
                                 <Text style={styles.text}>{this.state.voteAverage}</Text>
                                 <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
                                 <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                             </View>
-                            {taglineJsx}
-                            {genresJsx}
-                            {this.state.wishListBtnJsx}
-                            {this.state.watchedListBtnJsx}
-                            {releaseDateJsx}
+                            {detailsJsx}
                             {overviewJsx}
                             {backdropPathJsx}
                             {castJsx}
@@ -375,6 +402,8 @@ export default class MovieDetails extends Component {
                                     genres: genres,
                                     credits: jsonResponse.credits,
                                     creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
+                                    directors: jsonResponse.directors,
+                                    directorsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.directorsProfilePath}`,
                                     backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
                                     originalLanguage: jsonResponse.original_language,
                                     overview: jsonResponse.overview,
@@ -436,7 +465,7 @@ export default class MovieDetails extends Component {
 
     render() {
         return (
-            <ImageBackground blurRadius={1.5}
+            <ImageBackground blurRadius={2}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
                 {this.state.contentJsx}
@@ -472,14 +501,43 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     tagline: {
+        color: '#6c7a89',
         fontStyle: 'italic',
         marginBottom: 15,
         fontSize: 15,
     },
+    detailsContentWrapper: {
+        flexDirection: 'row',
+    },
+    detailsTitle: {
+        color: '#db0a5b',
+        marginBottom: 15,
+        fontSize: 15,
+    },
+    directors: {
+        marginBottom: 15,
+        fontSize: 15,
+    },
+    runtime: {
+        marginBottom: 15,
+        fontSize: 15,
+    },
     genres: {
-        marginBottom: 30,
+        marginBottom: 15,
         fontSize: 15,
         textAlign: 'justify',
+    },
+    releaseDate: {
+        marginBottom: 15,
+        fontSize: 15,
+        textAlign: 'justify',
+    },
+    detailsWrapper: {
+        backgroundColor: 'rgba(218, 223, 225, 0.1)',
+        width: '100%',
+        padding: 10,
+        marginBottom: 15,
+        borderRadius: 10,
     },
     wishListBtn: {
         alignSelf: 'center',
@@ -488,6 +546,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         width: '70%',
+        marginTop: 10,
         marginBottom: 10,
         backgroundColor: '#019875',
     },
@@ -498,6 +557,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         width: '70%',
+        marginTop: 10,
         marginBottom: 10,
         backgroundColor: '#e74c3c',
     },
@@ -509,7 +569,7 @@ const styles = StyleSheet.create({
         padding: 15,
         width: '70%',
         backgroundColor: '#e74c3c',
-        marginBottom: 30,
+        marginBottom: 15,
     },
     btnText: {
         color: '#fefefe',
@@ -522,12 +582,7 @@ const styles = StyleSheet.create({
         padding: 15,
         width: '70%',
         backgroundColor: '#22a7f0',
-        marginBottom: 30,
-    },
-    releaseDate: {
         marginBottom: 15,
-        fontSize: 15,
-        textAlign: 'justify',
     },
     voteWrapper: {
         flexDirection: 'row',
@@ -553,6 +608,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     castHeader: {
+        color: '#db0a5b',
         fontSize: 15,
         marginTop: 10,
         marginBottom: 10,

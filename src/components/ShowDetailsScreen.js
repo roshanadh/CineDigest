@@ -368,30 +368,47 @@ export default class ShowDetailsScreen extends Component {
                 </Text> : null;
 
             let genresJsx = this.state.genres.length !== 0 ?
-                <Text style={styles.genres}>
-                    Genres:
-                {' ' + this.state.genres.join(' | ')}
-                </Text> : null;
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Genres</Text>
+                    <Text style={styles.runtime}>{'\t' + this.state.genres.join(' | ')}</Text>
+                </View> : null;
 
             let networksJsx = this.state.networks.length !== 0 ?
-                <Text style={styles.networks}>
-                    Networks:
-                {' ' + this.state.networks.join(' | ')}
-                </Text> : null;
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Networks</Text>
+                    <Text style={styles.runtime}>{'\t' + this.state.networks.join(' | ')}</Text>
+                </View> : null;
 
-            let firstAirDateJsx = this.state.firstAirDate !== null ?
-                <Text style={styles.airDate}>
-                    First aired on
-                {' ' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
-                    {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
-                </Text> : null;
+            let firstAirDateJsx = this.state.firstAirDate !== '' ?
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>First aired on</Text>
+                    <Text style={styles.runtime}>
+                        {'\t' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
+                        {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
+                    </Text>
+                </View> : null;
 
-            let lastAirDateJsx = this.state.lastAirDate !== null ?
-                <Text style={styles.airDate}>
-                    Last aired on
-                {' ' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
-                    {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
-                </Text> : null;
+            let lastAirDateJsx = this.state.lastAirDate !== '' ?
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Last aired on</Text>
+                    <Text style={styles.runtime}>
+                        {'\t' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
+                        {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
+                    </Text>
+                </View> : null;
+
+            let detailsJsx =
+                <View style={styles.detailsWrapper}>
+                    {genresJsx}
+                    {networksJsx}
+                    <View style={styles.airDateWrapper}>
+                        {firstAirDateJsx}
+                        {lastAirDateJsx}
+                    </View>
+                    {this.state.wishListBtnJsx}
+                    {this.state.watchingListBtnJsx}
+                    {this.state.watchedListBtnJsx}
+                </View>;
 
             let overviewJsx = this.state.overview !== null ?
                 <Text style={styles.overview}>{this.state.overview}</Text>
@@ -433,21 +450,13 @@ export default class ShowDetailsScreen extends Component {
                         <View style={styles.container}>
                             {posterJsx}
                             <Text style={styles.title}>{this.state.title}</Text>
+                            {createdByJsx}
                             <View style={styles.voteWrapper}>
                                 <Text style={styles.text}>{this.state.voteAverage}</Text>
                                 <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
                                 <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                             </View>
-                            {createdByJsx}
-                            {genresJsx}
-                            {networksJsx}
-                            {this.state.wishListBtnJsx}
-                            {this.state.watchingListBtnJsx}
-                            {this.state.watchedListBtnJsx}
-                            <View style={styles.airDateWrapper}>
-                                {firstAirDateJsx}
-                                {lastAirDateJsx}
-                            </View>
+                            {detailsJsx}
                             {overviewJsx}
                             {backdropPathJsx}
                             {seasonsJsx}
@@ -560,7 +569,7 @@ export default class ShowDetailsScreen extends Component {
 
     render() {
         return (
-            <ImageBackground blurRadius={1.5}
+            <ImageBackground blurRadius={2}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
                 {this.state.contentJsx}
@@ -606,7 +615,7 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
     },
     networks: {
-        marginBottom: 30,
+        marginBottom: 15,
         fontSize: 15,
         textAlign: 'justify',
     },
@@ -616,7 +625,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 		borderRadius: 50,
 		padding: 15,
-        width: '70%',
+        width: '80%',
         marginBottom: 10,
         backgroundColor: '#019875',
     },
@@ -626,7 +635,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
+        width: '80%',
         backgroundColor: '#8e44ad',
         marginBottom: 10,
     },
@@ -636,9 +645,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 		borderRadius: 50,
 		padding: 15,
-        width: '70%',
+        width: '80%',
         backgroundColor: '#22a7f0',
-        marginBottom: 30,
+        marginBottom: 15,
     },
     removeFromListBtn: {
         alignSelf: 'center',
@@ -646,7 +655,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
+        width: '80%',
         marginBottom: 10,
         backgroundColor: '#e74c3c',
     },
@@ -654,13 +663,27 @@ const styles = StyleSheet.create({
         color: '#fefefe',
     },
     airDateWrapper: {
-        marginTop: 10,
         marginBottom: 15,
     },
     airDate: {
         fontSize: 15,
         textAlign: 'justify',
-        marginBottom: 10,
+        marginBottom: 15,
+    },
+    detailsWrapper: {
+        backgroundColor: 'rgba(218, 223, 225, 0.2)',
+        width: '100%',
+        padding: 10,
+        marginBottom: 15,
+        borderRadius: 10,
+    },
+    detailsContentWrapper: {
+        flexDirection: 'row',
+    },
+    detailsTitle: {
+        color: '#db0a5b',
+        marginBottom: 15,
+        fontSize: 15,
     },
     voteWrapper: {
         flexDirection: 'row',

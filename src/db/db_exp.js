@@ -579,7 +579,7 @@ class Database {
                                                     recoms.push({
                                                         title: jsonResponse.titles[index],
                                                         titleId: jsonResponse.titleIds[index],
-                                                        posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.posterPaths[index]}`,
+                                                        posterPath: `https://image.tmdb.org/t/p/w200/${jsonResponse.posterPaths[index]}`,
                                                     });
                                                 }
                                                 if (index >= upperLimit) {

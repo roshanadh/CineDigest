@@ -66,12 +66,12 @@ const styles = StyleSheet.create({
     metaContainer: {},
     searchInfo: {
         marginTop: 15,
-        marginRight: 10,
+        marginRight: 20,
         marginBottom: 5,
         alignSelf: 'flex-end',
     },
     searchInfoText: {
         fontSize: 14,
-        color: '#0f0f0f',
+        color: '#6c7a89',
     },
 });

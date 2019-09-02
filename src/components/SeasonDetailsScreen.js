@@ -66,7 +66,7 @@ export default class SeasonDetailsScreen extends Component {
 					{this.showName}
 				</Text> : null;
 
-			let airDateJsx = this.state.airDate !== null ?
+			let airDateJsx = this.state.airDate !== '' ?
 				<Text style={styles.text}>
 					Aired on
 				{' ' + this.monthNames[new Date(this.state.airDate).getMonth()]}

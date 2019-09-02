@@ -129,7 +129,7 @@ export default class FullListScreen extends Component {
                         let voteAverages = [];
                         let posterPaths = [];
                         let partialOverviews = [];
-                        
+
                         for (let i = len - 1; i >= 0; i--) {
                             titleIds.push(result[i].titleId);
                             titles.push(result[i].titleName);
