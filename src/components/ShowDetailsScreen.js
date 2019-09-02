@@ -368,30 +368,34 @@ export default class ShowDetailsScreen extends Component {
                 </Text> : null;
 
             let genresJsx = this.state.genres.length !== 0 ?
-                <Text style={styles.genres}>
-                    Genres:
-                {' ' + this.state.genres.join(' | ')}
-                </Text> : null;
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Genres</Text>
+                    <Text style={styles.runtime}>{'\t' + this.state.genres.join(' | ')}</Text>
+                </View> : null;
 
             let networksJsx = this.state.networks.length !== 0 ?
-                <Text style={styles.networks}>
-                    Networks:
-                {' ' + this.state.networks.join(' | ')}
-                </Text> : null;
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Networks</Text>
+                    <Text style={styles.runtime}>{'\t' + this.state.networks.join(' | ')}</Text>
+                </View> : null;
 
             let firstAirDateJsx = this.state.firstAirDate !== '' ?
-                <Text style={styles.airDate}>
-                    First aired on
-                {' ' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
-                    {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
-                </Text> : null;
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>First aired on</Text>
+                    <Text style={styles.runtime}>
+                        {'\t' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
+                        {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
+                    </Text>
+                </View> : null;
 
             let lastAirDateJsx = this.state.lastAirDate !== '' ?
-                <Text style={styles.airDate}>
-                    Last aired on
-                {' ' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
-                    {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
-                </Text> : null;
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Last aired on</Text>
+                    <Text style={styles.runtime}>
+                        {'\t' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
+                        {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
+                    </Text>
+                </View> : null;
 
             let detailsJsx =
                 <View style={styles.detailsWrapper}>
@@ -672,6 +676,14 @@ const styles = StyleSheet.create({
         padding: 10,
         marginBottom: 15,
         borderRadius: 10,
+    },
+    detailsContentWrapper: {
+        flexDirection: 'row',
+    },
+    detailsTitle: {
+        color: '#db0a5b',
+        marginBottom: 15,
+        fontSize: 15,
     },
     voteWrapper: {
         flexDirection: 'row',
