@@ -370,20 +370,20 @@ export default class ShowDetailsScreen extends Component {
             let genresJsx = this.state.genres.length !== 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Genres</Text>
-                    <Text style={styles.runtime}>{'\t' + this.state.genres.join(' | ')}</Text>
+                    <Text style={styles.runtime}>{this.state.genres.join(' | ')}</Text>
                 </View> : null;
 
             let networksJsx = this.state.networks.length !== 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Networks</Text>
-                    <Text style={styles.runtime}>{'\t' + this.state.networks.join(' | ')}</Text>
+                    <Text style={styles.runtime}>{this.state.networks.join(' | ')}</Text>
                 </View> : null;
 
             let firstAirDateJsx = this.state.firstAirDate !== '' ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>First aired on</Text>
                     <Text style={styles.runtime}>
-                        {'\t' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
+                        {this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
                         {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
                     </Text>
                 </View> : null;
@@ -392,7 +392,7 @@ export default class ShowDetailsScreen extends Component {
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Last aired on</Text>
                     <Text style={styles.runtime}>
-                        {'\t' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
+                        {this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
                         {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
                     </Text>
                 </View> : null;
@@ -679,10 +679,13 @@ const styles = StyleSheet.create({
     },
     detailsContentWrapper: {
         flexDirection: 'row',
+        width: '80%',
+        marginBottom: 10,
     },
     detailsTitle: {
         color: '#db0a5b',
         marginBottom: 15,
+        marginRight: 15,
         fontSize: 15,
     },
     voteWrapper: {
