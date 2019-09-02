@@ -326,6 +326,8 @@ export default class MovieDetails extends Component {
                     {runtimeJsx}
                     {genresJsx}
                     {releaseDateJsx}
+                    {this.state.wishListBtnJsx}
+                    {this.state.watchedListBtnJsx}
                 </View>;
 
             let overviewJsx = this.state.overview !== null ?
@@ -359,8 +361,6 @@ export default class MovieDetails extends Component {
                                 <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                             </View>
                             {detailsJsx}
-                            {this.state.wishListBtnJsx}
-                            {this.state.watchedListBtnJsx}
                             {overviewJsx}
                             {backdropPathJsx}
                             {castJsx}
@@ -522,6 +522,7 @@ const styles = StyleSheet.create({
         width: '100%',
         padding: 10,
         marginBottom: 30,
+        borderRadius: 10,
     },
     wishListBtn: {
         alignSelf: 'center',
@@ -530,6 +531,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         width: '70%',
+        marginTop: 10,
         marginBottom: 10,
         backgroundColor: '#019875',
     },
@@ -540,6 +542,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         width: '70%',
+        marginTop: 10,
         marginBottom: 10,
         backgroundColor: '#e74c3c',
     },
@@ -551,7 +554,7 @@ const styles = StyleSheet.create({
         padding: 15,
         width: '70%',
         backgroundColor: '#e74c3c',
-        marginBottom: 30,
+        marginBottom: 15,
     },
     btnText: {
         color: '#fefefe',
@@ -564,7 +567,7 @@ const styles = StyleSheet.create({
         padding: 15,
         width: '70%',
         backgroundColor: '#22a7f0',
-        marginBottom: 30,
+        marginBottom: 15,
     },
     voteWrapper: {
         flexDirection: 'row',
