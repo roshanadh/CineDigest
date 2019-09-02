@@ -291,34 +291,41 @@ export default class MovieDetails extends Component {
                 : null;
 
             let directorsJsx = this.state.directors.length > 0 ?
-                <View style={styles.directorsWrapper}>
-                    <Text style={styles.directors}>Directed by
-                        {' ' + this.state.directors.join(' | ')}
-                    </Text>
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Directed by</Text>
+                    <Text style={styles.directors}>{' ' + this.state.directors.join(' | ')}</Text>
                 </View> : null;
 
             let runtimeJsx = this.state.runtime !== null ?
-                <Text style={styles.runtime}>{this.state.runtime} minutes</Text>
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Runtime</Text>
+                    <Text style={styles.runtime}>{' ' + this.state.runtime} minutes</Text>
+                </View>
                 : null;
 
             let genresJsx = this.state.genres.length !== 0 ?
-                <Text style={styles.genres}>
-                    Genres:
-                {' ' + this.state.genres.join(' | ')}
-                </Text> : null;
+                <View style={styles.detailsContentWrapper}>
+                    <Text style={styles.detailsTitle}>Genres</Text>
+                    <Text style={styles.runtime}>{ ' ' + this.state.genres.join(' | ') }</Text>
+                </View> : null;
 
             let releaseDateJsx = this.state.releaseDate !== '' ?
                 (new Date(this.state.releaseDate) > new Date() ?
-                    <Text style={styles.releaseDate}>
-                        Releases
-                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                        {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-                    </Text> :
-                    <Text style={styles.releaseDate}>
-                        Released
-                {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
-                        {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
-                    </Text>) : null;
+                    <View style={styles.detailsContentWrapper}>
+                        <Text style={styles.detailsTitle}>Releases</Text>
+                        <Text style={styles.releaseDate}>
+                            {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                            {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+                        </Text>
+                    </View> :
+                    <View style={styles.detailsContentWrapper}>
+                        <Text style={styles.detailsTitle}>Released</Text>
+                        <Text style={styles.releaseDate}>
+                            {' ' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                            {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
+                        </Text>
+                    </View>
+                ) : null;
 
             let detailsJsx =
                 <View style={styles.detailsWrapper}>
@@ -499,6 +506,14 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         fontSize: 15,
     },
+    detailsContentWrapper: {
+        flexDirection: 'row',
+    },
+    detailsTitle: {
+        color: '#db0a5b',
+        marginBottom: 15,
+        fontSize: 15,
+    },
     directors: {
         marginBottom: 15,
         fontSize: 15,
@@ -518,7 +533,7 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
     },
     detailsWrapper: {
-        backgroundColor: 'rgba(218, 223, 225, 0.2)',
+        backgroundColor: 'rgba(218, 223, 225, 0.1)',
         width: '100%',
         padding: 10,
         marginBottom: 15,
