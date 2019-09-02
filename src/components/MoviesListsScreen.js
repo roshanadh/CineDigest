@@ -39,17 +39,17 @@ export default class MoviesListsScreen extends Component {
 				{
 					title: 'The Green Mile' ,
 					titleId: 497 ,
-					posterPath: 'https://image.tmdb.org/t/p/original/sOHqdY1RnSn6kcfAHKu28jvTebE.jpg',
+					posterPath: 'sOHqdY1RnSn6kcfAHKu28jvTebE.jpg',
 				},
 				{
 					title: 'The Shawshank Redemption',
 					titleId: 278,
-					posterPath: 'https://image.tmdb.org/t/p/original/9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg',
+					posterPath: '9O7gLzmreU0nGkIB6K3BsJbzvNv.jpg',
 				},
 				{
 					title: 'Good Will Hunting',
 					titleId: 489,
-					posterPath: 'https://image.tmdb.org/t/p/original/jq8LjngZ7XZEQge5JFTdOGMrHyZ.jpg',
+					posterPath: 'jq8LjngZ7XZEQge5JFTdOGMrHyZ.jpg',
 				},
 			],
 			scrollViewMargin: 60,
@@ -244,12 +244,13 @@ export default class MoviesListsScreen extends Component {
 		};
 
 		this._renderItem = (item, index) => {
+			let imgSrc = `https://image.tmdb.org/t/p/w200/${item.item.posterPath}`;
 			return (
 				<TouchableOpacity style={styles.carouselItemContainer}
 					onPress={() => {
 						this.onListItemSelected(item.item.titleId, item.item.title);
 					}}>
-					<Image source={{ uri: item.item.posterPath }}
+					<Image source={{ uri: imgSrc }}
 						style={styles.carouselImage} />
 					<Text style={styles.carouselText}>{item.item.title}</Text>
 				</TouchableOpacity>

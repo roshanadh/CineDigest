@@ -35,17 +35,17 @@ export default class ShowsListsScreen extends Component {
 				{
 					title: 'Game of Thrones',
 					titleId: 1399,
-					posterPath: 'https://image.tmdb.org/t/p/original/u3bZgnGQ9T01sWNhyveQz0wH0Hl.jpg',
+					posterPath: 'u3bZgnGQ9T01sWNhyveQz0wH0Hl.jpg',
 				},
 				{
 					title: 'Stranger Things',
 					titleId: 66732,
-					posterPath: 'https://image.tmdb.org/t/p/original/x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg',
+					posterPath: 'x2LSRK2Cm7MZhjluni1msVJ3wDF.jpg',
 				},
 				{
 					title: 'The Sopranos',
 					titleId: 1398,
-					posterPath: 'https://image.tmdb.org/t/p/original/u0cLcBQITrYqfHsn06fxnQwtqiE.jpg',
+					posterPath: 'u0cLcBQITrYqfHsn06fxnQwtqiE.jpg',
 				},
 			],
 			wishList: {
@@ -319,12 +319,13 @@ export default class ShowsListsScreen extends Component {
 		};
 
 		this._renderItem = (item, index) => {
+			let imgSrc = `https://image.tmdb.org/t/p/w200/${item.item.posterPath}`;
 			return (
 				<TouchableOpacity style={styles.carouselItemContainer}
 					onPress={() => {
 						this.onListItemSelected(item.item.titleId, item.item.title);
 					}}>
-					<Image source={{ uri: item.item.posterPath }}
+					<Image source={{ uri: imgSrc }}
 						style={styles.carouselImage} />
 					<Text style={styles.carouselText}>{item.item.title}</Text>
 				</TouchableOpacity>
