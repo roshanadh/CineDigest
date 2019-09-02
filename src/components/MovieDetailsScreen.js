@@ -293,20 +293,20 @@ export default class MovieDetails extends Component {
             let directorsJsx = this.state.directors.length > 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Directed by</Text>
-                    <Text style={styles.directors}>{'\t' + this.state.directors.join(' | ')}</Text>
+                    <Text style={styles.directors}>{this.state.directors.join(' | ')}</Text>
                 </View> : null;
 
             let runtimeJsx = this.state.runtime !== null ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Runtime</Text>
-                    <Text style={styles.runtime}>{'\t' + this.state.runtime} minutes</Text>
+                    <Text style={styles.runtime}>{this.state.runtime} minutes</Text>
                 </View>
                 : null;
 
             let genresJsx = this.state.genres.length !== 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Genres</Text>
-                    <Text style={styles.runtime}>{'\t' + this.state.genres.join(' | ') }</Text>
+                    <Text style={styles.runtime}>{this.state.genres.join(' | ') }</Text>
                 </View> : null;
 
             let releaseDateJsx = this.state.releaseDate !== '' ?
@@ -314,14 +314,14 @@ export default class MovieDetails extends Component {
                     <View style={styles.detailsContentWrapper}>
                         <Text style={styles.detailsTitle}>Releases</Text>
                         <Text style={styles.releaseDate}>
-                            {'\t' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                            {this.monthNames[new Date(this.state.releaseDate).getMonth()]}
                             {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
                         </Text>
                     </View> :
                     <View style={styles.detailsContentWrapper}>
                         <Text style={styles.detailsTitle}>Released</Text>
                         <Text style={styles.releaseDate}>
-                            {'\t' + this.monthNames[new Date(this.state.releaseDate).getMonth()]}
+                            {this.monthNames[new Date(this.state.releaseDate).getMonth()]}
                             {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
                         </Text>
                     </View>
@@ -424,17 +424,6 @@ export default class MovieDetails extends Component {
         };
     }
 
-    componentDidMount() {
-        let titleId = this.props.navigation.getParam('titleId', null);
-        console.warn('Mount titleID: ' + titleId);
-        this.getUserId()
-            .then(() => {
-                this.fetchMovieDetails(titleId)
-                    .catch(error => console.warn(error));
-            })
-            .catch(error => console.warn(error.message));
-    }
-
     willFocusSubscription = this.props.navigation.addListener(
         'willFocus',
         payload => {
@@ -508,10 +497,13 @@ const styles = StyleSheet.create({
     },
     detailsContentWrapper: {
         flexDirection: 'row',
+        width: '80%',
+        marginBottom: 10,
     },
     detailsTitle: {
         color: '#db0a5b',
         marginBottom: 15,
+        marginRight: 15,
         fontSize: 15,
     },
     directors: {

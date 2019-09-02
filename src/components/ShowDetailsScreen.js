@@ -67,9 +67,6 @@ export default class ShowDetailsScreen extends Component {
         this.initButtons = (username, uuid, titleId) => {
             return new Promise((resolve, reject) => {
                 this.setState({
-                    wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-                    watchingListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-                    watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
                     contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
                 });
                 // Check if show is in Wish-list
@@ -370,20 +367,20 @@ export default class ShowDetailsScreen extends Component {
             let genresJsx = this.state.genres.length !== 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Genres</Text>
-                    <Text style={styles.runtime}>{'\t' + this.state.genres.join(' | ')}</Text>
+                    <Text style={styles.runtime}>{this.state.genres.join(' | ')}</Text>
                 </View> : null;
 
             let networksJsx = this.state.networks.length !== 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Networks</Text>
-                    <Text style={styles.runtime}>{'\t' + this.state.networks.join(' | ')}</Text>
+                    <Text style={styles.runtime}>{this.state.networks.join(' | ')}</Text>
                 </View> : null;
 
             let firstAirDateJsx = this.state.firstAirDate !== '' ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>First aired on</Text>
                     <Text style={styles.runtime}>
-                        {'\t' + this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
+                        {this.monthNames[new Date(this.state.firstAirDate).getMonth()]}
                         {' ' + this.state.firstAirDate.slice(-2)}, {' ' + this.state.firstAirDate.slice(0, 4)}
                     </Text>
                 </View> : null;
@@ -392,7 +389,7 @@ export default class ShowDetailsScreen extends Component {
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Last aired on</Text>
                     <Text style={styles.runtime}>
-                        {'\t' + this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
+                        {this.monthNames[new Date(this.state.lastAirDate).getMonth()]}
                         {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
                     </Text>
                 </View> : null;
@@ -463,7 +460,7 @@ export default class ShowDetailsScreen extends Component {
                         </View>
                     </ScrollView>
                 </View>;
-            this.setState({ contentJsx });
+            this.setState({ contentJsx }, () => {console.warn('Content set!')});
         };
 
         this.fetchShowDetails = (titleId) => {
@@ -511,17 +508,6 @@ export default class ShowDetailsScreen extends Component {
                 }
             });
         };
-    }
-
-    componentDidMount() {
-        let titleId = this.props.navigation.getParam('titleId', null);
-        console.warn('Mount titleID: ' + titleId);
-        this.getUserId()
-            .then(() => {
-                this.fetchShowDetails(titleId)
-                    .catch(error => console.warn(error));
-            })
-            .catch(error => console.warn(error.message));
     }
 
     willFocusSubscription = this.props.navigation.addListener(
@@ -647,7 +633,7 @@ const styles = StyleSheet.create({
 		padding: 15,
         width: '80%',
         backgroundColor: '#22a7f0',
-        marginBottom: 15,
+        marginBottom: 10,
     },
     removeFromListBtn: {
         alignSelf: 'center',
@@ -679,10 +665,13 @@ const styles = StyleSheet.create({
     },
     detailsContentWrapper: {
         flexDirection: 'row',
+        width: '80%',
+        marginBottom: 10,
     },
     detailsTitle: {
         color: '#db0a5b',
         marginBottom: 15,
+        marginRight: 15,
         fontSize: 15,
     },
     voteWrapper: {
