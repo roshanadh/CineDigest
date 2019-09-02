@@ -393,6 +393,19 @@ export default class ShowDetailsScreen extends Component {
                     {' ' + this.state.lastAirDate.slice(-2)}, {' ' + this.state.lastAirDate.slice(0, 4)}
                 </Text> : null;
 
+            let detailsJsx =
+                <View style={styles.detailsWrapper}>
+                    {genresJsx}
+                    {networksJsx}
+                    <View style={styles.airDateWrapper}>
+                        {firstAirDateJsx}
+                        {lastAirDateJsx}
+                    </View>
+                    {this.state.wishListBtnJsx}
+                    {this.state.watchingListBtnJsx}
+                    {this.state.watchedListBtnJsx}
+                </View>;
+
             let overviewJsx = this.state.overview !== null ?
                 <Text style={styles.overview}>{this.state.overview}</Text>
                 : null;
@@ -433,21 +446,13 @@ export default class ShowDetailsScreen extends Component {
                         <View style={styles.container}>
                             {posterJsx}
                             <Text style={styles.title}>{this.state.title}</Text>
+                            {createdByJsx}
                             <View style={styles.voteWrapper}>
                                 <Text style={styles.text}>{this.state.voteAverage}</Text>
                                 <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
                                 <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
                             </View>
-                            {createdByJsx}
-                            {genresJsx}
-                            {networksJsx}
-                            {this.state.wishListBtnJsx}
-                            {this.state.watchingListBtnJsx}
-                            {this.state.watchedListBtnJsx}
-                            <View style={styles.airDateWrapper}>
-                                {firstAirDateJsx}
-                                {lastAirDateJsx}
-                            </View>
+                            {detailsJsx}
                             {overviewJsx}
                             {backdropPathJsx}
                             {seasonsJsx}
@@ -560,7 +565,7 @@ export default class ShowDetailsScreen extends Component {
 
     render() {
         return (
-            <ImageBackground blurRadius={1.5}
+            <ImageBackground blurRadius={2}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
                 {this.state.contentJsx}
@@ -606,7 +611,7 @@ const styles = StyleSheet.create({
         textAlign: 'justify',
     },
     networks: {
-        marginBottom: 30,
+        marginBottom: 15,
         fontSize: 15,
         textAlign: 'justify',
     },
@@ -616,7 +621,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 		borderRadius: 50,
 		padding: 15,
-        width: '70%',
+        width: '80%',
         marginBottom: 10,
         backgroundColor: '#019875',
     },
@@ -626,7 +631,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
+        width: '80%',
         backgroundColor: '#8e44ad',
         marginBottom: 10,
     },
@@ -636,9 +641,9 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
 		borderRadius: 50,
 		padding: 15,
-        width: '70%',
+        width: '80%',
         backgroundColor: '#22a7f0',
-        marginBottom: 30,
+        marginBottom: 15,
     },
     removeFromListBtn: {
         alignSelf: 'center',
@@ -646,7 +651,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
+        width: '80%',
         marginBottom: 10,
         backgroundColor: '#e74c3c',
     },
@@ -654,13 +659,19 @@ const styles = StyleSheet.create({
         color: '#fefefe',
     },
     airDateWrapper: {
-        marginTop: 10,
         marginBottom: 15,
     },
     airDate: {
         fontSize: 15,
         textAlign: 'justify',
-        marginBottom: 10,
+        marginBottom: 15,
+    },
+    detailsWrapper: {
+        backgroundColor: 'rgba(218, 223, 225, 0.2)',
+        width: '100%',
+        padding: 10,
+        marginBottom: 15,
+        borderRadius: 10,
     },
     voteWrapper: {
         flexDirection: 'row',
