@@ -456,7 +456,7 @@ export default class ShowsListsScreen extends Component {
 				</ActionButton.Item>
 			</ActionButton>;
 		return (
-			<ImageBackground blurRadius={1.3}
+			<ImageBackground blurRadius={2}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
 				<View style={styles.searchItem}>
