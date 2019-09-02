@@ -424,17 +424,6 @@ export default class MovieDetails extends Component {
         };
     }
 
-    componentDidMount() {
-        let titleId = this.props.navigation.getParam('titleId', null);
-        console.warn('Mount titleID: ' + titleId);
-        this.getUserId()
-            .then(() => {
-                this.fetchMovieDetails(titleId)
-                    .catch(error => console.warn(error));
-            })
-            .catch(error => console.warn(error.message));
-    }
-
     willFocusSubscription = this.props.navigation.addListener(
         'willFocus',
         payload => {
