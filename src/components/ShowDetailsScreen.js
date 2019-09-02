@@ -67,9 +67,6 @@ export default class ShowDetailsScreen extends Component {
         this.initButtons = (username, uuid, titleId) => {
             return new Promise((resolve, reject) => {
                 this.setState({
-                    wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-                    watchingListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-                    watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
                     contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
                 });
                 // Check if show is in Wish-list
@@ -463,7 +460,7 @@ export default class ShowDetailsScreen extends Component {
                         </View>
                     </ScrollView>
                 </View>;
-            this.setState({ contentJsx });
+            this.setState({ contentJsx }, () => {console.warn('Content set!')});
         };
 
         this.fetchShowDetails = (titleId) => {
@@ -511,17 +508,6 @@ export default class ShowDetailsScreen extends Component {
                 }
             });
         };
-    }
-
-    componentDidMount() {
-        let titleId = this.props.navigation.getParam('titleId', null);
-        console.warn('Mount titleID: ' + titleId);
-        this.getUserId()
-            .then(() => {
-                this.fetchShowDetails(titleId)
-                    .catch(error => console.warn(error));
-            })
-            .catch(error => console.warn(error.message));
     }
 
     willFocusSubscription = this.props.navigation.addListener(
@@ -647,7 +633,7 @@ const styles = StyleSheet.create({
 		padding: 15,
         width: '80%',
         backgroundColor: '#22a7f0',
-        marginBottom: 15,
+        marginBottom: 10,
     },
     removeFromListBtn: {
         alignSelf: 'center',
