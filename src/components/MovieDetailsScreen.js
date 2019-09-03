@@ -164,29 +164,38 @@ export default class MovieDetails extends Component {
                 // Movie has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
             } else {
-                db.addMovieToWishList({
-                    listType: 'wishList',
-                    titleId: this.state.titleId,
-                    titleName: this.state.title,
-                    titleOverview: this.state.overview,
-                    titleVoteCount: this.state.voteCount,
-                    titleVoteAverage: this.state.voteAverage,
-                    titlePosterPath: this.state.posterPath,
-                    titleType: 'movie',
-                    uuid: this.state.uuid,
-                })
-                    .then(result => {
-                        console.warn('OK added to wishList! ' + this.state.title);
-                        Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
-                            [{
-                                text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
-                            }]
-                        );
-                    }, error => {
-                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    })
-                    .catch(error => console.warn(error.message));
+                Alert.alert('Are you sure?', this.state.title + ' will be added to your wish-list!',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => { },
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                db.addMovieToWishList({
+                                    listType: 'wishList',
+                                    titleId: this.state.titleId,
+                                    titleName: this.state.title,
+                                    titleOverview: this.state.overview,
+                                    titleVoteCount: this.state.voteCount,
+                                    titleVoteAverage: this.state.voteAverage,
+                                    titlePosterPath: this.state.posterPath,
+                                    titleType: 'movie',
+                                    uuid: this.state.uuid,
+                                })
+                                    .then(result => {
+                                        console.warn('OK added to wishList! ' + this.state.title);
+                                        this.initButtons(this.state.username, this.state.uuid, this.state.titleId);
+                                    }, error => {
+                                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                                    })
+                                    .catch(error => console.warn(error.message));
+                            },
+                        },
+                    ]
+                );
             }
         };
 
@@ -195,28 +204,37 @@ export default class MovieDetails extends Component {
                 // Movie has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
             } else {
-                db.addMovieToWatchedList({
-                    listType: 'watchedList',
-                    titleId: this.state.titleId,
-                    titleName: this.state.title,
-                    titleOverview: this.state.overview,
-                    titleVoteCount: this.state.voteCount,
-                    titleVoteAverage: this.state.voteAverage,
-                    titlePosterPath: this.state.posterPath,
-                    titleType: 'movie',
-                    uuid: this.state.uuid,
-                })
-                    .then(result => {
-                        Alert.alert('Success', this.state.title + ' has been added to your watched-list!',
-                            [{
-                                text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
-                            }]
-                        );
-                    }, error => {
-                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    })
-                    .catch(error => console.warn(error.message));
+                Alert.alert('Are you sure?', this.state.title + ' will be added to your watched-list!',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => { },
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                db.addMovieToWatchedList({
+                                    listType: 'watchedList',
+                                    titleId: this.state.titleId,
+                                    titleName: this.state.title,
+                                    titleOverview: this.state.overview,
+                                    titleVoteCount: this.state.voteCount,
+                                    titleVoteAverage: this.state.voteAverage,
+                                    titlePosterPath: this.state.posterPath,
+                                    titleType: 'movie',
+                                    uuid: this.state.uuid,
+                                })
+                                    .then(result => {
+                                        this.initButtons(this.state.username, this.state.uuid, this.state.titleId);
+                                    }, error => {
+                                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                                    })
+                                    .catch(error => console.warn(error.message));
+                            },
+                        },
+                    ]
+                );
             }
         };
 
@@ -225,32 +243,41 @@ export default class MovieDetails extends Component {
                 // Movie has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
             } else {
-                db.removeFromList({
-                    listType,
-                    titleId: this.state.titleId,
-                    titleName: this.state.title,
-                    titleOverview: this.state.overview,
-                    titleVoteCount: this.state.voteCount,
-                    titleVoteAverage: this.state.voteAverage,
-                    titlePosterPath: this.state.posterPath,
-                    titleType: 'movie',
-                    uuid: this.state.uuid,
-                })
-                    .then(result => {
-                        let message = '';
-                        // Re-render this Screen
-                        message = listType === 'wishList' ? this.state.title + ' has been removed from your wish-list!' :
-                            this.state.title + ' has been removed from your watched-list!';
-                        Alert.alert('Success', message,
-                            [{
-                                text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
-                            }]
-                        );
-                    }, error => {
-                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    })
-                    .catch(error => console.warn(error.message));
+                let message = '';
+                // Re-render this Screen
+                message = listType === 'wishList' ? this.state.title + ' will be removed from your wish-list!' :
+                    this.state.title + ' will be removed from your watched-list!';
+                Alert.alert('Are you sure?', message,
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => { },
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                db.removeFromList({
+                                    listType,
+                                    titleId: this.state.titleId,
+                                    titleName: this.state.title,
+                                    titleOverview: this.state.overview,
+                                    titleVoteCount: this.state.voteCount,
+                                    titleVoteAverage: this.state.voteAverage,
+                                    titlePosterPath: this.state.posterPath,
+                                    titleType: 'movie',
+                                    uuid: this.state.uuid,
+                                })
+                                    .then(result => {
+                                        this.initButtons(this.state.username, this.state.uuid, this.state.titleId);
+                                    }, error => {
+                                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                                    })
+                                    .catch(error => console.warn(error.message));
+                            },
+                        },
+                    ]
+                );
             }
         };
 

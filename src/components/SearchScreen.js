@@ -20,7 +20,7 @@ export default class SearchScreen extends Component {
             },
             headerTintColor: '#fefefe',
             headerStyle: {
-                backgroundColor: '#6bb9f0',
+                backgroundColor: '#913d88',
                 elevation: 0,
             },
         };
@@ -106,7 +106,7 @@ export default class SearchScreen extends Component {
                     source={require('../assets/lilypads.png')}
                     resizeMode="cover" style={styles.bgImage}>
                     <View style={styles.indicatorContainer}>
-                        <ActivityIndicator size="large" color="#22a7f0" />
+                        <ActivityIndicator size="large" color="#674172" />
                     </View>
                 </ImageBackground>
             );
