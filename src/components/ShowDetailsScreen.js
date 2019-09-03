@@ -57,10 +57,10 @@ export default class ShowDetailsScreen extends Component {
             numberOfEpisodes: '',
             overview: '',
             posterPath: '',
-            wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-            watchingListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-            watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-            contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+            wishListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
+            watchingListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
+            watchedListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
+            contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
         };
         this.noBackdrop = false;
         this.noPoster = false;
@@ -68,7 +68,7 @@ export default class ShowDetailsScreen extends Component {
         this.initButtons = (username, uuid, titleId) => {
             return new Promise((resolve, reject) => {
                 this.setState({
-                    contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                    contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
                 });
                 // Check if show is in Wish-list
                 db.isInList('wishList', this.state.titleId, uuid, 'show')
@@ -504,7 +504,7 @@ export default class ShowDetailsScreen extends Component {
             return new Promise((resolve, reject) => {
                 if (titleId !== 'null') {
                     this.setState({
-                        contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                        contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
                     }, () => {
                         fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}`)
                             .then(response => response.json())
@@ -552,7 +552,7 @@ export default class ShowDetailsScreen extends Component {
         payload => {
             console.debug('willFocus', payload);
             this.setState({
-                contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
             });
         }
     );
