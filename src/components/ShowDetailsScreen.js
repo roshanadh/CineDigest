@@ -26,7 +26,7 @@ export default class ShowDetailsScreen extends Component {
             },
             headerTintColor: '#fefefe',
             headerStyle: {
-                backgroundColor: '#6bb9f0',
+                backgroundColor: '#913d88',
                 elevation: 0,
             },
         };
@@ -107,9 +107,9 @@ export default class ShowDetailsScreen extends Component {
                                 // Add to Watched-list buttons are present
                                 this.setState({
                                     wishListBtnJsx:
-                                        <TouchableOpacity style={styles.wishListBtn}
+                                        <TouchableOpacity style={styles.disabledBtn}
                                             onPress={() => this.displayAlreadyInList('watching', this.state.title)}>
-                                            <Text style={styles.btnText}>Add to Wish-list</Text>
+                                            <Text style={styles.disabledBtnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchingListBtnJsx:
                                         <TouchableOpacity style={styles.removeFromListBtn}
@@ -137,14 +137,14 @@ export default class ShowDetailsScreen extends Component {
                                             // Remove from Watched-list button is present
                                             this.setState({
                                                 wishListBtnJsx:
-                                                    <TouchableOpacity style={styles.wishListBtn}
+                                                    <TouchableOpacity style={styles.disabledBtn}
                                                         onPress={() => this.displayAlreadyInList('watched', this.state.title)}>
-                                                        <Text style={styles.btnText}>Add to Wish-list</Text>
+                                                        <Text style={styles.disabledBtnText}>Add to Wish-list</Text>
                                                     </TouchableOpacity>,
                                                 watchingListBtnJsx:
-                                                    <TouchableOpacity style={styles.watchingListBtn}
+                                                    <TouchableOpacity style={styles.disabledBtn}
                                                         onPress={() => this.displayAlreadyInList('watched', this.state.title)}>
-                                                        <Text style={styles.btnText}>Add to Watching-list</Text>
+                                                        <Text style={styles.disabledBtnText}>Add to Watching-list</Text>
                                                     </TouchableOpacity>,
                                                 watchedListBtnJsx:
                                                     <TouchableOpacity style={styles.removeFromListBtn}
@@ -347,7 +347,7 @@ export default class ShowDetailsScreen extends Component {
         this.initScreen = () => {
             let fabJsx =
                 <ActionButton
-                    buttonColor="#db0a5b"
+                    buttonColor="#913d88"
                     position="right"
                     style={styles.fab}
                     shadowStyle={styles.fabShadow}
@@ -646,7 +646,21 @@ const styles = StyleSheet.create({
         backgroundColor: '#e74c3c',
     },
     btnText: {
-        color: '#fefefe',
+        color: '#fff',
+    },
+    disabledBtn: {
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 50,
+        padding: 15,
+        width: '80%',
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#6c7a89',
+    },
+    disabledBtnText: {
+        color: '#6c7a89',
     },
     airDateWrapper: {
         marginBottom: 15,
@@ -669,7 +683,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     detailsTitle: {
-        color: '#db0a5b',
+        color: '#913d88',
         marginBottom: 15,
         marginRight: 15,
         fontSize: 15,
