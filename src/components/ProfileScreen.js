@@ -435,7 +435,7 @@ const styles = StyleSheet.create({
         color: '#34495e',
     },
     changePassText: {
-        color: '#22a7f0',
+        color: '#963694',
         marginTop: 25,
     },
     textInputBlurWrapper: {
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderColor: '#674172',
+        borderColor: '#963694',
         paddingLeft: 20,
         paddingRight: 20,
         marginBottom: 25,
@@ -474,11 +474,10 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         width: '50%',
-        borderWidth: 1,
-        borderColor: '#674172',
+        backgroundColor: '#963694',
     },
     btnText: {
-        color: '#674172',
+        color: '#fff',
         fontSize: 15,
     },
     indicator: {
@@ -488,7 +487,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     errorText: {
-        color: '#913d88',
+        color: '#e74c3c',
         fontSize: 14,
         alignSelf: 'center',
         textAlign: 'center',
