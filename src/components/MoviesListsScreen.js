@@ -69,8 +69,8 @@ export default class MoviesListsScreen extends Component {
 				voteAverages: [],
 				voteCounts: [],
 			},
-			wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
-			watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
+			wishListJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
+			watchedListJsx: [<ActivityIndicator size="large" color="#674172" style={styles.indicator} />],
 		};
 
 		this.getUserId = () => {
@@ -260,8 +260,8 @@ export default class MoviesListsScreen extends Component {
 		this._onRefresh = () => {
 			this.setState({
 				refreshing: true,
-				wishListJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
-				watchedListJsx: [<ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />],
+				wishListJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
+				watchedListJsx: [<ActivityIndicator size="large" color="#674172" style={styles.indicator} />],
 			});
 			this.initLists().then((result) => {
 				this.setState({
