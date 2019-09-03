@@ -81,7 +81,7 @@ export default class MovieDetails extends Component {
                         console.warn(`Movie ${titleId} is already in wish list`);
                         this.setState({
                             wishListBtnJsx:
-                                <TouchableOpacity style={styles.removeFromWishListBtn}
+                                <TouchableOpacity style={styles.removeFromListBtn}
                                     onPress={() => this.removeFromList('wishList')}>
                                     <Text style={styles.btnText}>Remove from Wish-list</Text>
                                 </TouchableOpacity>,
@@ -105,12 +105,12 @@ export default class MovieDetails extends Component {
                                 console.warn(`Movie ${titleId} is already in watched list`);
                                 this.setState({
                                     wishListBtnJsx:
-                                        <TouchableOpacity style={styles.wishListBtn}
+                                        <TouchableOpacity style={styles.disabledBtn}
                                             onPress={() => this.displayAlreadyInList('watched', this.state.title)}>
-                                            <Text style={styles.btnText}>Add to Wish-list</Text>
+                                            <Text style={styles.disabledBtnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchedListBtnJsx:
-                                        <TouchableOpacity style={styles.removeFromWatchedListBtn}
+                                        <TouchableOpacity style={styles.removeFromListBtn}
                                             onPress={() => this.removeFromList('watchedList')} >
                                             <Text style={styles.btnText}>Remove from Watched-list</Text>
                                         </TouchableOpacity >,
@@ -537,29 +537,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
+        width: '80%',
         marginTop: 10,
         marginBottom: 10,
         backgroundColor: '#019875',
     },
-    removeFromWishListBtn: {
+    removeFromListBtn: {
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
-        marginTop: 10,
-        marginBottom: 10,
-        backgroundColor: '#e74c3c',
-    },
-    removeFromWatchedListBtn: {
-        alignSelf: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 50,
-        padding: 15,
-        width: '70%',
+        width: '80%',
         backgroundColor: '#e74c3c',
         marginBottom: 15,
     },
@@ -572,9 +561,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
+        width: '80%',
         backgroundColor: '#22a7f0',
         marginBottom: 15,
+    },
+    disabledBtn: {
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 50,
+        padding: 15,
+        width: '80%',
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#6c7a89',
+    },
+    disabledBtnText: {
+        color: '#6c7a89',
     },
     voteWrapper: {
         flexDirection: 'row',
