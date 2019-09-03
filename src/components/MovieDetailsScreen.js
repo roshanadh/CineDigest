@@ -60,9 +60,9 @@ export default class MovieDetails extends Component {
             overview: '',
             posterPath: '',
             releaseDate: '',
-            wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-            watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-            contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+            wishListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
+            watchedListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
+            contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
         };
         this.noBackdrop = false;
         this.noPoster = false;
@@ -71,9 +71,9 @@ export default class MovieDetails extends Component {
             console.warn('OK initButtons init! ' + username + ' ' + titleId);
             return new Promise((resolve, reject) => {
                 this.setState({
-                    wishListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-                    watchedListBtnJsx: <ActivityIndicator size="small" color="#22a7f0" style={styles.indicator} />,
-                    contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                    wishListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
+                    watchedListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
+                    contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
                 },);
                 // Check if movie is in Wish-list
                 db.isInList('wishList', titleId, uuid, 'movie')
@@ -409,7 +409,7 @@ export default class MovieDetails extends Component {
             return new Promise((resolve, reject) => {
                 if (titleId !== 'null') {
                     this.setState({
-                        contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                        contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
                     }, () => {
                         fetch(`https://api-cine-digest.herokuapp.com/api/v1/getm/${titleId}`)
                             .then(response => response.json())
@@ -457,7 +457,7 @@ export default class MovieDetails extends Component {
         payload => {
             console.debug('willFocus', payload);
             this.setState({
-                contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+                contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
             });
         }
     );

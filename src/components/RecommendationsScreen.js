@@ -114,7 +114,7 @@ export default class RecommendationsScreen extends Component {
                     source={require('../assets/lilypads.png')}
                     resizeMode="cover" style={styles.bgImage}>
                     <View style={styles.indicatorContainer}>
-                        <ActivityIndicator size="large" color="#22a7f0" />
+                        <ActivityIndicator size="large" color="#674172" />
                     </View>
                 </ImageBackground>
             );

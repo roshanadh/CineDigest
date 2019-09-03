@@ -44,7 +44,7 @@ export default class FullListScreen extends Component {
                 elevation: 0,
             },
             headerRight: (
-                <Icon name="delete"
+                <Icon name="delete-outline"
                     style={styles.trashIcon}
                     size={28}
                     onPress={() => {
@@ -337,7 +337,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     trashIcon: {
-        color: '#2e3131',
+        color: '#012',
         marginRight: 30,
     },
     container: {
