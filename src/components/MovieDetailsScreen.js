@@ -164,29 +164,38 @@ export default class MovieDetails extends Component {
                 // Movie has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
             } else {
-                db.addMovieToWishList({
-                    listType: 'wishList',
-                    titleId: this.state.titleId,
-                    titleName: this.state.title,
-                    titleOverview: this.state.overview,
-                    titleVoteCount: this.state.voteCount,
-                    titleVoteAverage: this.state.voteAverage,
-                    titlePosterPath: this.state.posterPath,
-                    titleType: 'movie',
-                    uuid: this.state.uuid,
-                })
-                    .then(result => {
-                        console.warn('OK added to wishList! ' + this.state.title);
-                        Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
-                            [{
-                                text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
-                            }]
-                        );
-                    }, error => {
-                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    })
-                    .catch(error => console.warn(error.message));
+                Alert.alert('Are you sure?', this.state.title + ' will be added to your wish-list!',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => { },
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                db.addMovieToWishList({
+                                    listType: 'wishList',
+                                    titleId: this.state.titleId,
+                                    titleName: this.state.title,
+                                    titleOverview: this.state.overview,
+                                    titleVoteCount: this.state.voteCount,
+                                    titleVoteAverage: this.state.voteAverage,
+                                    titlePosterPath: this.state.posterPath,
+                                    titleType: 'movie',
+                                    uuid: this.state.uuid,
+                                })
+                                    .then(result => {
+                                        console.warn('OK added to wishList! ' + this.state.title);
+                                        this.initButtons(this.state.username, this.state.uuid, this.state.titleId);
+                                    }, error => {
+                                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                                    })
+                                    .catch(error => console.warn(error.message));
+                            },
+                        },
+                    ]
+                );
             }
         };
 
