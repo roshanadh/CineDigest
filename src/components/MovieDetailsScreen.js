@@ -14,6 +14,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionButton from 'react-native-action-button';
 
+import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp';
 
 export default class MovieDetails extends Component {
@@ -254,7 +255,7 @@ export default class MovieDetails extends Component {
         };
 
         this.displayAlreadyInList = (listType, title) => {
-            Alert.alert('Error', title + ' is already in your ' + listType + '-list!');
+            CustomSnackbar.showSnackBar(title + ' is already in your ' + listType + '-list!', 'short', '#e74c3c', null);
         };
 
         this.getRecommendations = () => {
