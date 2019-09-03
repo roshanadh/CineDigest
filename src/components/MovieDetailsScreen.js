@@ -25,7 +25,7 @@ export default class MovieDetails extends Component {
             },
             headerTintColor: '#fefefe',
             headerStyle: {
-                backgroundColor: '#6bb9f0',
+                backgroundColor: '#913d88',
                 elevation: 0,
             },
         };
@@ -275,7 +275,7 @@ export default class MovieDetails extends Component {
         this.initScreen = () => {
             let fabJsx =
                 <ActionButton
-                    buttonColor="#db0a5b"
+                    buttonColor="#913d88"
                     position="right"
                     style={styles.fab}
                     shadowStyle={styles.fabShadow}
