@@ -14,6 +14,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FullListContainer from './FullListContainer';
 import db from '../db/db_exp';
 import netCon from '../util/NetCon';
+import CustomSnackbar from '../util/Snackbar';
 
 export default class FullListScreen extends Component {
     static navigationOptions = ({navigation}) => {
@@ -39,7 +40,7 @@ export default class FullListScreen extends Component {
             },
             headerTintColor: '#fefefe',
             headerStyle: {
-                backgroundColor: '#6bb9f0',
+                backgroundColor: '#913d88',
                 elevation: 0,
             },
             headerRight: (
@@ -47,13 +48,27 @@ export default class FullListScreen extends Component {
                     style={styles.trashIcon}
                     size={28}
                     onPress={() => {
-                        let uuid = navigation.getParam('uuid', null);
-                        let listType = navigation.getParam('listType', null);
-                        let titleType = navigation.getParam('titleType', null);
-                        db.deleteAllListItems(uuid, listType, titleType)
-                            .then((result) => {
-                                Alert.alert('Success', `Your ${listTypeForHeader} has been cleared!`);
-                            }, (error) => Alert.alert('Oops', 'Please try again!'));
+                        Alert.alert('Are you sure?', 'Your ' + listTypeForHeader + ' will be cleared!',
+                            [
+                                {
+                                    text: 'Cancel',
+                                    onPress: () => { },
+                                    style: 'cancel',
+                                },
+                                {
+                                    text: 'OK',
+                                    onPress: () => {
+                                        let uuid = navigation.getParam('uuid', null);
+                                        let listType = navigation.getParam('listType', null);
+                                        let titleType = navigation.getParam('titleType', null);
+                                        db.deleteAllListItems(uuid, listType, titleType)
+                                            .then((result) => {
+                                                CustomSnackbar.showSnackBar(`Your ${listTypeForHeader} has been cleared!`, 'short', '#3fc380', null);
+                                            }, (error) => Alert.alert('Oops', 'Please try again!'));
+                                    },
+                                },
+                            ]
+                        );
                     }} />
             ),
         };
@@ -308,7 +323,7 @@ export default class FullListScreen extends Component {
                     source={require('../assets/lilypads.png')}
                     resizeMode="cover" style={styles.bgImage}>
                     <View style={styles.indicatorContainer}>
-                        <ActivityIndicator size="large" color="#22a7f0" />
+                        <ActivityIndicator size="large" color="#674172" />
                     </View>
                 </ImageBackground>
             );
@@ -322,7 +337,7 @@ const styles = StyleSheet.create({
         flex: 1,
     },
     trashIcon: {
-        color: '#c0392b',
+        color: '#2e3131',
         marginRight: 30,
     },
     container: {
