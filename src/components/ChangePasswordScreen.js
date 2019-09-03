@@ -25,7 +25,7 @@ export default class ChangePassword extends Component {
             },
             headerTintColor: '#fefefe',
             headerStyle: {
-                backgroundColor: '#6bb9f0',
+                backgroundColor: '#913d88',
                 elevation: 0,
             },
         };
@@ -70,7 +70,7 @@ export default class ChangePassword extends Component {
                         indeterminate={false}
                         progress={1}
                         style={styles.progressBar}
-                        color="#22a7f0" />
+                        color="#963694" />
                 );
             } else if (this.state.newPassword.length > 0 && this.state.newPassword.length < 6) {
                 return (
@@ -97,7 +97,7 @@ export default class ChangePassword extends Component {
                         indeterminate={false}
                         progress={this.state.passwordProgress}
                         style={styles.progressBar}
-                        color="#22a7f0" />
+                        color="#963694" />
                 );
             }
         };
@@ -109,7 +109,7 @@ export default class ChangePassword extends Component {
                 );
             } else {
                 return (
-                    <KeyIcon name="key" size={25} color="#22a7f0" />
+                    <KeyIcon name="key" size={25} color="#963694" />
                 );
             }
         };
@@ -129,7 +129,7 @@ export default class ChangePassword extends Component {
                 );
             } else {
                 return (
-                    <KeyIcon name="key" size={25} color="#22a7f0" />
+                    <KeyIcon name="key" size={25} color="#963694" />
                 );
             }
         };
@@ -145,7 +145,7 @@ export default class ChangePassword extends Component {
                 );
             } else {
                 return (
-                    <KeyIcon name="key" size={25} color="#22a7f0" />
+                    <KeyIcon name="key" size={25} color="#963694" />
                 );
             }
         };
@@ -363,7 +363,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderColor: '#22a7f0',
+        borderColor: '#963694',
         paddingLeft: 20,
         paddingRight: 20,
         backgroundColor: 'rgba(255,255,255,0.3)',
@@ -383,7 +383,7 @@ const styles = StyleSheet.create({
     horizontalRule: {
         borderBottomWidth: 1,
         width: '100%',
-        borderColor: '#22a7f0',
+        borderColor: '#963694',
     },
     errorWrapper: {
         flexDirection: 'row',
@@ -408,7 +408,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         width: '70%',
-        backgroundColor: '#22a7f0',
+        backgroundColor: '#963694',
     },
     btnText: {
         color: '#fff',
