@@ -501,7 +501,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     detailsTitle: {
-        color: '#db0a5b',
+        color: '#913d88',
         marginBottom: 15,
         marginRight: 15,
         fontSize: 15,
@@ -603,7 +603,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     castHeader: {
-        color: '#db0a5b',
+        color: '#913d88',
         fontSize: 15,
         marginTop: 10,
         marginBottom: 10,
