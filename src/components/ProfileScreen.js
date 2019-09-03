@@ -326,7 +326,7 @@ export default class ProfileScreen extends Component {
                                     returnKeyType="done" />
                                 <EditIcon name="edit-2"
                                     size={20}
-                                    color={this.state.isNameEditable ? '#6bb9f0' : '#67809f'}
+                                    color={this.state.isNameEditable ? '#913d88' : '#67809f'}
                                     onPress={() => this.changeEditable('name')} />
                             </View>
                             <View style={!this.state.isUsernameEditable ? styles.textInputBlurWrapper : styles.textInputActiveWrapper}>
@@ -339,7 +339,7 @@ export default class ProfileScreen extends Component {
                                     returnKeyType="done" />
                                 <EditIcon name="edit-2"
                                     size={20}
-                                    color={this.state.isUsernameEditable ? '#6bb9f0' : '#67809f'}
+                                    color={this.state.isUsernameEditable ? '#913d88' : '#67809f'}
                                     onPress={() => this.changeEditable('username')} />
                             </View>
                             <View style={styles.footer}>
@@ -383,12 +383,12 @@ const styles = StyleSheet.create({
         width: '100%',
         zIndex: 1,
         padding: 20,
-        backgroundColor: '#6bb9f0',
+        backgroundColor: '#913d88',
         height: 63.5,
     },
     headerTitle: {
         color: '#fefefe',
-        fontSize: 18,
+        fontSize: 16,
         marginLeft: 10,
     },
     container: {
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderColor: '#22a7f0',
+        borderColor: '#674172',
         paddingLeft: 20,
         paddingRight: 20,
         marginBottom: 25,
@@ -474,10 +474,11 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         width: '50%',
-        backgroundColor: '#22a7f0',
+        borderWidth: 1,
+        borderColor: '#674172',
     },
     btnText: {
-        color: '#fff',
+        color: '#674172',
         fontSize: 15,
     },
     indicator: {
@@ -487,7 +488,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     errorText: {
-        color: '#e74c3c',
+        color: '#913d88',
         fontSize: 14,
         alignSelf: 'center',
         textAlign: 'center',

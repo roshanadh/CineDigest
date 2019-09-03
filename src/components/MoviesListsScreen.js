@@ -411,7 +411,7 @@ export default class MoviesListsScreen extends Component {
 				resizeMode="cover" style={styles.bgImage}>
 				<StatusBar barStyle="light-content"
 					translucent={true}
-					backgroundColor="#6bb9f0"
+					backgroundColor="#913d88"
 				/>
 				<View style={styles.searchItem}>
 					<SearchItem onChangeText={this.searchFieldChangedHandler}

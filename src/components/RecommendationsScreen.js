@@ -20,7 +20,7 @@ export default class RecommendationsScreen extends Component {
             },
             headerTintColor: '#fefefe',
             headerStyle: {
-                backgroundColor: '#6bb9f0',
+                backgroundColor: '#913d88',
                 elevation: 0,
             },
         };

@@ -69,11 +69,12 @@ const styles = StyleSheet.create({
     metaContainer: {},
     listInfo: {
         marginTop: 15,
-        marginRight: 10,
+        marginRight: 20,
         marginBottom: 5,
         alignSelf: 'flex-end',
     },
     listInfoText: {
         fontSize: 14,
+        color: '#6c7a89',
     },
 });

@@ -14,6 +14,7 @@ import {
 import Icon from 'react-native-vector-icons/FontAwesome';
 import ActionButton from 'react-native-action-button';
 
+import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp';
 
 export default class MovieDetails extends Component {
@@ -25,7 +26,7 @@ export default class MovieDetails extends Component {
             },
             headerTintColor: '#fefefe',
             headerStyle: {
-                backgroundColor: '#6bb9f0',
+                backgroundColor: '#913d88',
                 elevation: 0,
             },
         };
@@ -81,7 +82,7 @@ export default class MovieDetails extends Component {
                         console.warn(`Movie ${titleId} is already in wish list`);
                         this.setState({
                             wishListBtnJsx:
-                                <TouchableOpacity style={styles.removeFromWishListBtn}
+                                <TouchableOpacity style={styles.removeFromListBtn}
                                     onPress={() => this.removeFromList('wishList')}>
                                     <Text style={styles.btnText}>Remove from Wish-list</Text>
                                 </TouchableOpacity>,
@@ -105,12 +106,12 @@ export default class MovieDetails extends Component {
                                 console.warn(`Movie ${titleId} is already in watched list`);
                                 this.setState({
                                     wishListBtnJsx:
-                                        <TouchableOpacity style={styles.wishListBtn}
+                                        <TouchableOpacity style={styles.disabledBtn}
                                             onPress={() => this.displayAlreadyInList('watched', this.state.title)}>
-                                            <Text style={styles.btnText}>Add to Wish-list</Text>
+                                            <Text style={styles.disabledBtnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchedListBtnJsx:
-                                        <TouchableOpacity style={styles.removeFromWatchedListBtn}
+                                        <TouchableOpacity style={styles.removeFromListBtn}
                                             onPress={() => this.removeFromList('watchedList')} >
                                             <Text style={styles.btnText}>Remove from Watched-list</Text>
                                         </TouchableOpacity >,
@@ -254,7 +255,7 @@ export default class MovieDetails extends Component {
         };
 
         this.displayAlreadyInList = (listType, title) => {
-            Alert.alert('Error', title + ' is already in your ' + listType + '-list!');
+            CustomSnackbar.showSnackBar(title + ' is already in your ' + listType + '-list!', 'short', '#e74c3c', null);
         };
 
         this.getRecommendations = () => {
@@ -275,7 +276,7 @@ export default class MovieDetails extends Component {
         this.initScreen = () => {
             let fabJsx =
                 <ActionButton
-                    buttonColor="#db0a5b"
+                    buttonColor="#913d88"
                     position="right"
                     style={styles.fab}
                     shadowStyle={styles.fabShadow}
@@ -501,7 +502,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     detailsTitle: {
-        color: '#db0a5b',
+        color: '#913d88',
         marginBottom: 15,
         marginRight: 15,
         fontSize: 15,
@@ -537,29 +538,18 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
+        width: '80%',
         marginTop: 10,
         marginBottom: 10,
         backgroundColor: '#019875',
     },
-    removeFromWishListBtn: {
+    removeFromListBtn: {
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
-        marginTop: 10,
-        marginBottom: 10,
-        backgroundColor: '#e74c3c',
-    },
-    removeFromWatchedListBtn: {
-        alignSelf: 'center',
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 50,
-        padding: 15,
-        width: '70%',
+        width: '80%',
         backgroundColor: '#e74c3c',
         marginBottom: 15,
     },
@@ -572,9 +562,23 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
+        width: '80%',
         backgroundColor: '#22a7f0',
         marginBottom: 15,
+    },
+    disabledBtn: {
+        alignSelf: 'center',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 50,
+        padding: 15,
+        width: '80%',
+        marginBottom: 10,
+        borderWidth: 1,
+        borderColor: '#6c7a89',
+    },
+    disabledBtnText: {
+        color: '#6c7a89',
     },
     voteWrapper: {
         flexDirection: 'row',
@@ -600,7 +604,7 @@ const styles = StyleSheet.create({
         marginBottom: 30,
     },
     castHeader: {
-        color: '#db0a5b',
+        color: '#913d88',
         fontSize: 15,
         marginTop: 10,
         marginBottom: 10,
