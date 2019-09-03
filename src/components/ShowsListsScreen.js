@@ -640,6 +640,6 @@ const styles = StyleSheet.create({
 	},
 	viewAllText: {
 		fontSize: 15,
-		color: '#963694',
+		color: '#22a7f0',
 	},
 });

@@ -564,7 +564,7 @@ const styles = StyleSheet.create({
 		paddingTop: 10,
 	},
 	viewAllText: {
-		color: '#963694',
+		color: '#22a7f0',
 		fontSize: 15,
 	},
 });
