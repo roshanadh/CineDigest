@@ -1,10 +1,5 @@
-import SQLite from 'react-native-sqlite-storage';
-
 import Snackbar from '../util/Snackbar';
 import { onSignIn, onSignOut } from '../auth/auth';
-
-SQLite.DEBUG(true);
-SQLite.enablePromise(true);
 
 class Database {
     getUser(uuid) {
