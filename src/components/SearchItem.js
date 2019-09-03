@@ -33,9 +33,9 @@ export default class SearchItem extends Component{
 									These icons are not clickable.
 								*/}
 						<Icon name="filter" size={20}
-							color="#6bb9f0" style={styles.filterIcon} />
+							color="#913d88" style={styles.filterIcon} />
 						<Icon name="search" size={20}
-							color="#6bb9f0" style={styles.searchIcon} />
+							color="#913d88" style={styles.searchIcon} />
 						</View>;
 					break;
 				case false:
@@ -128,7 +128,7 @@ const styles = StyleSheet.create({
 		paddingLeft: 20,
 		paddingRight: 20,
 		paddingBottom: 10,
-		backgroundColor: '#6bb9f0',
+		backgroundColor: '#913d88',
 	},
 	filterIcon: {
 		marginRight: 20,
@@ -151,6 +151,6 @@ const styles = StyleSheet.create({
 		paddingLeft: 20,
 		paddingRight: 20,
 		paddingBottom: 10,
-		backgroundColor: '#6bb9f0',
+		backgroundColor: '#913d88',
 	},
 });
