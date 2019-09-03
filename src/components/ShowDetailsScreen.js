@@ -204,27 +204,36 @@ export default class ShowDetailsScreen extends Component {
                 // Show has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
             } else {
-                db.addShowToWishList({
-                    listType: 'wishList',
-                    titleId: this.state.titleId,
-                    titleName: this.state.title,
-                    titleOverview: this.state.overview,
-                    titleVoteCount: this.state.voteCount,
-                    titleVoteAverage: this.state.voteAverage,
-                    titlePosterPath: this.state.posterPath,
-                    titleType: 'show',
-                    uuid: this.state.uuid,
-                })
-                    .then(result => {
-                        Alert.alert('Success', this.state.title + ' has been added to your wish-list!',
-                            [{
-                                text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
-                            }]
-                        );
-                    }, error => {
-                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                Alert.alert('Are you sure?', this.state.title + ' will be added to your wish-list!',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => { },
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                db.addShowToWishList({
+                                    listType: 'wishList',
+                                    titleId: this.state.titleId,
+                                    titleName: this.state.title,
+                                    titleOverview: this.state.overview,
+                                    titleVoteCount: this.state.voteCount,
+                                    titleVoteAverage: this.state.voteAverage,
+                                    titlePosterPath: this.state.posterPath,
+                                    titleType: 'show',
+                                    uuid: this.state.uuid,
+                                })
+                                    .then(result => {
+                                        this.initButtons(this.state.username, this.state.uuid, this.state.titleId);
+                                    }, error => {
+                                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                                    });
+                            },
+                        },
+                    ]
+                );
             }
         };
 
@@ -233,27 +242,36 @@ export default class ShowDetailsScreen extends Component {
                 // Show has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
             } else {
-                db.addShowToWatchingList({
-                    listType: 'watchingList',
-                    titleId: this.state.titleId,
-                    titleName: this.state.title,
-                    titleOverview: this.state.overview,
-                    titleVoteCount: this.state.voteCount,
-                    titleVoteAverage: this.state.voteAverage,
-                    titlePosterPath: this.state.posterPath,
-                    titleType: 'show',
-                    uuid: this.state.uuid,
-                })
-                    .then(result => {
-                        Alert.alert('Success', this.state.title + ' has been added to your watching-list!',
-                            [{
-                                text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
-                            }]
-                        );
-                    }, error => {
-                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                Alert.alert('Are you sure?', this.state.title + ' will be added to your watching-list!',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => { },
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                db.addShowToWatchingList({
+                                    listType: 'watchingList',
+                                    titleId: this.state.titleId,
+                                    titleName: this.state.title,
+                                    titleOverview: this.state.overview,
+                                    titleVoteCount: this.state.voteCount,
+                                    titleVoteAverage: this.state.voteAverage,
+                                    titlePosterPath: this.state.posterPath,
+                                    titleType: 'show',
+                                    uuid: this.state.uuid,
+                                })
+                                    .then(result => {
+                                        this.initButtons(this.state.username, this.state.uuid, this.state.titleId);
+                                    }, error => {
+                                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                                    });
+                            },
+                        },
+                    ]
+                );
             }
         };
 
@@ -262,27 +280,36 @@ export default class ShowDetailsScreen extends Component {
                 // Show has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
             } else {
-                db.addShowToWatchedList({
-                    listType: 'watchedList',
-                    titleId: this.state.titleId,
-                    titleName: this.state.title,
-                    titleOverview: this.state.overview,
-                    titleVoteCount: this.state.voteCount,
-                    titleVoteAverage: this.state.voteAverage,
-                    titlePosterPath: this.state.posterPath,
-                    titleType: 'show',
-                    uuid: this.state.uuid,
-                })
-                    .then(result => {
-                        Alert.alert('Success', this.state.title + ' has been added to your watched-list!',
-                            [{
-                                text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
-                            }]
-                        );
-                    }, error => {
-                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                Alert.alert('Are you sure?', this.state.title + ' will be added to your watched-list!',
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => { },
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                db.addShowToWatchedList({
+                                    listType: 'watchedList',
+                                    titleId: this.state.titleId,
+                                    titleName: this.state.title,
+                                    titleOverview: this.state.overview,
+                                    titleVoteCount: this.state.voteCount,
+                                    titleVoteAverage: this.state.voteAverage,
+                                    titlePosterPath: this.state.posterPath,
+                                    titleType: 'show',
+                                    uuid: this.state.uuid,
+                                })
+                                    .then(result => {
+                                        this.initButtons(this.state.username, this.state.uuid, this.state.titleId);
+                                    }, error => {
+                                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                                    });
+                            },
+                        },
+                    ]
+                );
             }
         };
 
@@ -292,37 +319,46 @@ export default class ShowDetailsScreen extends Component {
                 // Show has not been loaded yet
                 Alert.alert('Oops', 'Please try again!');
             } else {
-                db.removeFromList({
-                    listType,
-                    titleId: this.state.titleId,
-                    titleName: this.state.title,
-                    titleOverview: this.state.overview,
-                    titleVoteCount: this.state.voteCount,
-                    titleVoteAverage: this.state.voteAverage,
-                    titlePosterPath: this.state.posterPath,
-                    titleType: 'show',
-                    uuid: this.state.uuid,
-                })
-                    .then(result => {
-                        let message = '';
-                        // Re-render this Screen
-                        if (listType === 'wishList') {
-                            message = this.state.title + ' has been removed from your wish-list!';
-                        } else if (listType === 'watchingList') {
-                            message = this.state.title + ' has been removed from your watching-list!';
-                        } else {
-                            message = this.state.title + ' has been removed from your watched-list!';
-                        }
+                let message = '';
+                // Re-render this Screen
+                if (listType === 'wishList') {
+                    message = this.state.title + ' will be removed from your wish-list!';
+                } else if (listType === 'watchingList') {
+                    message = this.state.title + ' will be removed from your watching-list!';
+                } else {
+                    message = this.state.title + ' will be removed from your watched-list!';
+                }
 
-                        Alert.alert('Success', message,
-                            [{
-                                text: 'OK',
-                                onPress: () => this.initButtons(this.state.username, this.state.uuid, this.state.titleId),
-                            }]
-                        );
-                    }, error => {
-                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
-                    });
+                Alert.alert('Are you sure?', message,
+                    [
+                        {
+                            text: 'Cancel',
+                            onPress: () => { },
+                            style: 'cancel',
+                        },
+                        {
+                            text: 'OK',
+                            onPress: () => {
+                                db.removeFromList({
+                                    listType,
+                                    titleId: this.state.titleId,
+                                    titleName: this.state.title,
+                                    titleOverview: this.state.overview,
+                                    titleVoteCount: this.state.voteCount,
+                                    titleVoteAverage: this.state.voteAverage,
+                                    titlePosterPath: this.state.posterPath,
+                                    titleType: 'show',
+                                    uuid: this.state.uuid,
+                                })
+                                    .then(result => {
+                                        this.initButtons(this.state.username, this.state.uuid, this.state.titleId);
+                                    }, error => {
+                                        Alert.alert('Ooops', 'There was a problem. Please try again later!');
+                                    });
+                            },
+                        },
+                    ]
+                );
             }
         };
 
