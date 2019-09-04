@@ -587,7 +587,6 @@ class Database {
                                             recoms = recoms.filter((item, pos) => {
                                                 return recoms.indexOf(item) === pos;
                                             });
-                                            console.warn(recoms);
                                         })
                                         .catch(error => {
                                             console.warn(error);
