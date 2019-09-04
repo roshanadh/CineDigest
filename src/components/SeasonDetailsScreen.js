@@ -181,10 +181,10 @@ export default class SeasonDetailsScreen extends Component {
 								episodeOverviews: this.episodeOverviews,
 								episodeVoteAverages: this.episodeVoteAverages,
 								episodeVoteCounts: this.episodeVoteCounts,
+							}, () => {
+									this.initScreen();
+									resolve(true);
 							});
-							this.initScreen()
-								.then(() => resolve(true))
-								.catch(error => reject(error));
 						});
 				});
 			});
@@ -198,7 +198,7 @@ export default class SeasonDetailsScreen extends Component {
 
 	render() {
 		return (
-			<ImageBackground blurRadius={1.5}
+			<ImageBackground blurRadius={2}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
 				{this.state.contentJsx}
