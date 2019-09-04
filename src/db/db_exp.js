@@ -571,11 +571,17 @@ class Database {
                                             while (true) {
                                                 if (jsonRes.status === 'success') {
                                                     // Title is not in any list of the user
-                                                    recoms.push({
+                                                    // Dont recommend the title ...
+                                                    // if title is already in recoms list
+                                                    let newRecom = {
                                                         title: jsonResponse.titles[index],
                                                         titleId: jsonResponse.titleIds[index],
                                                         posterPath: jsonResponse.posterPaths[index],
-                                                    });
+                                                    };
+
+                                                    if (!recoms.includes(newRecom)) {
+                                                        recoms.push(newRecom);
+                                                    }
                                                 }
                                                 if (index >= upperLimit) {
                                                     // Break if index crosses the upper limit
