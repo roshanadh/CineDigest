@@ -308,7 +308,7 @@ export default class MovieDetails extends Component {
                     position="right"
                     style={styles.fab}
                     shadowStyle={styles.fabShadow}
-                    renderIcon={() => (<MaterialCommunityIcons name="lightbulb-on-outline" style={styles.actionButtonIcon} size={25} />)}
+                    renderIcon={() => (<MaterialCommunityIcons name="lightbulb-on-outline" style={styles.actionButtonIcon} size={22} />)}
                     onPress={() => this.getRecommendations()} />;
 
             let posterJsx = this.noPoster === false ?
@@ -331,7 +331,7 @@ export default class MovieDetails extends Component {
             let directorsJsx = this.state.directors.length > 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Directed by</Text>
-                    <Text style={styles.directors}>{this.state.directors.join(' | ')}</Text>
+                    <Text style={styles.directors}>{this.state.directors.join(', ')}</Text>
                 </View> : null;
 
             let runtimeJsx = this.state.runtime !== null ?
@@ -344,7 +344,7 @@ export default class MovieDetails extends Component {
             let genresJsx = this.state.genres.length !== 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Genres</Text>
-                    <Text style={styles.runtime}>{this.state.genres.join(' | ') }</Text>
+                    <Text style={styles.runtime}>{this.state.genres.join(', ') }</Text>
                 </View> : null;
 
             let releaseDateJsx = this.state.releaseDate !== '' ?
@@ -388,7 +388,7 @@ export default class MovieDetails extends Component {
                 <View>
                     <Text style={styles.castHeader}>Cast</Text>
                     <Text style={styles.cast}>
-                        {this.state.credits.join(' | ')}
+                        {this.state.credits.join(', ')}
                     </Text>
                 </View> : null;
 
@@ -527,7 +527,6 @@ const styles = StyleSheet.create({
         width: 400,
         height: 400,
         alignSelf: 'center',
-        borderRadius: 5,
         marginBottom: 30,
     },
     title: {
