@@ -28,14 +28,18 @@ export default class SearchItem extends Component{
 								onSubmitEditing={this.props.onSubmitEditing}
 								placeholderTextColor="#fefefe"
 								returnKeyType="next" />
-								{/*
-									Icons are used to push TextInput to the left side.
-									These icons are not clickable.
-								*/}
-						<Icon name="filter" size={20}
-							color="#913d88" style={styles.filterIcon} />
-						<Icon name="search" size={20}
-							color="#913d88" style={styles.searchIcon} />
+							<Icon name="filter" size={20}
+								color="#fefefe" style={styles.filterIcon}
+								onPress={
+									() => {
+										this.setState(prevState => ({
+											showFilter: !prevState.showFilter,
+										}), 	this.props.filterShown(!this.state.showFilter));
+									}
+								} />
+							<Icon name="search" size={20}
+								color="#fefefe" style={styles.searchIcon}
+								onPress={this.props.onSubmitEditing} />
 						</View>;
 					break;
 				case false:
@@ -73,8 +77,8 @@ export default class SearchItem extends Component{
 						placeholderTextColor="#fefefe"
 						keyboardType="decimal-pad"
 						returnKeyType="search" />
-					<Icon name="filter" size={20}
-						color="#fefefe" style={styles.filterIcon}
+					<Icon name="chevrons-up" size={25}
+						color="#fff"
 						onPress={
 							() => {
 								this.setState(prevState => ({
@@ -82,9 +86,6 @@ export default class SearchItem extends Component{
 								}), this.props.filterShown(!this.state.showFilter));
 							}
 						} />
-					<Icon name="search" size={20}
-						color="#fefefe" style={styles.searchIcon}
-						onPress={this.props.onSubmitEditing} />
 				</View>
 				: null;
 		} else {
