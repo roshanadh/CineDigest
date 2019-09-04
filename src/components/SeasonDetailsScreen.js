@@ -52,9 +52,16 @@ export default class SeasonDetailsScreen extends Component {
 
 		this.initScreen = () => {
 			let posterJsx = this.noPoster === false ?
-				<Image source={{ uri: this.state.posterPath }}
-					style={styles.posterPath}
-					resizeMode="contain" /> : null;
+				<View>
+					<ImageBackground source={{ uri: this.state.posterPath }}
+						blurRadius={10} style={styles.containerPoster}
+						resizeMode="cover">
+						<Image source={{ uri: this.state.posterPath }}
+							style={styles.posterPath}
+							resizeMode="contain" />
+					</ImageBackground>
+				</View>
+				: null;
 
 			let seasonNameJsx = this.seasonName !== null ?
 				<Text style={styles.seasonName}>
@@ -119,14 +126,19 @@ export default class SeasonDetailsScreen extends Component {
 				);
 			}
 
+			let seasonContainerWithoutPosterJsx =
+				<View style={styles.seasonContainerWithoutPoster}>
+					{seasonNameJsx}
+					{showNameJsx}
+					{airDateJsx}
+				</View>;
+
 			let contentJsx =
 				<ScrollView style={styles.container}>
 					<ScrollView>
 						<View style={styles.seasonContainer}>
 							{posterJsx}
-							{seasonNameJsx}
-							{showNameJsx}
-							{airDateJsx}
+							{seasonContainerWithoutPosterJsx}
 						</View>
 					</ScrollView>
 					<ScrollView horizontal={true}>
@@ -205,10 +217,10 @@ const styles = StyleSheet.create(
 	container: {
 		height: '100%',
 		flex: 1,
-		padding: 10,
+		// padding: 10,
 		flexDirection: 'column',
 	},
-    seasonContainer: {
+	seasonContainerWithoutPoster: {
 		padding: 25,
 		minWidth: '95%',
 		flexDirection: 'column',
@@ -218,7 +230,7 @@ const styles = StyleSheet.create(
 	},
 	episodeContainer: {
 		margin: 10,
-		marginLeft: 0,
+		marginLeft: 10,
 		marginBottom: 20,
 		padding: 25,
 		backgroundColor: '#fff',
@@ -226,6 +238,10 @@ const styles = StyleSheet.create(
         flexDirection: 'column',
         justifyContent: 'flex-start',
 		alignItems: 'flex-start',
+	},
+	containerPoster: {
+		width: '100%',
+		height: 400,
 	},
 	posterPath: {
         width: 400,
