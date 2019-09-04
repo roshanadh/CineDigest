@@ -304,6 +304,8 @@ export default class MovieDetails extends Component {
 
         this.initScreen = () => {
             let lowResPosterPath = `https://image.tmdb.org/t/p/w185/${this.state.posterPath}`;
+            let lowResBackdropPath = `https://image.tmdb.org/t/p/w185/${this.state.backdropPath}`;
+            let originalBackdropPath = `https://image.tmdb.org/t/p/original/${this.state.backdropPath}`
             let fabJsx =
                 <ActionButton
                     buttonColor="#913d88"
@@ -382,9 +384,16 @@ export default class MovieDetails extends Component {
                 : null;
 
             let backdropPathJsx = this.noBackdrop === false ?
-                <Image source={{ uri: this.state.backdropPath }}
-                    style={styles.backdropPath}
-                    resizeMode="contain" /> : null;
+                <View>
+                    <ImageBackground source={{ uri: lowResBackdropPath }}
+                        blurRadius={8} style={styles.containerBackdrop}
+                        resizeMode="cover">
+                        <Image source={{ uri: originalBackdropPath }}
+                            style={styles.backdropPath}
+                            resizeMode="contain" />
+                    </ImageBackground>
+                </View>
+                : null;
 
             let castJsx = this.state.credits.length !== 0 ?
                 <View>
@@ -448,7 +457,7 @@ export default class MovieDetails extends Component {
                                     creditsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.creditsProfilePath}`,
                                     directors: jsonResponse.directors,
                                     directorsProfilePath: `https://image.tmdb.org/t/p/original/${jsonResponse.directorsProfilePath}`,
-                                    backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
+                                    backdropPath: jsonResponse.backdrop_path,
                                     originalLanguage: jsonResponse.original_language,
                                     overview: jsonResponse.overview,
                                     posterPath: jsonResponse.poster_path,
@@ -642,13 +651,15 @@ const styles = StyleSheet.create({
         fontSize: 15,
         textAlign: 'justify',
     },
-    backdropPath: {
-        width: 380,
+    containerBackdrop: {
+        width: '100%',
         height: 200,
-        alignSelf: 'center',
-        borderRadius: 10,
-        marginTop: 10,
-        marginBottom: 30,
+        flexDirection: 'row',
+    },
+    backdropPath: {
+        zIndex: 1,
+        width: '100%',
+        height: 200,
     },
     castHeader: {
         color: '#913d88',
