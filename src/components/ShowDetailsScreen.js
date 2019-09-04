@@ -408,19 +408,19 @@ export default class ShowDetailsScreen extends Component {
             let createdByJsx = this.state.createdBy.length !== 0 ?
                 <Text style={styles.createdBy}>
                     Created by
-                {' ' + this.state.createdBy.join(' | ')}
+                {' ' + this.state.createdBy.join(', ')}
                 </Text> : null;
 
             let genresJsx = this.state.genres.length !== 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Genres</Text>
-                    <Text style={styles.runtime}>{this.state.genres.join(' | ')}</Text>
+                    <Text style={styles.runtime}>{this.state.genres.join(', ')}</Text>
                 </View> : null;
 
             let networksJsx = this.state.networks.length !== 0 ?
                 <View style={styles.detailsContentWrapper}>
                     <Text style={styles.detailsTitle}>Networks</Text>
-                    <Text style={styles.runtime}>{this.state.networks.join(' | ')}</Text>
+                    <Text style={styles.runtime}>{this.state.networks.join(', ')}</Text>
                 </View> : null;
 
             let firstAirDateJsx = this.state.firstAirDate !== '' ?
