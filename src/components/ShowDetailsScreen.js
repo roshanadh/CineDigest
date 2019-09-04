@@ -58,6 +58,7 @@ export default class ShowDetailsScreen extends Component {
             numberOfEpisodes: '',
             overview: '',
             posterPath: '',
+            originalPosterPath: '',
             wishListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
             watchingListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
             watchedListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
@@ -222,7 +223,7 @@ export default class ShowDetailsScreen extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.posterPath,
+                                    titleoriginalPosterPath: this.state.originalPosterPath,
                                     titleType: 'show',
                                     uuid: this.state.uuid,
                                 })
@@ -260,7 +261,7 @@ export default class ShowDetailsScreen extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.posterPath,
+                                    titleoriginalPosterPath: this.state.originalPosterPath,
                                     titleType: 'show',
                                     uuid: this.state.uuid,
                                 })
@@ -298,7 +299,7 @@ export default class ShowDetailsScreen extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.posterPath,
+                                    titleoriginalPosterPath: this.state.originalPosterPath,
                                     titleType: 'show',
                                     uuid: this.state.uuid,
                                 })
@@ -347,7 +348,7 @@ export default class ShowDetailsScreen extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.posterPath,
+                                    titleoriginalPosterPath: this.state.originalPosterPath,
                                     titleType: 'show',
                                     uuid: this.state.uuid,
                                 })
@@ -383,6 +384,7 @@ export default class ShowDetailsScreen extends Component {
         };
 
         this.initScreen = () => {
+            let lowResPosterPath = `https://image.tmdb.org/t/p/w185/${this.state.posterPath}`;
             let fabJsx =
                 <ActionButton
                     buttonColor="#913d88"
@@ -394,11 +396,11 @@ export default class ShowDetailsScreen extends Component {
 
             let posterJsx = this.noPoster === false ?
                 <View>
-                    <ImageBackground source={{ uri: this.state.posterPath }}
-                        blurRadius={10} style={styles.containerPoster}
+                    <ImageBackground source={{ uri: lowResPosterPath }}
+                        blurRadius={8} style={styles.containerPoster}
                         resizeMode="cover">
-                        <Image source={{ uri: this.state.posterPath }}
-                            style={styles.posterPath}
+                        <Image source={{ uri: this.state.originalPosterPath }}
+                            style={styles.originalPoster}
                             resizeMode="contain" />
                     </ImageBackground>
                     {fabJsx}
@@ -545,7 +547,8 @@ export default class ShowDetailsScreen extends Component {
                                     networks: jsonResponse.networks,
                                     numberOfEpisodes: jsonResponse.number_of_episodes,
                                     overview: jsonResponse.overview,
-                                    posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
+                                    posterPath: jsonResponse.poster_path,
+                                    originalPosterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
                                 });
                                 this.initScreen()
                                     .then(() => resolve(true))
@@ -633,11 +636,10 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 400,
     },
-    posterPath: {
+    originalPoster: {
         width: 400,
         height: 400,
         alignSelf: 'center',
-        borderRadius: 5,
         marginBottom: 30,
     },
     title: {
