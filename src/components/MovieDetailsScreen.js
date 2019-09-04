@@ -60,6 +60,7 @@ export default class MovieDetails extends Component {
             originalLanguage: '',
             overview: '',
             posterPath: '',
+            originalPosterPath: '',
             releaseDate: '',
             wishListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
             watchedListBtnJsx: <ActivityIndicator size="small" color="#674172" style={styles.indicator} />,
@@ -182,7 +183,7 @@ export default class MovieDetails extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.posterPath,
+                                    titlePosterPath: this.state.originalPosterPath,
                                     titleType: 'movie',
                                     uuid: this.state.uuid,
                                 })
@@ -222,7 +223,7 @@ export default class MovieDetails extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.posterPath,
+                                    titlePosterPath: this.state.originalPosterPath,
                                     titleType: 'movie',
                                     uuid: this.state.uuid,
                                 })
@@ -265,7 +266,7 @@ export default class MovieDetails extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.posterPath,
+                                    titlePosterPath: this.state.originalPosterPath,
                                     titleType: 'movie',
                                     uuid: this.state.uuid,
                                 })
@@ -302,6 +303,7 @@ export default class MovieDetails extends Component {
         };
 
         this.initScreen = () => {
+            let lowResPosterPath = `https://image.tmdb.org/t/p/w185/${this.state.posterPath}`;
             let fabJsx =
                 <ActionButton
                     buttonColor="#913d88"
@@ -313,11 +315,11 @@ export default class MovieDetails extends Component {
 
             let posterJsx = this.noPoster === false ?
                 <View>
-                    <ImageBackground source={{ uri: this.state.posterPath }}
-                        blurRadius={10} style={styles.containerPoster}
+                    <ImageBackground source={{ uri: lowResPosterPath }}
+                        blurRadius={8} style={styles.containerPoster}
                         resizeMode="cover">
-                        <Image source={{ uri: this.state.posterPath }}
-                            style={styles.posterPath}
+                        <Image source={{ uri: this.state.originalPosterPath }}
+                            style={styles.originalPoster}
                             resizeMode="contain" />
                     </ImageBackground>
                     {fabJsx}
@@ -449,7 +451,8 @@ export default class MovieDetails extends Component {
                                     backdropPath: `https://image.tmdb.org/t/p/original/${jsonResponse.backdrop_path}`,
                                     originalLanguage: jsonResponse.original_language,
                                     overview: jsonResponse.overview,
-                                    posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
+                                    posterPath: jsonResponse.poster_path,
+                                    originalPosterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
                                     releaseDate: jsonResponse.release_date,
                                 });
                                 this.initScreen()
@@ -523,7 +526,7 @@ const styles = StyleSheet.create({
         width: '100%',
         height: 400,
     },
-    posterPath: {
+    originalPoster: {
         width: 400,
         height: 400,
         alignSelf: 'center',

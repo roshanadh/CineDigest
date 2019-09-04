@@ -31,6 +31,7 @@ export default class SeasonDetailsScreen extends Component {
 		super(props, context);
 		this.state = {
 			posterPath: '',
+			originalPosterPath: '',
 			seasonNo: '',
 			airDate: '',
 			episodes: [],
@@ -51,13 +52,14 @@ export default class SeasonDetailsScreen extends Component {
 		this.showName = this.props.navigation.getParam('showName', '');
 
 		this.initScreen = () => {
+			let lowResPosterPath = `https://image.tmdb.org/t/p/w185/${this.state.posterPath}`;
 			let posterJsx = this.noPoster === false ?
 				<View>
-					<ImageBackground source={{ uri: this.state.posterPath }}
+					<ImageBackground source={{ uri: lowResPosterPath }}
 						blurRadius={10} style={styles.containerPoster}
 						resizeMode="cover">
-						<Image source={{ uri: this.state.posterPath }}
-							style={styles.posterPath}
+						<Image source={{ uri: this.state.originalPosterPath }}
+							style={styles.originalPoster}
 							resizeMode="contain" />
 					</ImageBackground>
 				</View>
@@ -172,7 +174,8 @@ export default class SeasonDetailsScreen extends Component {
 								this.episodeVoteCounts.push(jsonResponse.episodes[i].vote_count);
 							}
 							this.setState({
-								posterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
+								posterPath: jsonResponse.poster_path,
+								originalPosterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
 								seasonNo: jsonResponse.season_number,
 								airDate: jsonResponse.air_date,
 								episodes: this.episodes,
@@ -181,10 +184,10 @@ export default class SeasonDetailsScreen extends Component {
 								episodeOverviews: this.episodeOverviews,
 								episodeVoteAverages: this.episodeVoteAverages,
 								episodeVoteCounts: this.episodeVoteCounts,
+							}, () => {
+									this.initScreen();
+									resolve(true);
 							});
-							this.initScreen()
-								.then(() => resolve(true))
-								.catch(error => reject(error));
 						});
 				});
 			});
@@ -198,7 +201,7 @@ export default class SeasonDetailsScreen extends Component {
 
 	render() {
 		return (
-			<ImageBackground blurRadius={1.5}
+			<ImageBackground blurRadius={2}
 				source={require('../assets/lilypads.png')}
 				resizeMode="cover" style={styles.bgImage}>
 				{this.state.contentJsx}
@@ -217,7 +220,6 @@ const styles = StyleSheet.create(
 	container: {
 		height: '100%',
 		flex: 1,
-		// padding: 10,
 		flexDirection: 'column',
 	},
 	seasonContainerWithoutPoster: {
@@ -243,11 +245,10 @@ const styles = StyleSheet.create(
 		width: '100%',
 		height: 400,
 	},
-	posterPath: {
+	originalPoster: {
         width: 400,
         height: 400,
         alignSelf: 'center',
-        borderRadius: 5,
         marginBottom: 30,
 	},
 	seasonName: {
