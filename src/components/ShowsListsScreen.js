@@ -342,6 +342,23 @@ export default class ShowsListsScreen extends Component {
 			this.initLists().then((result) => {
 				this.setState({
 					refreshing: false,
+				}, () => {
+						console.warn(this.state.uuid + ' is the UUID');
+						console.warn('getTitleR called!');
+						db.getTitleRecommendations(this.state.uuid, 'show')
+							.then((result) => {
+								// Promise takes time to resolve..
+								// wait 5 seconds before updating state.
+								setTimeout(() => {
+									// Update state only if the resolved promise..
+									// is not empty.
+									result.length > 0 ?
+										this.setState({ showRecoms: this.state.showRecoms.concat(result) }, () => {
+										}) : null;
+								}, 3000);
+							}, (error) => console.warn('ERROR in getTitleRecommendations/ ShowsListsScreen' + error))
+							.catch(error => console.warn('CAUGHT ERROR in getTitleRecommendations/ ShowsListsScreen' + error));
+
 				});
 			});
 		};
