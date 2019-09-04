@@ -12,6 +12,7 @@ import {
 } from 'react-native';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ActionButton from 'react-native-action-button';
 
 import CustomSnackbar from '../util/Snackbar';
@@ -388,12 +389,21 @@ export default class ShowDetailsScreen extends Component {
                     position="right"
                     style={styles.fab}
                     shadowStyle={styles.fabShadow}
+                    renderIcon={() => (<MaterialCommunityIcons name="lightbulb-on-outline" style={styles.actionButtonIcon} size={22} />)}
                     onPress={() => this.getRecommendations()} />;
 
             let posterJsx = this.noPoster === false ?
-                <Image source={{ uri: this.state.posterPath }}
-                    style={styles.posterPath}
-                    resizeMode="contain" /> : null;
+                <View>
+                    <ImageBackground source={{ uri: this.state.posterPath }}
+                        blurRadius={10} style={styles.containerPoster}
+                        resizeMode="cover">
+                        <Image source={{ uri: this.state.posterPath }}
+                            style={styles.posterPath}
+                            resizeMode="contain" />
+                    </ImageBackground>
+                    {fabJsx}
+                </View>
+                : null;
 
             let createdByJsx = this.state.createdBy.length !== 0 ?
                 <Text style={styles.createdBy}>
@@ -477,23 +487,27 @@ export default class ShowDetailsScreen extends Component {
                 }
             }
 
+            let contentWithoutPosterJsx =
+                <View style={styles.contentWithoutPoster}>
+                    <Text style={styles.title}>{this.state.title}</Text>
+                    {createdByJsx}
+                    <View style={styles.voteWrapper}>
+                        <Text style={styles.text}>{this.state.voteAverage}</Text>
+                        <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
+                        <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
+                    </View>
+                    {detailsJsx}
+                    {overviewJsx}
+                    {backdropPathJsx}
+                    {seasonsJsx}
+                </View>;
+
             let contentJsx =
                 <View>
-                    {fabJsx}
                     <ScrollView style={styles.scrollView}>
                         <View style={styles.container}>
                             {posterJsx}
-                            <Text style={styles.title}>{this.state.title}</Text>
-                            {createdByJsx}
-                            <View style={styles.voteWrapper}>
-                                <Text style={styles.text}>{this.state.voteAverage}</Text>
-                                <Icon name="heart" size={15} color="#db0a5b" style={styles.heartIcon} />
-                                <Text style={styles.text}>by {this.state.voteCount} {this.state.voteCount > 1 ? 'people' : 'person'}</Text>
-                            </View>
-                            {detailsJsx}
-                            {overviewJsx}
-                            {backdropPathJsx}
-                            {seasonsJsx}
+                            {contentWithoutPosterJsx}
                         </View>
                     </ScrollView>
                 </View>;
@@ -607,13 +621,17 @@ const styles = StyleSheet.create({
         height: '100%',
         flex: 1,
     },
-    container: {
+    contentWithoutPoster: {
         padding: 25,
         minWidth: '95%',
         flexDirection: 'column',
         flex: 1,
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
+    },
+    containerPoster: {
+        width: '100%',
+        height: 400,
     },
     posterPath: {
         width: 400,
@@ -772,12 +790,14 @@ const styles = StyleSheet.create({
     },
     fab: {
         zIndex: 1,
-        marginBottom: 50,
     },
     fabShadow: {
         borderRadius: 50,
         borderWidth: 1,
         borderColor: 'rgba(217, 30, 24, 0.1)',
+    },
+    actionButtonIcon: {
+        color: 'white',
     },
     indicator: {
         flex: 1,
