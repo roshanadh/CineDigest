@@ -266,6 +266,22 @@ export default class MoviesListsScreen extends Component {
 			this.initLists().then((result) => {
 				this.setState({
 					refreshing: false,
+				}, () => {
+						console.warn(this.state.uuid);
+						db.getTitleRecommendations(this.state.uuid, 'movie')
+							.then(result => {
+								console.warn('getTitleR called!');
+								// Promise takes time to resolve..
+								// wait 5 seconds before updating state.
+								setTimeout(() => {
+									// Update state only if the resolved promise..
+									// is not empty.
+									result.length > 0 ?
+										this.setState({ movieRecoms: this.state.movieRecoms.concat(result) }, () => {
+										}) : null;
+								}, 3000);
+							}, error => console.warn('ERROR in getTitleRecommendations/ MoviesListsScreen' + error))
+							.catch(error => console.warn('CAUGHT ERROR in getTitleRecommendations/ MoviesListsScreen' + error));
 				});
 			});
 		};

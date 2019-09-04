@@ -557,7 +557,7 @@ class Database {
                                     const payload = {
                                         uuid,
                                         titleType,
-                                        titleId: titleIds[index],
+                                        titleId: jsonResponse.titleIds[index],
                                     };
                                     const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
                                     // Check if movie is already in a list
@@ -569,8 +569,8 @@ class Database {
                                         .then(response => response.json())
                                         .then(jsonRes => {
                                             while (true) {
-                                                if (jsonRes.status === 'success') {
-                                                    // Title is not in any list of the user
+                                                if (jsonRes.status === 'NOT-FOUND') {
+                                                    // Title is not in any list of the user                                    
                                                     recoms.push({
                                                         title: jsonResponse.titles[index],
                                                         titleId: jsonResponse.titleIds[index],
@@ -583,8 +583,14 @@ class Database {
                                                 }
                                                 ++index;
                                             }
+                                            // Recommend non-repeating titles only
+                                            recoms = recoms.filter((item, pos) => {
+                                                return recoms.indexOf(item) === pos;
+                                            });
                                         })
-                                        .catch(error => console.warn(error));
+                                        .catch(error => {
+                                            console.warn(error);
+                                        });
                                 })
                                 .catch(error => console.warn('404 for ' + titleIds[i]));
                         }
