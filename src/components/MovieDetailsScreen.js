@@ -316,7 +316,7 @@ export default class MovieDetails extends Component {
             let posterJsx = this.noPoster === false ?
                 <View>
                     <ImageBackground source={{ uri: lowResPosterPath }}
-                        blurRadius={10} style={styles.containerPoster}
+                        blurRadius={8} style={styles.containerPoster}
                         resizeMode="cover">
                         <Image source={{ uri: this.state.originalPosterPath }}
                             style={styles.originalPoster}
