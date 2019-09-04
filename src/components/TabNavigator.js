@@ -67,7 +67,7 @@ const TabNavigator = createMaterialTopTabNavigator(
             },
         },
         tabBarPosition: 'bottom',
-        lazy: true,
+        // lazy: true,
     },
 );
 
