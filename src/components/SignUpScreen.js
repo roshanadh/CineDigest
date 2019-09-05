@@ -18,7 +18,7 @@ import {
 import bcrypt from 'react-native-bcrypt';
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import KeyIcon from 'react-native-vector-icons/Feather';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
@@ -34,6 +34,7 @@ export default class SignUpScreen extends Component {
 		this.state = {
 			isLoading: false,
 			name: '',
+			email: '',
 			username: '',
 			password1: '',
 			password2: '',
@@ -103,19 +104,19 @@ export default class SignUpScreen extends Component {
 		this.genPasswordIconJsx = () => {
 			if (this.state.password1.length === 0) {
 				return (
-					<KeyIcon name="key" size={25} color="#ddd" />
+					<FeatherIcon name="key" size={25} color="#ddd" />
 				);
 			} else if (this.state.password1.length > 0 && this.state.password1.length < 6) {
 				return (
-					<KeyIcon name="key" size={25} color="#e74c3c" />
+					<FeatherIcon name="key" size={25} color="#e74c3c" />
 				);
 			} else if (this.state.password1.length >= 6 && this.state.password1.length < 8) {
 				return (
-					<KeyIcon name="key" size={25} color="#f4b350" />
+					<FeatherIcon name="key" size={25} color="#f4b350" />
 				);
 			} else {
 				return (
-					<KeyIcon name="key" size={25} color="#22a7f0" />
+					<FeatherIcon name="key" size={25} color="#22a7f0" />
 				);
 			}
 		};
@@ -123,15 +124,15 @@ export default class SignUpScreen extends Component {
 		this.genConfirmPasswordIconJsx = () => {
 			if (this.state.password2.length === 0) {
 				return (
-					<KeyIcon name="key" size={25} color="#ddd" />
+					<FeatherIcon name="key" size={25} color="#ddd" />
 				);
 			} else if (this.state.password2.length > 0 && (this.state.password1 !== this.state.password2)) {
 				return (
-					<KeyIcon name="key" size={25} color="#e74c3c" />
+					<FeatherIcon name="key" size={25} color="#e74c3c" />
 				);
 			} else {
 				return (
-					<KeyIcon name="key" size={25} color="#22a7f0" />
+					<FeatherIcon name="key" size={25} color="#22a7f0" />
 				);
 			}
 		};
@@ -165,6 +166,18 @@ export default class SignUpScreen extends Component {
 			}
 		};
 
+		this.genEmailIconJsx = () => {
+			if (this.state.email.length === 0) {
+				return (
+					<FeatherIcon name="at-sign" size={25} color="#ddd" />
+				);
+			} else {
+				return (
+					<FeatherIcon name="at-sign" size={25} color="#22a7f0" />
+				);
+			}
+		};
+
 		this.checkSignUp = () => {
 			netCon.checkNetCon()
 				.then(success => {
@@ -172,9 +185,12 @@ export default class SignUpScreen extends Component {
 					const {
 						name,
 						username,
+						email,
 						password1,
 						password2,
 					} = this.state;
+
+					const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 					if (name === '') {
 						this.setState({ isLoading: false });
@@ -184,6 +200,11 @@ export default class SignUpScreen extends Component {
 					} else if (username === '') {
 						this.setState({ isLoading: false });
 						Alert.alert('Error', 'Please fill up your username!', [{
+							text: 'okay',
+						}]);
+					} else if (email === '') {
+						this.setState({ isLoading: false });
+						Alert.alert('Error', 'Please fill up your email!', [{
 							text: 'okay',
 						}]);
 					} else if (password1 === '') {
@@ -203,8 +224,13 @@ export default class SignUpScreen extends Component {
 						Alert.alert('Error', 'The passwords did not match!', [{
 							text: 'okay',
 						}]);
-					}
-					else if (this.state.username.includes('.') || this.state.username.includes('/') ||
+					} else if (!email.match(mailFormat)) {
+						this.setState({ isLoading: false });
+						Alert.alert('Error', 'The email you entered is invalid!', [{
+							text: 'okay',
+						}]);
+
+					} else if (this.state.username.includes('.') || this.state.username.includes('/') ||
 						this.state.username.includes('\\') || this.state.username.includes('|') ||
 						this.state.username.includes('~') || this.state.username.includes('`') ||
 						this.state.username.includes('!') || this.state.username.includes('@') ||
@@ -232,7 +258,7 @@ export default class SignUpScreen extends Component {
 							// Generate Hash for the password / ASYNC
 							bcrypt.hash(this.state.password1, salt, (_err, hash) => {
 								console.warn(hash + ' is the hash!');
-								let addPromise = db.addUser(this.state.username, hash, this.state.name);
+								let addPromise = db.addUser(this.state.username,this.state.email, hash, this.state.name);
 								addPromise.then(result => {
 									this.setState({ isLoading: false });
 									console.warn(result);
@@ -240,14 +266,24 @@ export default class SignUpScreen extends Component {
 										'Successful',
 										`${result.username} has been registered!`, [{
 											text: 'OK',
-											onPress: () => props.navigation.navigate('SignIn'),
+											onPress: () =>
+												props.navigation.navigate('ValidateEmail', {
+													email: this.state.email,
+													name: this.state.name,
+													username: this.state.username,
+												}),
 										}]
 									);
 								}, err => {
 									this.setState({ isLoading: false });
-									if (err === 'ER_DUP_ENTRY') {
-										Alert.alert('Oops', `Username ${this.state.username} already exists!`);
-										console.warn(err);
+									if (err.status === 'ER_DUP_ENTRY') {
+										if (JSON.stringify(err.message).includes('email')) {
+											Alert.alert('Oops', `Email ${this.state.email} is used!`);
+											console.warn(err.message);
+										} else {
+											Alert.alert('Oops', `Username ${this.state.username} already exists!`);
+											console.warn(err);
+										}
 									} else {
 										Alert.alert('Error', 'Error message: ' + err);
 										console.warn(err);
@@ -312,6 +348,7 @@ export default class SignUpScreen extends Component {
 				style={styles.indicator} /> : null;
 		let nameIconJsx = this.genNameIconJsx();
 		let usernameIconJsx = this.genUsernameIconJsx();
+		let emailIconJsx = this.genEmailIconJsx();
 		let progressBarJsx = this.genProgressBarJsx();
 		let passwordIconJsx = this.genPasswordIconJsx();
 		let confirmPasswordIconJsx = this.genConfirmPasswordIconJsx();
@@ -331,6 +368,7 @@ export default class SignUpScreen extends Component {
 								<TextInput
 									style={styles.input}
 									placeholder="Name"
+									defaultValue={this.props.navigation.getParam('name')}
 									onChangeText={(name) => this.setState({ name })}
 									returnKeyType="next" />
 								{nameIconJsx}
@@ -339,17 +377,32 @@ export default class SignUpScreen extends Component {
 						<View style={styles.metaWrapper}>
 							<View style={
 								this.usernameLengthErrorTextJsx !== null ||
-								this.usernameCharErrorTextJsx !== null ?
+									this.usernameCharErrorTextJsx !== null ?
 									styles.errorWrapper :
 									styles.usernameWrapper}
 							>
 								<TextInput
 									style={styles.input}
 									placeholder="Username"
+									defaultValue={this.props.navigation.getParam('username')}
 									autoCapitalize="none"
 									onChangeText={(username) => this.setState({ username })}
 									returnKeyType="next" />
 								{usernameIconJsx}
+							</View>
+						</View>
+						<View style={styles.metaWrapper}>
+							<View style={styles.emailWrapper}>
+								<TextInput
+									style={styles.input}
+									placeholder="Email"
+									defaultValue={this.props.navigation.getParam('email')}
+									autoCapitalize="none"
+									autoCompleteType="email"
+									keyboardType="email-address"
+									onChangeText={(email) => this.setState({ email })}
+									returnKeyType="next" />
+								{emailIconJsx}
 							</View>
 						</View>
 						<View style={styles.metaWrapper}>
@@ -430,6 +483,16 @@ const styles = StyleSheet.create({
 		width: '100%',
 	},
 	usernameWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderBottomWidth: 1,
+		borderColor: '#22a7f0',
+		paddingLeft: 20,
+		paddingRight: 20,
+		backgroundColor: 'rgba(255,255,255,0.3)',
+	},
+	emailWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',

@@ -8,6 +8,7 @@ import {StatusBar, Platform} from 'react-native';
 import MainScreen from './MainScreen';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
+import ValidateEmailScreen from './ValidateEmailScreen';
 
 export const SignedOut = createAppContainer(new createStackNavigator(
     {
@@ -21,6 +22,12 @@ export const SignedOut = createAppContainer(new createStackNavigator(
             screen: SignUpScreen,
             navigationOptions: {
                 title: 'Sign Up',
+            },
+        },
+        ValidateEmail: {
+            screen: ValidateEmailScreen,
+            navigationOptions: {
+                title: 'Validate Email',
             },
         },
     },

@@ -2,6 +2,32 @@ import Snackbar from '../util/Snackbar';
 import { onSignIn, onSignOut } from '../auth/auth';
 
 class Database {
+    mailer(email, subject, mail) {
+        return new Promise((resolve, reject) => {
+            const payload = {
+                email,
+                subject,
+                mail,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/mailer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status !== 'OP-NOT-DONE') {
+                        console.warn('Mail sent to ' + email);
+                        resolve(true);
+                    } else {
+                        reject(false);
+                    }
+                })
+                .catch(error => console.warn(error.message));
+        });
+    }
+
     getUser(uuid) {
         return new Promise((resolve, reject) => {
             const payload = {
@@ -32,11 +58,12 @@ class Database {
         });
     }
 
-    addUser(username, password, name) {
+    addUser(username, email, password, name) {
         return new Promise((resolve, reject) => {
             const payload = {
                 username,
                 password,
+                email,
                 name,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
@@ -51,11 +78,43 @@ class Database {
                         resolve({
                             username,
                             password,
+                            email,
                             name,
                             uuid: jsonResponse.uuid,
                         });
                     } else {
-                        reject(jsonResponse.status);
+                        console.warn('SQL rejected alright!');
+                        reject({
+                            status: jsonResponse.status,
+                            message: jsonResponse.message,
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.warn(error.message);
+                    reject(error.message);
+                });
+        });
+    }
+
+    validateUser(username, email) {
+        return new Promise((resolve, reject) => {
+            const payload = {
+                username,
+                email,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status === 'success') {
+                        resolve(true);
+                    } else {
+                        reject(false);
                     }
                 })
                 .catch(error => {
@@ -85,8 +144,15 @@ class Database {
                             password,
                             uuid: jsonResponse.uuid,
                         });
+                    } else if (jsonResponse.status === 'NOT-VALIDATED') {
+                        reject({
+                            status: jsonResponse.status,
+                            email: jsonResponse.email,
+                        });
                     } else {
-                        reject(jsonResponse.status);
+                        reject({
+                            status: jsonResponse.status,
+                        });
                     }
                 })
                 .catch(error => {
