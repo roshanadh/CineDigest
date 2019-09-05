@@ -34,6 +34,7 @@ export default class SignUpScreen extends Component {
 		this.state = {
 			isLoading: false,
 			name: '',
+			email: '',
 			username: '',
 			password1: '',
 			password2: '',
@@ -172,9 +173,12 @@ export default class SignUpScreen extends Component {
 					const {
 						name,
 						username,
+						email,
 						password1,
 						password2,
 					} = this.state;
+
+					const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 					if (name === '') {
 						this.setState({ isLoading: false });
@@ -184,6 +188,11 @@ export default class SignUpScreen extends Component {
 					} else if (username === '') {
 						this.setState({ isLoading: false });
 						Alert.alert('Error', 'Please fill up your username!', [{
+							text: 'okay',
+						}]);
+					} else if (email === '') {
+						this.setState({ isLoading: false });
+						Alert.alert('Error', 'Please fill up your email!', [{
 							text: 'okay',
 						}]);
 					} else if (password1 === '') {
@@ -203,8 +212,13 @@ export default class SignUpScreen extends Component {
 						Alert.alert('Error', 'The passwords did not match!', [{
 							text: 'okay',
 						}]);
-					}
-					else if (this.state.username.includes('.') || this.state.username.includes('/') ||
+					} else if (!email.match(mailformat)) {
+						this.setState({ isLoading: false });
+						Alert.alert('Error', 'The email you entered is invalid!', [{
+							text: 'okay',
+						}]);
+
+					} else if (this.state.username.includes('.') || this.state.username.includes('/') ||
 						this.state.username.includes('\\') || this.state.username.includes('|') ||
 						this.state.username.includes('~') || this.state.username.includes('`') ||
 						this.state.username.includes('!') || this.state.username.includes('@') ||
@@ -337,6 +351,16 @@ export default class SignUpScreen extends Component {
 							</View>
 						</View>
 						<View style={styles.metaWrapper}>
+							<View style={styles.emailWrapper}>
+								<TextInput
+									style={styles.input}
+									placeholder="Email"
+									onChangeText={(email) => this.setState({ email })}
+									returnKeyType="next" />
+								{nameIconJsx}
+							</View>
+						</View>
+						<View style={styles.metaWrapper}>
 							<View style={
 								this.usernameLengthErrorTextJsx !== null ||
 								this.usernameCharErrorTextJsx !== null ?
@@ -430,6 +454,16 @@ const styles = StyleSheet.create({
 		width: '100%',
 	},
 	usernameWrapper: {
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'center',
+		borderBottomWidth: 1,
+		borderColor: '#22a7f0',
+		paddingLeft: 20,
+		paddingRight: 20,
+		backgroundColor: 'rgba(255,255,255,0.3)',
+	},
+	emailWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
