@@ -2,6 +2,32 @@ import Snackbar from '../util/Snackbar';
 import { onSignIn, onSignOut } from '../auth/auth';
 
 class Database {
+    mailer(email, subject, mail) {
+        return new Promise((resolve, reject) => {
+            const payload = {
+                email,
+                subject,
+                mail,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/mailer', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status !== 'OP-NOT-DONE') {
+                        console.warn('Mail sent to ' + email);
+                        resolve(true);
+                    } else {
+                        reject(false);
+                    }
+                })
+                .catch(error => console.warn(error.message));
+        });
+    }
+
     getUser(uuid) {
         return new Promise((resolve, reject) => {
             const payload = {
@@ -62,6 +88,33 @@ class Database {
                             status: jsonResponse.status,
                             message: jsonResponse.message,
                         });
+                    }
+                })
+                .catch(error => {
+                    console.warn(error.message);
+                    reject(error.message);
+                });
+        });
+    }
+
+    validateUser(username, email) {
+        return new Promise((resolve, reject) => {
+            const payload = {
+                username,
+                email,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status === 'success') {
+                        resolve(true);
+                    } else {
+                        reject(false);
                     }
                 })
                 .catch(error => {
