@@ -167,7 +167,7 @@ export default class SignUpScreen extends Component {
 		};
 
 		this.genEmailIconJsx = () => {
-			if (this.state.name.length === 0) {
+			if (this.state.email.length === 0) {
 				return (
 					<FeatherIcon name="at-sign" size={25} color="#ddd" />
 				);
@@ -190,7 +190,7 @@ export default class SignUpScreen extends Component {
 						password2,
 					} = this.state;
 
-					const mailformat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+					const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
 
 					if (name === '') {
 						this.setState({ isLoading: false });
@@ -224,7 +224,7 @@ export default class SignUpScreen extends Component {
 						Alert.alert('Error', 'The passwords did not match!', [{
 							text: 'okay',
 						}]);
-					} else if (!email.match(mailformat)) {
+					} else if (!email.match(mailFormat)) {
 						this.setState({ isLoading: false });
 						Alert.alert('Error', 'The email you entered is invalid!', [{
 							text: 'okay',
