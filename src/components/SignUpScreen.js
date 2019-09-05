@@ -266,7 +266,12 @@ export default class SignUpScreen extends Component {
 										'Successful',
 										`${result.username} has been registered!`, [{
 											text: 'OK',
-											onPress: () => props.navigation.navigate('SignIn'),
+											onPress: () =>
+												props.navigation.navigate('ValidateEmail', {
+													email: this.state.email,
+													name: this.state.name,
+													username: this.state.username,
+												}),
 										}]
 									);
 								}, err => {
@@ -363,6 +368,7 @@ export default class SignUpScreen extends Component {
 								<TextInput
 									style={styles.input}
 									placeholder="Name"
+									defaultValue={this.props.navigation.getParam('name')}
 									onChangeText={(name) => this.setState({ name })}
 									returnKeyType="next" />
 								{nameIconJsx}
@@ -378,6 +384,7 @@ export default class SignUpScreen extends Component {
 								<TextInput
 									style={styles.input}
 									placeholder="Username"
+									defaultValue={this.props.navigation.getParam('username')}
 									autoCapitalize="none"
 									onChangeText={(username) => this.setState({ username })}
 									returnKeyType="next" />
@@ -389,6 +396,7 @@ export default class SignUpScreen extends Component {
 								<TextInput
 									style={styles.input}
 									placeholder="Email"
+									defaultValue={this.props.navigation.getParam('email')}
 									autoCapitalize="none"
 									autoCompleteType="email"
 									keyboardType="email-address"
