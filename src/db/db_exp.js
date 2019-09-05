@@ -32,11 +32,12 @@ class Database {
         });
     }
 
-    addUser(username, password, name) {
+    addUser(username, email, password, name) {
         return new Promise((resolve, reject) => {
             const payload = {
                 username,
                 password,
+                email,
                 name,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
@@ -51,6 +52,7 @@ class Database {
                         resolve({
                             username,
                             password,
+                            email,
                             name,
                             uuid: jsonResponse.uuid,
                         });
