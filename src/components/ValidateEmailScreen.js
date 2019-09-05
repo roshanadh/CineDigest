@@ -12,10 +12,8 @@ import {
     Image,
     StatusBar,
     Dimensions,
-    ProgressBarAndroid,
 } from 'react-native';
 
-import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import CustomSnackbar from '../util/Snackbar';
@@ -35,6 +33,7 @@ export default class SignUpScreen extends Component {
             email: '',
             username: '',
             code: '',
+            userEnteredCode: '',
         };
 
         this.genKeyIconJsx = () => {
@@ -53,7 +52,86 @@ export default class SignUpScreen extends Component {
             const name = this.props.navigation.getParam('name', null);
             const email = this.props.navigation.getParam('email', null);
             const username = this.props.navigation.getParam('username', null);
-            this.setState({ name, email, username });
+            this.setState({ name, email, username }, () => {
+                this.mailCode()
+                    .then(validationCode => {
+                        console.warn(validationCode + ' is the validation code!');
+                    }, error => {
+                        this.setState({ isLoading: false });
+                        console.warn('Some error occurred in mailCode()');
+                    });
+            });
+        };
+
+        this.validateHandler = () => {
+            this.setState({ isLoading: true });
+            const { code, userEnteredCode } = this.state;
+            console.warn(code + ' is the code!');
+            console.warn(userEnteredCode + ' is the entered!');
+            if (code !== userEnteredCode) {
+                this.setState({ isLoading: false });
+                console.warn('Wrong code');
+            } else {
+                this.setState({ isLoading: false });
+                console.warn('Correct code!');
+                db.validateUser(this.state.username, this.state.email)
+                    .then(result => {
+                        console.warn(this.state.username + ' validated!');
+                        this.props.navigation.navigate('SignIn');
+                    }, error => {
+                        console.warn('Could not validate!');
+                    });
+            }
+        };
+
+        this.genCode = () => {
+            let string = Math.random().toString(26).replace('.', '');
+            let ranString = '';
+            if (string.length > 6) {
+                ranString = string.substring(0, 6);
+            } else if (string.length < 6) {
+                switch (string.length) {
+                    case 0:
+                        ranString = 'abc023';
+                        break;
+                    case 1:
+                        ranString = string + '123ab';
+                        break;
+                    case 2:
+                        ranString = string + 'aef4';
+                        break;
+                    case 3:
+                        ranString = string + 'r0w';
+                        break;
+                    case 4:
+                        ranString = string + '1a';
+                        break;
+                    case 5:
+                        ranString = string + '1';
+                        break;
+                    default:
+                        null;
+                }
+            } else {
+                ranString = string;
+            }
+            this.setState({ code: ranString.toUpperCase() });
+            return ranString.toUpperCase();
+        };
+
+        this.mailCode = () => {
+            return new Promise((resolve, reject) => {
+                let ranString = this.genCode();
+                console.warn(ranString);
+                db.mailer(this.state.email, 'Validation Code', 'Your validation code is: ' + ranString)
+                    .then(success => {
+                        console.warn('Mailed successfully!');
+                        resolve(ranString);
+                    }, error => {
+                        console.warn('Mail could not be sent!');
+                        reject(false);
+                    });
+            });
         };
     }
 
@@ -73,28 +151,40 @@ export default class SignUpScreen extends Component {
                     translucent={true}
                     backgroundColor="rgba(255, 255, 255, 1)"
                 />
-                <View style={styles.container}>
-                    <Text>Hello, {this.state.name}!</Text>
-                    <Text>We've just emailed you a validation code at {this.state.email}.</Text>
-                    <Text>To activate your Cine Digest account, you will need to validate your email.</Text>
-                    <View style={styles.metaWrapper}>
-                        <View style={styles.usernameWrapper}>
-                            <TextInput
-                                style={styles.input}
-                                placeholder="Validation Code"
-                                autoCapitalize="none"
-                                onChangeText={(code) => this.setState({ code })}
-                                returnKeyType="done"
-                                onSubmitEditing={this.signUpHandler} />
-                            {keyIconJsx}
+                <ScrollView>
+                    <View style={styles.container}>
+                        <Image source={require('../assets/mainLogoWText.png')}
+                            resizeMode="contain" style={styles.logo} />
+                        <Text style={styles.infoText}>We've just emailed you a validation code at {this.state.email}.</Text>
+                        <Text style={styles.infoText}>Please validate your email using the code you have received.</Text>
+                        <View style={styles.metaWrapper}>
+                            <View style={styles.codeWrapper}>
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Validation Code"
+                                    autoCapitalize="characters"
+                                    onChangeText={(userEnteredCode) => this.setState({ userEnteredCode })}
+                                    returnKeyType="done"
+                                    onSubmitEditing={this.signUpHandler} />
+                                {keyIconJsx}
+                            </View>
                         </View>
+                        <TouchableOpacity style={styles.validateBtn}
+                            onPress={this.validateHandler}>
+                            <Text style={styles.btnText}>Validate</Text>
+                            {indicatorJsx}
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => {
+                            this.props.navigation.navigate('SignUp', {
+                                name: this.state.name,
+                                username: this.state.username,
+                                email: this.state.email,
+                            });
+                        }}>
+                            <Text style={styles.changeEmailText}>Not you? Change your email</Text>
+                        </TouchableOpacity>
                     </View>
-                    <TouchableOpacity style={styles.signupBtn}
-                        onPress={this.signUpHandler}>
-                        <Text style={styles.btnText}>Validate</Text>
-                        {indicatorJsx}
-                    </TouchableOpacity>
-                </View>
+                </ScrollView>
             </ImageBackground>
         );
     }
@@ -120,14 +210,19 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         alignSelf: 'center',
     },
+    infoText: {
+        textAlign: 'center',
+        marginBottom: 20,
+        color: '#6c7a89',
+    },
     metaWrapper: {
         flexDirection: 'column',
         justifyContent: 'flex-start',
         alignItems: 'flex-start',
-        marginBottom: 25,
+        marginTop: 25,
         width: '100%',
     },
-    usernameWrapper: {
+    codeWrapper: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
@@ -136,84 +231,19 @@ const styles = StyleSheet.create({
         paddingLeft: 20,
         paddingRight: 20,
         backgroundColor: 'rgba(255,255,255,0.3)',
-    },
-    emailWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: '#22a7f0',
-        paddingLeft: 20,
-        paddingRight: 20,
-        backgroundColor: 'rgba(255,255,255,0.3)',
-    },
-    progressBar: {
-        width: '100%',
-        height: 1,
-    },
-    horizontalRule: {
-        borderBottomWidth: 1,
-        width: '100%',
-        borderColor: '#22a7f0',
-    },
-    errorWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: '#e74c3c',
-        paddingLeft: 20,
-        paddingRight: 20,
-        backgroundColor: 'rgba(255,255,255,0.3)',
-    },
-    errorText: {
-        color: '#e74c3c',
-        fontSize: 14,
-        alignSelf: 'center',
-        textAlign: 'center',
-        marginBottom: 10,
-    },
-    passwordWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderBottomWidth: 1,
-        borderColor: '#22a7f0',
-        paddingLeft: 20,
-        paddingRight: 20,
-        backgroundColor: 'rgba(255,255,255,0.3)',
-    },
-    noBorderPasswordWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        paddingLeft: 20,
-        paddingRight: 20,
-        backgroundColor: 'rgba(255,255,255,0.3)',
-    },
-    passwordErrorWrapper: {
-        flexDirection: 'row',
-        justifyContent: 'center',
-        alignItems: 'center',
-        borderWidth: 0.2,
-        borderColor: 'red',
-        borderRadius: 5,
-        paddingLeft: 20,
-        paddingRight: 20,
-        marginBottom: 40,
     },
     input: {
         marginRight: 10,
         flex: 5,
         minHeight: '6%',
     },
-    signupBtn: {
+    validateBtn: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
         alignSelf: 'center',
         borderRadius: 50,
-        marginTop: 20,
+        marginTop: 30,
         padding: 15,
         minHeight: btnHeight,
         width: btnWidth,
@@ -233,5 +263,9 @@ const styles = StyleSheet.create({
         marginBottom: 5,
         textAlign: 'center',
         color: '#336e7b',
+    },
+    changeEmailText: {
+        margin: 30,
+        color: '#22a7f0',
     },
 });
