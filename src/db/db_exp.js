@@ -144,8 +144,15 @@ class Database {
                             password,
                             uuid: jsonResponse.uuid,
                         });
+                    } else if (jsonResponse.status === 'NOT-VALIDATED') {
+                        reject({
+                            status: jsonResponse.status,
+                            email: jsonResponse.email,
+                        });
                     } else {
-                        reject(jsonResponse.status);
+                        reject({
+                            status: jsonResponse.status,
+                        });
                     }
                 })
                 .catch(error => {
