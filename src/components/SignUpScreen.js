@@ -18,7 +18,7 @@ import {
 import bcrypt from 'react-native-bcrypt';
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import KeyIcon from 'react-native-vector-icons/Feather';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
@@ -104,19 +104,19 @@ export default class SignUpScreen extends Component {
 		this.genPasswordIconJsx = () => {
 			if (this.state.password1.length === 0) {
 				return (
-					<KeyIcon name="key" size={25} color="#ddd" />
+					<FeatherIcon name="key" size={25} color="#ddd" />
 				);
 			} else if (this.state.password1.length > 0 && this.state.password1.length < 6) {
 				return (
-					<KeyIcon name="key" size={25} color="#e74c3c" />
+					<FeatherIcon name="key" size={25} color="#e74c3c" />
 				);
 			} else if (this.state.password1.length >= 6 && this.state.password1.length < 8) {
 				return (
-					<KeyIcon name="key" size={25} color="#f4b350" />
+					<FeatherIcon name="key" size={25} color="#f4b350" />
 				);
 			} else {
 				return (
-					<KeyIcon name="key" size={25} color="#22a7f0" />
+					<FeatherIcon name="key" size={25} color="#22a7f0" />
 				);
 			}
 		};
@@ -124,15 +124,15 @@ export default class SignUpScreen extends Component {
 		this.genConfirmPasswordIconJsx = () => {
 			if (this.state.password2.length === 0) {
 				return (
-					<KeyIcon name="key" size={25} color="#ddd" />
+					<FeatherIcon name="key" size={25} color="#ddd" />
 				);
 			} else if (this.state.password2.length > 0 && (this.state.password1 !== this.state.password2)) {
 				return (
-					<KeyIcon name="key" size={25} color="#e74c3c" />
+					<FeatherIcon name="key" size={25} color="#e74c3c" />
 				);
 			} else {
 				return (
-					<KeyIcon name="key" size={25} color="#22a7f0" />
+					<FeatherIcon name="key" size={25} color="#22a7f0" />
 				);
 			}
 		};
@@ -162,6 +162,18 @@ export default class SignUpScreen extends Component {
 			} else {
 				return (
 					<TextIcon name="format-text" size={25} color="#22a7f0" />
+				);
+			}
+		};
+
+		this.genEmailIconJsx = () => {
+			if (this.state.name.length === 0) {
+				return (
+					<FeatherIcon name="at-sign" size={25} color="#ddd" />
+				);
+			} else {
+				return (
+					<FeatherIcon name="at-sign" size={25} color="#22a7f0" />
 				);
 			}
 		};
@@ -246,7 +258,7 @@ export default class SignUpScreen extends Component {
 							// Generate Hash for the password / ASYNC
 							bcrypt.hash(this.state.password1, salt, (_err, hash) => {
 								console.warn(hash + ' is the hash!');
-								let addPromise = db.addUser(this.state.username, hash, this.state.name);
+								let addPromise = db.addUser(this.state.username,this.state.email, hash, this.state.name);
 								addPromise.then(result => {
 									this.setState({ isLoading: false });
 									console.warn(result);
@@ -259,9 +271,14 @@ export default class SignUpScreen extends Component {
 									);
 								}, err => {
 									this.setState({ isLoading: false });
-									if (err === 'ER_DUP_ENTRY') {
-										Alert.alert('Oops', `Username ${this.state.username} already exists!`);
-										console.warn(err);
+									if (err.status === 'ER_DUP_ENTRY') {
+										if (JSON.stringify(err.message).includes('email')) {
+											Alert.alert('Oops', `Email ${this.state.email} is used!`);
+											console.warn(err.message);
+										} else {
+											Alert.alert('Oops', `Username ${this.state.username} already exists!`);
+											console.warn(err);
+										}
 									} else {
 										Alert.alert('Error', 'Error message: ' + err);
 										console.warn(err);
@@ -326,6 +343,7 @@ export default class SignUpScreen extends Component {
 				style={styles.indicator} /> : null;
 		let nameIconJsx = this.genNameIconJsx();
 		let usernameIconJsx = this.genUsernameIconJsx();
+		let emailIconJsx = this.genEmailIconJsx();
 		let progressBarJsx = this.genProgressBarJsx();
 		let passwordIconJsx = this.genPasswordIconJsx();
 		let confirmPasswordIconJsx = this.genConfirmPasswordIconJsx();
@@ -351,19 +369,9 @@ export default class SignUpScreen extends Component {
 							</View>
 						</View>
 						<View style={styles.metaWrapper}>
-							<View style={styles.emailWrapper}>
-								<TextInput
-									style={styles.input}
-									placeholder="Email"
-									onChangeText={(email) => this.setState({ email })}
-									returnKeyType="next" />
-								{nameIconJsx}
-							</View>
-						</View>
-						<View style={styles.metaWrapper}>
 							<View style={
 								this.usernameLengthErrorTextJsx !== null ||
-								this.usernameCharErrorTextJsx !== null ?
+									this.usernameCharErrorTextJsx !== null ?
 									styles.errorWrapper :
 									styles.usernameWrapper}
 							>
@@ -374,6 +382,19 @@ export default class SignUpScreen extends Component {
 									onChangeText={(username) => this.setState({ username })}
 									returnKeyType="next" />
 								{usernameIconJsx}
+							</View>
+						</View>
+						<View style={styles.metaWrapper}>
+							<View style={styles.emailWrapper}>
+								<TextInput
+									style={styles.input}
+									placeholder="Email"
+									autoCapitalize="none"
+									autoCompleteType="email"
+									keyboardType="email-address"
+									onChangeText={(email) => this.setState({ email })}
+									returnKeyType="next" />
+								{emailIconJsx}
 							</View>
 						</View>
 						<View style={styles.metaWrapper}>

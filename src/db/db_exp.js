@@ -57,7 +57,11 @@ class Database {
                             uuid: jsonResponse.uuid,
                         });
                     } else {
-                        reject(jsonResponse.status);
+                        console.warn('SQL rejected alright!');
+                        reject({
+                            status: jsonResponse.status,
+                            message: jsonResponse.message,
+                        });
                     }
                 })
                 .catch(error => {
