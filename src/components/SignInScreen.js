@@ -55,10 +55,17 @@ class SignInScreen extends Component {
 								.catch(error => console.warn(error.message));
 						}, error => {
 							this.setState({ isLoading: false });
-							if (error === 'PASSWORD-MISMATCH') {
+							if (error.status === 'PASSWORD-MISMATCH') {
 								CustomSnackbar.showSnackBar(`Incorrect password for '${this.state.username}'!`, 'long', '#e74c3c', 'OK');
-							} else if (error === 'USERNAME-NOT-FOUND') {
+							} else if (error.status === 'USERNAME-NOT-FOUND') {
 								CustomSnackbar.showSnackBar(`'${this.state.username}' is not a registered user!`, 'long', '#e74c3c', 'OK');
+							} else if (error.status === 'NOT-VALIDATED') {
+								CustomSnackbar.showSnackBar(`'${this.state.username}' is has not been validated!`, 'long', '#e74c3c', 'OK');
+								this.props.navigation.navigate('ValidateEmail', {
+									email: error.email,
+									name: this.state.name,
+									username: this.state.username,
+								});
 							} else {
 								CustomSnackbar.showSnackBar('Server is currently down for maintenance!', 'always', '#e74c3c', 'OK');
 							}
