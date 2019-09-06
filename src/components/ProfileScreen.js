@@ -153,7 +153,11 @@ export default class ProfileScreen extends Component {
                                         this.setState({ isLoading: false });
                                         console.warn(error.message);
                                         if (error.status === 'ER_DUP_ENTRY') {
-                                            CustomSnackbar.showSnackBar('The email is already registered!', 'long', '#e74c3c', 'OK');
+                                            if (error.message.includes('email')) {
+                                                CustomSnackbar.showSnackBar('The email is already in use!', 'long', '#e74c3c', 'OK');
+                                            } else {
+                                                CustomSnackbar.showSnackBar('The username is already in use!', 'long', '#e74c3c', 'OK');
+                                            }
                                         } else {
                                             CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
                                         }
@@ -176,7 +180,11 @@ export default class ProfileScreen extends Component {
                                 }, error => {
                                         this.setState({ isLoading: false });
                                         console.warn(error.message);
-                                        CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        if (error.status === 'ER_DUP_ENTRY') {
+                                            CustomSnackbar.showSnackBar('The username is already in use!', 'long', '#e74c3c', 'OK');
+                                        } else {
+                                            CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        }
                                 });
                         }
                     } else {
@@ -242,7 +250,11 @@ export default class ProfileScreen extends Component {
                                         this.setState({ isLoading: false });
                                         console.warn(error.message);
                                         if (error.status === 'ER_DUP_ENTRY') {
-                                            CustomSnackbar.showSnackBar('The email is already registered!', 'long', '#e74c3c', 'OK');
+                                            if (error.message.includes('email')) {
+                                                CustomSnackbar.showSnackBar('The email is already in use!', 'long', '#e74c3c', 'OK');
+                                            } else {
+                                                CustomSnackbar.showSnackBar('The username is already in use!', 'long', '#e74c3c', 'OK');
+                                            }
                                         } else {
                                             CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
                                         }
@@ -256,7 +268,11 @@ export default class ProfileScreen extends Component {
                                 }, error => {
                                         this.setState({ isLoading: false });
                                         console.warn(error.message);
-                                        CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        if (error.status === 'ER_DUP_ENTRY') {
+                                            CustomSnackbar.showSnackBar('The username is already in use!', 'long', '#e74c3c', 'OK');
+                                        } else {
+                                            CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        }
                                 });
                         }
                     } else {
