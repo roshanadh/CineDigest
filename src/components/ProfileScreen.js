@@ -13,8 +13,10 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-community/async-storage';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-import EditIcon from 'react-native-vector-icons/Feather';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+
+import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp';
 
 export default class ProfileScreen extends Component {
@@ -30,10 +32,13 @@ export default class ProfileScreen extends Component {
             username: '',
             email: '',
             uuid: '',
+            validatedStatus: true,
             stats: {},
             newName: '',
             newUsername: '',
             newEmail: '',
+            code: '',
+            userEnteredCode: '',
         };
 
         this.getUserId = () => {
@@ -75,45 +80,31 @@ export default class ProfileScreen extends Component {
             if (this.state.isNameEditable && newName === '') {
                 // Name field is editable but name has not been changed
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'Please change your screen name for updating!', [{
-                    text: 'okay',
-                }]);
+                CustomSnackbar.showSnackBar('You haven\'t changed your name!', 'long', '#e74c3c', 'OK');
             } else if (this.state.isNameEditable && newName === name) {
                 // Name field is editable but name has not been changed
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'Please change your screen name for updating!', [{
-                    text: 'okay',
-                }]);
+                CustomSnackbar.showSnackBar('You haven\'t changed your name!', 'long', '#e74c3c', 'OK');
             } else if (this.state.isUsernameEditable && newUsername === '') {
                 // Username field is editable but username has not been changed
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'Please change your username for updating!', [{
-                    text: 'okay',
-                }]);
+                CustomSnackbar.showSnackBar('You haven\'t changed your username!', 'long', '#e74c3c', 'OK');
             } else if (this.state.isUsernameEditable && username === newUsername) {
                 // Username is same as before
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'Please change your username for updating!', [{
-                    text: 'okay',
-                }]);
+                CustomSnackbar.showSnackBar('You haven\'t changed your username!', 'long', '#e74c3c', 'OK');
             } else if (this.state.isEmailEditable && newEmail === '') {
                 // Email field is editable but email has not been changed
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'Please change your email for updating!', [{
-                    text: 'okay',
-                }]);
+                CustomSnackbar.showSnackBar('You haven\'t changed your email!', 'long', '#e74c3c', 'OK');
             } else if (this.state.isEmailEditable && email === newEmail) {
                 // Email is same as before
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'Please change your email for updating!', [{
-                    text: 'okay',
-                }]);
+                CustomSnackbar.showSnackBar('You haven\'t changed your email!', 'long', '#e74c3c', 'OK');
             } else if (this.state.isEmailEditable && !newEmail.match(mailFormat)) {
                 // Email format is incorrect
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'The email you entered is invalid!', [{
-                    text: 'okay',
-                }]);
+                CustomSnackbar.showSnackBar('The entered email is invalid!', 'long', '#e74c3c', 'OK');
             } else if (!!this.state.isUsernameEditable && (this.state.newUsername.includes('.') || this.state.newUsername.includes('/') ||
                 this.state.newUsername.includes('\\') || this.state.newUsername.includes('|') ||
                 this.state.newUsername.includes('~') || this.state.newUsername.includes('`') ||
@@ -133,79 +124,97 @@ export default class ProfileScreen extends Component {
                 this.state.newUsername.length < 6)) {
 
                 this.setState({ isLoading: false });
-                Alert.alert('Error', 'Some fields may have errors!', [{
-                    text: 'okay',
-                }]);
+                CustomSnackbar.showSnackBar('Some fields may have error!', 'long', '#e74c3c', 'OK');
             } else {
                 if (this.state.isNameEditable) {
                     // Name field is editable
                     if (this.state.isUsernameEditable) {
                         // Username field is editable
                         if (this.state.isEmailEditable) {
-                        // Email field is editable
+                            // Email field is editable
+                            this.setState({ validatedStatus: false });
                             db.updateProfile(username, uuid, newName, newUsername, newEmail)
                                 .then(result => {
-                                    this.setState({ isLoading: false });
+                                    this.setState({ isLoading: false }, () => {
+                                        this.mailCode()
+                                            .then(validationCode => {
+                                                console.warn(validationCode + ' is the validation code!');
+                                                CustomSnackbar.showSnackBar('Validation code has been mailed!', 'short', '#3fc380', null);
+                                            }, error => {
+                                                this.setState({ isLoading: false });
+                                                console.warn('Some error occurred in mailCode()');
+                                            });
+                                    });
                                     Alert.alert('Success', 'Your profile has been updated!', [{
                                         text: 'okay',
                                         onPress: () => this.setState({ name: newName, username: newUsername, email: newEmail }, this._onRefresh()),
                                     }]);
                                 }, error => {
-                                    this.setState({ isLoading: false });
-                                    console.warn(error.message);
-                                    Alert.alert('Error', 'Please try again!', [{
-                                        text: 'okay',
-                                    }]);
+                                        this.setState({ isLoading: false });
+                                        console.warn(error.message);
+                                        if (error.status === 'ER_DUP_ENTRY') {
+                                            CustomSnackbar.showSnackBar('The email is already registered!', 'long', '#e74c3c', 'OK');
+                                        } else {
+                                            CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        }
                                 });
                         } else {
                             // Only Name and Username fields are editable
                             db.updateProfile(username, uuid, newName, newUsername, null)
                                 .then(result => {
-                                    this.setState({ isLoading: false });
-                                    Alert.alert('Success', 'Your profile has been updated!', [{
-                                        text: 'okay',
-                                        onPress: () => this.setState({ name: newName, username: newUsername }, this._onRefresh()),
-                                    }]);
+                                    this.setState({ isLoading: false }, () => {
+                                        this.mailCode()
+                                            .then(validationCode => {
+                                                console.warn(validationCode + ' is the validation code!');
+                                                CustomSnackbar.showSnackBar('Validation code has been mailed!', 'short', '#3fc380', null);
+                                            }, error => {
+                                                this.setState({ isLoading: false });
+                                                console.warn('Some error occurred in mailCode()');
+                                            });
+                                    });
+                                    CustomSnackbar.showSnackBar('Your profile has been updated!', 'long', '#3fc380', null);
                                 }, error => {
-                                    this.setState({ isLoading: false });
-                                    console.warn(error.message);
-                                    Alert.alert('Error', 'Please try again!', [{
-                                        text: 'okay',
-                                    }]);
+                                        this.setState({ isLoading: false });
+                                        console.warn(error.message);
+                                        CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
                                 });
                         }
                     } else {
                         if (this.state.isEmailEditable) {
-                        // Name and Email fields are editable
+                            // Name and Email fields are editable
+                            this.setState({ validatedStatus: false });
                             db.updateProfile(username, uuid, newName, null, newEmail)
                                 .then(result => {
-                                    this.setState({ isLoading: false });
-                                    Alert.alert('Success', 'Your profile has been updated!', [{
-                                        text: 'okay',
-                                        onPress: () => this.setState({ name: newName, email: newEmail }, this._onRefresh()),
-                                    }]);
+                                    this.setState({ isLoading: false }, () => {
+                                        this.mailCode()
+                                            .then(validationCode => {
+                                                console.warn(validationCode + ' is the validation code!');
+                                                CustomSnackbar.showSnackBar('Validation code has been mailed!', 'short', '#3fc380', null);
+                                            }, error => {
+                                                this.setState({ isLoading: false });
+                                                console.warn('Some error occurred in mailCode()');
+                                            });
+                                    });
+                                    CustomSnackbar.showSnackBar('Your profile has been updated!', 'long', '#3fc380', null);
                                 }, error => {
-                                    this.setState({ isLoading: false });
-                                    console.warn(error.message);
-                                    Alert.alert('Error', 'Please try again!', [{
-                                        text: 'okay',
-                                    }]);
+                                        this.setState({ isLoading: false });
+                                        console.warn(error.message);
+                                        if (error.status === 'ER_DUP_ENTRY') {
+                                            CustomSnackbar.showSnackBar('The email is already registered!', 'long', '#e74c3c', 'OK');
+                                        } else {
+                                            CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        }
                                 });
                         } else {
                             // Only Name field is editable
                             db.updateProfile(username, uuid, newName, null, null)
                                 .then(result => {
                                     this.setState({ isLoading: false });
-                                    Alert.alert('Success', 'Your profile has been updated!', [{
-                                        text: 'okay',
-                                        onPress: () => this.setState({ name: newName }, this._onRefresh()),
-                                    }]);
+                                    CustomSnackbar.showSnackBar('Your profile has been updated!', 'long', '#3fc380', null);
                                 }, error => {
-                                    this.setState({ isLoading: false });
-                                    console.warn(error.message);
-                                    Alert.alert('Error', 'Please try again!', [{
-                                        text: 'okay',
-                                    }]);
+                                        this.setState({ isLoading: false });
+                                        console.warn(error.message);
+                                        CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
                                 });
                         }
                     }
@@ -215,128 +224,77 @@ export default class ProfileScreen extends Component {
                         // Username field is editable
                         if (this.state.isEmailEditable) {
                             // Username and Email fields are editable
+                            this.setState({ validatedStatus: false });
                             db.updateProfile(username, uuid, null, newUsername, newEmail)
                                 .then(result => {
-                                    this.setState({ isLoading: false });
-                                    Alert.alert('Success', 'Your profile has been updated!', [{
-                                        text: 'okay',
-                                        onPress: () => this.setState({ username: newUsername, email: newEmail }, this._onRefresh()),
-                                    }]);
+                                    this.setState({ isLoading: false }, () => {
+                                        this.mailCode()
+                                            .then(validationCode => {
+                                                console.warn(validationCode + ' is the validation code!');
+                                                CustomSnackbar.showSnackBar('Validation code has been mailed!', 'short', '#3fc380', null);
+                                            }, error => {
+                                                this.setState({ isLoading: false });
+                                                console.warn('Some error occurred in mailCode()');
+                                            });
+                                    });
+                                    CustomSnackbar.showSnackBar('Your profile has been updated!', 'long', '#3fc380', null);
                                 }, error => {
-                                    this.setState({ isLoading: false });
-                                    console.warn(error.message);
-                                    Alert.alert('Error', 'Please try again!', [{
-                                        text: 'okay',
-                                    }]);
+                                        this.setState({ isLoading: false });
+                                        console.warn(error.message);
+                                        if (error.status === 'ER_DUP_ENTRY') {
+                                            CustomSnackbar.showSnackBar('The email is already registered!', 'long', '#e74c3c', 'OK');
+                                        } else {
+                                            CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        }
                                 });
                         } else {
                             // Only username field is editable
                             db.updateProfile(username, uuid, null, newUsername, null)
                                 .then(result => {
                                     this.setState({ isLoading: false });
-                                    Alert.alert('Success', 'Your profile has been updated!', [{
-                                        text: 'okay',
-                                        onPress: () => this.setState({ username: newUsername }, this._onRefresh()),
-                                    }]);
+                                    CustomSnackbar.showSnackBar('Your profile has been updated!', 'long', '#3fc380', null);
                                 }, error => {
-                                    this.setState({ isLoading: false });
-                                    console.warn(error.message);
-                                    Alert.alert('Error', 'Please try again!', [{
-                                        text: 'okay',
-                                    }]);
+                                        this.setState({ isLoading: false });
+                                        console.warn(error.message);
+                                        CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
                                 });
                         }
                     } else {
                         // Username field is not editable
                         if (this.state.isEmailEditable) {
                             // Only Email field is editable
+                            this.setState({ validatedStatus: false });
                             db.updateProfile(username, uuid, null, null, newEmail)
                                 .then(result => {
-                                    this.setState({ isLoading: false });
-                                    Alert.alert('Success', 'Your profile has been updated!', [{
-                                        text: 'okay',
-                                        onPress: () => this.setState({ email: newEmail }, this._onRefresh()),
-                                    }]);
+                                    this.setState({ isLoading: false }, () => {
+                                        this.mailCode()
+                                            .then(validationCode => {
+                                                console.warn(validationCode + ' is the validation code!');
+                                                CustomSnackbar.showSnackBar('Validation code has been mailed!', 'short', '#3fc380', null);
+                                            }, error => {
+                                                this.setState({ isLoading: false });
+                                                console.warn('Some error occurred in mailCode()');
+                                            });
+                                    });
+                                    CustomSnackbar.showSnackBar('Your profile has been updated!', 'long', '#3fc380', null);
                                 }, error => {
-                                    this.setState({ isLoading: false });
-                                    console.warn(error.message);
-                                    Alert.alert('Error', 'Please try again!', [{
-                                        text: 'okay',
-                                    }]);
+                                        this.setState({ isLoading: false });
+                                        console.warn(error.message);
+                                        if (error.status === 'ER_DUP_ENTRY') {
+                                            CustomSnackbar.showSnackBar('The email is already registered!', 'long', '#e74c3c', 'OK');
+                                        } else {
+                                            CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        }
                                 });
                         } else {
                             // None of the fields are editable
                             this.setState({ isLoading: false });
-                            Alert.alert('Oops', 'Please tap on the edit icon to edit a field!', [{
-                                text: 'okay',
-                            }]);
+                            CustomSnackbar.showSnackBar('Please tap on an edit icon to edit a field!', 'long', '#f9690e', 'OK');
                         }
                     }
                 }
                 console.warn('Your new details: ' + this.state.name + this.state.username);
             }
-            //     if (this.state.isNameEditable) {
-            //         // Name field is editable
-            //         if (this.state.isUsernameEditable) {
-            //             // Username field is editable
-            //             db.updateProfile(username, uuid, newName, newUsername)
-            //                 .then(result => {
-            //                     this.setState({ isLoading: false });
-            //                     Alert.alert('Success', 'Your profile has been updated!', [{
-            //                         text: 'okay',
-            //                         onPress: () => this.setState({name: newName, username: newUsername}, this._onRefresh()),
-            //                     }]);
-            //                 }, error => {
-            //                     this.setState({ isLoading: false });
-            //                     console.warn(error.message);
-            //                     Alert.alert('Error', 'Please try again!', [{
-            //                         text: 'okay',
-            //                     }]);
-            //                 });
-            //         } else {
-            //             // Only Name field is editable
-            //             db.updateProfile(username, uuid, newName, null)
-            //                 .then(result => {
-            //                     this.setState({ isLoading: false });
-            //                     Alert.alert('Success', 'Your profile has been updated!', [{
-            //                         text: 'okay',
-            //                         onPress: () => this.setState({ name: newName }, this._onRefresh()),
-            //                     }]);
-            //                 }, error => {
-            //                     this.setState({ isLoading: false });
-            //                     console.warn(error.message);
-            //                     Alert.alert('Error', 'Please try again!', [{
-            //                         text: 'okay',
-            //                     }]);
-            //                 });
-            //         }
-            //     } else {
-            //         // Name field is not editable
-            //         if (this.state.isUsernameEditable) {
-            //             // Only username field is editable
-            //             db.updateProfile(username, uuid, null, newUsername)
-            //                 .then(result => {
-            //                     this.setState({ isLoading: false });
-            //                     Alert.alert('Success', 'Your profile has been updated!', [{
-            //                         text: 'okay',
-            //                         onPress: () => this.setState({ username: newUsername }, this._onRefresh()),
-            //                     }]);
-            //                 }, error => {
-            //                     this.setState({ isLoading: false });
-            //                     console.warn(error.message);
-            //                     Alert.alert('Error', 'Please try again!', [{
-            //                         text: 'okay',
-            //                     }]);
-            //                 });
-            //         } else {
-            //             this.setState({ isLoading: false });
-            //             Alert.alert('Oops', 'Please tap on the edit icon to edit a field!', [{
-            //                 text: 'okay',
-            //             }]);
-            //         }
-            //     }
-            //     console.warn('Your new details: ' + this.state.name + this.state.username);
-            // }
         };
 
         this.didBlurSubscription = this.props.navigation.addListener(
@@ -345,6 +303,90 @@ export default class ProfileScreen extends Component {
                 this.setState({ isNameEditable: false, isUsernameEditable: false, isEmailEditable: false });
             }
         );
+
+        this.validateHandler = () => {
+            this.setState({ isLoading: true });
+            const { code, userEnteredCode } = this.state;
+            console.warn(code + ' is the code!');
+            console.warn(userEnteredCode + ' is the entered!');
+            if (code !== userEnteredCode) {
+                this.setState({ isLoading: false });
+                CustomSnackbar.showSnackBar('The validation code is incorrect!', 'long', '#f9690e', 'OK');
+                console.warn('Wrong code');
+            } else {
+                this.setState({ isLoading: false });
+                console.warn('Correct code!');
+                db.validateUser(this.state.username, this.state.email)
+                    .then(result => {
+                        console.warn(this.state.username + ' validated!');
+                        CustomSnackbar.showSnackBar('Your email has been validated!', 'long', '#3fc380', null);
+                        this.setState({ validatedStatus: true });
+                    }, error => {
+                        console.warn('Could not validate!');
+                    });
+            }
+        };
+
+        this.resendCode = () => {
+            this.mailCode()
+                .then(validationCode => {
+                    console.warn(validationCode + ' is the validation code!');
+                    CustomSnackbar.showSnackBar('Validation code has been resent!', 'short', '#3fc380', null);
+                }, error => {
+                    this.setState({ isLoading: false });
+                    console.warn('Some error occurred in mailCode()');
+                });
+        };
+
+        this.genCode = () => {
+            let string = Math.random().toString(26).replace('.', '');
+            let ranString = '';
+            if (string.length > 6) {
+                ranString = string.substring(0, 6);
+            } else if (string.length < 6) {
+                switch (string.length) {
+                    case 0:
+                        ranString = 'abc023';
+                        break;
+                    case 1:
+                        ranString = string + '123ab';
+                        break;
+                    case 2:
+                        ranString = string + 'aef4';
+                        break;
+                    case 3:
+                        ranString = string + 'r0w';
+                        break;
+                    case 4:
+                        ranString = string + '1a';
+                        break;
+                    case 5:
+                        ranString = string + '1';
+                        break;
+                    default:
+                        null;
+                }
+            } else {
+                ranString = string;
+            }
+            this.setState({ code: ranString.toUpperCase() });
+            return ranString.toUpperCase();
+        };
+
+        this.mailCode = () => {
+            return new Promise((resolve, reject) => {
+                let ranString = this.genCode();
+                console.warn(ranString);
+                db.mailer(this.state.newEmail.trim() !== '' ? this.state.newEmail : this.state.email, 'Validation Code', 'Your validation code is: ' + ranString)
+                    .then(success => {
+                        console.warn('Mailed successfully!');
+                        resolve(ranString);
+                    }, error => {
+                        console.warn('Mail could not be sent!');
+                        reject(false);
+                    });
+            });
+        };
     }
 
     componentDidMount() {
@@ -352,9 +394,10 @@ export default class ProfileScreen extends Component {
             .then(result => {
                 db.getUser(result.uuid)
                     .then(details => {
+                        console.warn(details);
                         this.setState({
-                            username: details.username, email: details.email, uuid: result.uuid, name: details.name,
-                        });
+                            username: details.username, email: details.email, uuid: result.uuid, name: details.name, validatedStatus: details.validatedStatus,
+                        }, () => console.warn('The username is ' + this.state.username + ' validated status is: ' + this.state.validatedStatus));
                     }, error => {
                         console.warn('User by the username ' + result + ' was not found!');
                     })
@@ -397,6 +440,10 @@ export default class ProfileScreen extends Component {
     }
 
     render() {
+        let keyIconJsx = this.state.code.length > 0 ?
+            <FeatherIcon name="key" size={25} color="#ddd" /> :
+            <FeatherIcon name="key" size={25} color="#963694" />;
+
         let indicatorJsx = this.state.isLoading ?
             <ActivityIndicator size="small" color="#fefefe"
                 style={styles.indicator} /> : null;
@@ -425,43 +472,71 @@ export default class ProfileScreen extends Component {
                 <Text style={styles.errorText}>Username must not contain any special characters</Text> : null;
 
         let statJsx =
-            this.state.stats.listedMovies + this.state.stats.listedShows +
-            this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows +
-            this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows +
-            this.state.stats.listedInWatchingShows > 0 ?
-                <View style={styles.statsContainer}>
-                    <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
-                    {
-                        (this.state.stats.listedMovies + this.state.stats.listedShows) > 0 ?
-                            <Text style={styles.statWrapper}>
-                                <Text style={styles.statNumber}>{this.state.stats.listedMovies + this.state.stats.listedShows}</Text>{'\t'} titles listed!
+            this.state.validatedStatus ? (
+                // Display stats for user
+                this.state.stats.listedMovies + this.state.stats.listedShows +
+                this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows +
+                this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows +
+                this.state.stats.listedInWatchingShows > 0 ?
+                    <View style={styles.statsContainer}>
+                        <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
+                        {
+                            (this.state.stats.listedMovies + this.state.stats.listedShows) > 0 ?
+                                <Text style={styles.statWrapper}>
+                                    <Text style={styles.statNumber}>{this.state.stats.listedMovies + this.state.stats.listedShows}</Text>{'\t'} titles listed!
                             </Text> : null
-                    }
-                    <Text>
-                        {
-                            (this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows) > 0 ?
-                                <Text style={styles.statWrapper}>
-                                    <Text style={styles.statNumber}>{this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows}</Text>{'\t'} titles in your wish list!
-                                </Text> : null
                         }
-                    </Text>
-                    <Text>
-                        {
-                            (this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows) > 0 ?
-                                <Text style={styles.statWrapper}>
-                                    <Text style={styles.statNumber}>{this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows}</Text>{'\t'} titles in your watched list!
+                        <Text>
+                            {
+                                (this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows) > 0 ?
+                                    <Text style={styles.statWrapper}>
+                                        <Text style={styles.statNumber}>{this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows}</Text>{'\t'} titles in your wish list!
                                 </Text> : null
-                        }
-                    </Text>
-                    <Text>
-                        {
-                            this.state.stats.listedInWatchingShows > 0 ?
-                                <Text style={styles.statWrapper}>
-                                    <Text style={styles.statNumber}>{this.state.stats.listedInWatchingShows}</Text>{'\t'} titles in your watching list!
+                            }
+                        </Text>
+                        <Text>
+                            {
+                                (this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows) > 0 ?
+                                    <Text style={styles.statWrapper}>
+                                        <Text style={styles.statNumber}>{this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows}</Text>{'\t'} titles in your watched list!
                                 </Text> : null
-                        }
-                    </Text>
-                </View> : null;
+                            }
+                        </Text>
+                        <Text>
+                            {
+                                this.state.stats.listedInWatchingShows > 0 ?
+                                    <Text style={styles.statWrapper}>
+                                        <Text style={styles.statNumber}>{this.state.stats.listedInWatchingShows}</Text>{'\t'} titles in your watching list!
+                                </Text> : null
+                            }
+                        </Text>
+                    </View> : null
+            ) : (
+                // Display email validation form
+                    <View style={styles.statsContainer}>
+                        <Text style={styles.infoText}>We've just emailed you a validation code at {this.state.email}.</Text>
+                        <Text style={styles.infoText}>Please validate your email using the code you have received.</Text>
+                        <View style={styles.textInputActiveWrapper}>
+                            <TextInput
+                                style={styles.textInput}
+                                placeholder="Validation Code"
+                                autoCapitalize="characters"
+                                onChangeText={(userEnteredCode) => this.setState({ userEnteredCode })}
+                                returnKeyType="done"
+                                onSubmitEditing={this.signUpHandler} />
+                            {keyIconJsx}
+                        </View>
+                        <TouchableOpacity style={styles.saveProfileBtn}
+                            onPress={this.validateHandler}>
+                            <Text style={styles.btnText}>Validate</Text>
+                            {indicatorJsx}
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.resend} onPress={this.resendCode}>
+                            <Text style={styles.resendText}>Resend Code</Text>
+                        </TouchableOpacity>
+                    </View>
+            )
+            
 
         return (
             <ImageBackground blurRadius={1.3}
@@ -489,7 +564,7 @@ export default class ProfileScreen extends Component {
                                     autoCapitalize="none"
                                     onChangeText={newName => this.setState({ newName })}
                                     returnKeyType="done" />
-                                <EditIcon name="edit-2"
+                                <FeatherIcon name="edit-2"
                                     size={20}
                                     color={this.state.isNameEditable ? '#913d88' : '#67809f'}
                                     onPress={() => this.changeEditable('name')} />
@@ -502,7 +577,7 @@ export default class ProfileScreen extends Component {
                                     autoCapitalize="none"
                                     onChangeText={newUsername => this.setState({ newUsername })}
                                     returnKeyType="done" />
-                                <EditIcon name="edit-2"
+                                <FeatherIcon name="edit-2"
                                     size={20}
                                     color={this.state.isUsernameEditable ? '#913d88' : '#67809f'}
                                     onPress={() => this.changeEditable('username')} />
@@ -517,7 +592,7 @@ export default class ProfileScreen extends Component {
                                     autoCompleteType="email"
                                     onChangeText={newEmail => this.setState({ newEmail })}
                                     returnKeyType="done" />
-                                <EditIcon name="edit-2"
+                                <FeatherIcon name="edit-2"
                                     size={20}
                                     color={this.state.isEmailEditable ? '#913d88' : '#67809f'}
                                     onPress={() => this.changeEditable('email')} />
@@ -672,5 +747,18 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         textAlign: 'center',
         marginBottom: 10,
+    },
+    infoText: {
+        textAlign: 'center',
+        marginBottom: 20,
+        color: '#6c7a89',
+    },
+    resend: {
+        alignItems: 'center',
+        marginTop: 20,
+        margin: 10,
+    },
+    resendText: {
+        color: '#963694',
     },
 });
