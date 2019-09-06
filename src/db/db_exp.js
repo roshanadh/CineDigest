@@ -196,8 +196,11 @@ class Database {
                                 Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
                             });
                         } else {
-                            console.warn(jsonResponse.status + ' is the reject status')
-                            reject(jsonResponse.status);
+                            console.warn(jsonResponse.status + ' is the reject status');
+                            reject({
+                                status: jsonResponse.status,
+                                message: jsonResponse.message,
+                            });
                         }
                     })
                     .catch(error => {
@@ -229,7 +232,10 @@ class Database {
                             });
                         } else {
                             console.warn(jsonResponse.status + ' is the reject status')
-                            reject(jsonResponse.status);
+                            reject({
+                                status: jsonResponse.status,
+                                message: jsonResponse.message,
+                            });
                         }
                     })
                     .catch(error => {
@@ -261,7 +267,10 @@ class Database {
                             });
                         } else {
                             console.warn(jsonResponse.status + ' is the reject status')
-                            reject(jsonResponse.status);
+                            reject({
+                                status: jsonResponse.status,
+                                message: jsonResponse.message,
+                            });
                         }
                     })
                     .catch(error => {
@@ -287,7 +296,10 @@ class Database {
                             resolve(true);
                         } else {
                             console.warn(jsonResponse.status + ' is the reject status')
-                            reject(jsonResponse.status);
+                            reject({
+                                status: jsonResponse.status,
+                                message: jsonResponse.message,
+                            });
                         }
                     })
                     .catch(error => {
@@ -318,7 +330,10 @@ class Database {
                             });
                         } else {
                             console.warn(jsonResponse.status + ' is the reject status')
-                            reject(jsonResponse.status);
+                            reject({
+                                status: jsonResponse.status,
+                                message: jsonResponse.message,
+                            });
                         }
                     })
                     .catch(error => {
@@ -343,7 +358,10 @@ class Database {
                             resolve(true);
                         } else {
                             console.warn(jsonResponse.status + ' is the reject status')
-                            reject(jsonResponse.status);
+                            reject({
+                                status: jsonResponse.status,
+                                message: jsonResponse.message,
+                            });
                         }
                     })
                     .catch(error => {
@@ -368,7 +386,10 @@ class Database {
                             resolve(true);
                         } else {
                             console.warn(jsonResponse.status + ' is the reject status')
-                            reject(jsonResponse.status);
+                            reject({
+                                status: jsonResponse.status,
+                                message: jsonResponse.message,
+                            });
                         }
                     })
                     .catch(error => {
