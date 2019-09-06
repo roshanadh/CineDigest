@@ -44,6 +44,7 @@ class Database {
                     if (jsonResponse.status !== 'NOT-FOUND') {
                         resolve({
                             username: jsonResponse.username,
+                            email: jsonResponse.email,
                             name: jsonResponse.name,
                             uuid: jsonResponse.uuid,
                         });
