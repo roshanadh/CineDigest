@@ -435,12 +435,12 @@ export default class ProfileScreen extends Component {
             this.getUserId()
                 .then(result => {
                     db.getStats(result.uuid)
-                        .then(result => {
+                        .then(stats => {
                             this.setState({
                                 isNameEditable: !this.state.isNameEditable ? false : false,
                                 isUsernameEditable: !this.state.isUsernameEditable ? false : false,
                                 isEmailEditable: !this.state.isEmailEditable ? false : false,
-                                stats: result,
+                                stats,
                                 refreshing: false,
                             }, () => console.warn(this.state.stats.listedMovies));
                         }, this.setState({
