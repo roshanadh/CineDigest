@@ -267,7 +267,6 @@ export default class MoviesListsScreen extends Component {
 				this.setState({
 					refreshing: false,
 				}, () => {
-						console.warn(this.state.uuid);
 						db.getTitleRecommendations(this.state.uuid, 'movie')
 							.then(result => {
 								console.warn('getTitleR called!');
@@ -300,7 +299,6 @@ export default class MoviesListsScreen extends Component {
 	};
 
 	filterShown = (isShown) => {
-		console.warn(isShown + ' is shown!');
 		if (isShown) {
 			this.setState({scrollViewMargin: 120});
 		} else {
