@@ -163,12 +163,170 @@ class Database {
         });
     }
 
-    updateProfile(username, uuid, newName, newUsername) {
+    updateProfile(username, uuid, newName, newUsername, newEmail) {
         return new Promise((resolve, reject) => {
-            if (newUsername === null && newName !== null) {
-                console.warn('Name not null, username  null!');
+            // console.warn('u, n, e!');
+            console.warn(newUsername + ' username');
+            console.warn(newName + ' name');
+            console.warn(newEmail + ' email');
+
+            if (newUsername !== null && newName !== null && newEmail !== null) {
+                // u, n, e
                 const payload = {
-                    username,
+                    uuid,
+                    newUsername,
+                    newName,
+                    newEmail,
+                };
+                const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formBody,
+                })
+                    .then(response => response.json())
+                    .then(jsonResponse => {
+                        if (jsonResponse.status === 'success') {
+                            resolve(true);
+                            // Update USER_KEY stored in AsyncStorage
+                            onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
+                            onSignIn(newUsername).then(() => {
+                                console.warn('Set USER_KEY ' + newUsername);
+                                Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+                            });
+                        } else {
+                            console.warn(jsonResponse.status + ' is the reject status')
+                            reject(jsonResponse.status);
+                        }
+                    })
+                    .catch(error => {
+                        console.warn(error.message);
+                        reject(error.message);
+                    });
+            } else if (newUsername !== null && newName !== null && newEmail === null) {
+                // u, n
+                const payload = {
+                    uuid,
+                    newUsername,
+                    newName,
+                };
+                const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formBody,
+                })
+                    .then(response => response.json())
+                    .then(jsonResponse => {
+                        if (jsonResponse.status === 'success') {
+                            resolve(true);
+                            // Update USER_KEY stored in AsyncStorage
+                            onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
+                            onSignIn(newUsername).then(() => {
+                                console.warn('Set USER_KEY ' + newUsername);
+                                Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+                            });
+                        } else {
+                            console.warn(jsonResponse.status + ' is the reject status')
+                            reject(jsonResponse.status);
+                        }
+                    })
+                    .catch(error => {
+                        console.warn(error.message);
+                        reject(error.message);
+                    });
+            } else if (newUsername !== null && newName === null && newEmail !== null) {
+                // u, e
+                const payload = {
+                    uuid,
+                    newUsername,
+                    newEmail,
+                };
+                const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formBody,
+                })
+                    .then(response => response.json())
+                    .then(jsonResponse => {
+                        if (jsonResponse.status === 'success') {
+                            resolve(true);
+                            // Update USER_KEY stored in AsyncStorage
+                            onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
+                            onSignIn(newUsername).then(() => {
+                                console.warn('Set USER_KEY ' + newUsername);
+                                Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+                            });
+                        } else {
+                            console.warn(jsonResponse.status + ' is the reject status')
+                            reject(jsonResponse.status);
+                        }
+                    })
+                    .catch(error => {
+                        console.warn(error.message);
+                        reject(error.message);
+                    });
+            } else if (newUsername === null && newName !== null && newEmail !== null) {
+                // n, e
+                const payload = {
+                    uuid,
+                    newName,
+                    newEmail,
+                };
+                const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formBody,
+                })
+                    .then(response => response.json())
+                    .then(jsonResponse => {
+                        if (jsonResponse.status === 'success') {
+                            resolve(true);
+                        } else {
+                            console.warn(jsonResponse.status + ' is the reject status')
+                            reject(jsonResponse.status);
+                        }
+                    })
+                    .catch(error => {
+                        console.warn(error.message);
+                        reject(error.message);
+                    });
+            } else if (newUsername !== null && newName === null && newEmail === null) {
+                // u
+                const payload = {
+                    uuid,
+                    newUsername,
+                };
+                const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                    body: formBody,
+                })
+                    .then(response => response.json())
+                    .then(jsonResponse => {
+                        if (jsonResponse.status === 'success') {
+                            resolve(true);
+                            // Update USER_KEY stored in AsyncStorage
+                            onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
+                            onSignIn(newUsername).then(() => {
+                                console.warn('Set USER_KEY ' + newUsername);
+                                Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
+                            });
+                        } else {
+                            console.warn(jsonResponse.status + ' is the reject status')
+                            reject(jsonResponse.status);
+                        }
+                    })
+                    .catch(error => {
+                        console.warn(error.message);
+                        reject(error.message);
+                    });
+            } else if (newUsername === null && newName !== null && newEmail === null) {
+                // n
+                const payload = {
                     uuid,
                     newName,
                 };
@@ -183,6 +341,7 @@ class Database {
                         if (jsonResponse.status === 'success') {
                             resolve(true);
                         } else {
+                            console.warn(jsonResponse.status + ' is the reject status')
                             reject(jsonResponse.status);
                         }
                     })
@@ -190,13 +349,11 @@ class Database {
                         console.warn(error.message);
                         reject(error.message);
                     });
-            } else if (newUsername !== null && newName !== null) {
-                console.warn('Name not null, username not null!');
+            } else if (newUsername === null && newName === null && newEmail !== null) {
+                // e
                 const payload = {
-                    username,
                     uuid,
-                    newName,
-                    newUsername,
+                    newEmail,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
                 fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
@@ -209,6 +366,7 @@ class Database {
                         if (jsonResponse.status === 'success') {
                             resolve(true);
                         } else {
+                            console.warn(jsonResponse.status + ' is the reject status')
                             reject(jsonResponse.status);
                         }
                     })
@@ -216,45 +374,6 @@ class Database {
                         console.warn(error.message);
                         reject(error.message);
                     });
-
-                // Update USER_KEY stored in AsyncStorage
-                onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
-                onSignIn(newUsername).then(() => {
-                    console.warn('Set USER_KEY ' + newUsername);
-                    Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
-                });
-            } else if (newUsername !== null && newName === null) {
-                console.warn('Name null, username not null!');
-                const payload = {
-                    username,
-                    uuid,
-                    newUsername,
-                };
-                const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                    body: formBody,
-                })
-                    .then(response => response.json())
-                    .then(jsonResponse => {
-                        if (jsonResponse.status === 'success') {
-                            resolve(true);
-                        } else {
-                            reject(jsonResponse.status);
-                        }
-                    })
-                    .catch(error => {
-                        console.warn(error.message);
-                        reject(error.message);
-                    });
-
-                // Update USER_KEY stored in AsyncStorage
-                onSignOut().then(() => console.warn('Removed USER_KEY ' + username));
-                onSignIn(newUsername).then(() => {
-                    console.warn('Set USER_KEY ' + newUsername);
-                    Snackbar.showSnackBar('Refresh Movies and Shows sections', 'always', '#3fc380', 'ok');
-                });
             }
         });
     }
