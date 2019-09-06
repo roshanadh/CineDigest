@@ -47,6 +47,7 @@ class Database {
                             email: jsonResponse.email,
                             name: jsonResponse.name,
                             uuid: jsonResponse.uuid,
+                            validatedStatus: jsonResponse.validatedStatus,
                         });
                     } else {
                         reject(jsonResponse.status);
