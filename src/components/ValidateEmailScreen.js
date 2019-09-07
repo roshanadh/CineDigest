@@ -11,6 +11,7 @@ import {
     Image,
     StatusBar,
     Dimensions,
+    KeyboardAvoidingView,
 } from 'react-native';
 
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -145,17 +146,16 @@ export default class ValidateEmailScreen extends Component {
             <ActivityIndicator size="small" color="#fefefe"
                 style={styles.indicator} /> : null;
         return (
-            <ImageBackground blurRadius={1.3} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
+            <View style={styles.metaContainer}>
                 <StatusBar barStyle="dark-content"
                     translucent={true}
                     backgroundColor="rgba(255, 255, 255, 1)"
                 />
                 <ScrollView>
                     <View style={styles.container}>
-                        <Image source={require('../assets/mainLogoWText.png')}
-                            resizeMode="contain" style={styles.logo} />
-                        <Text style={styles.infoText}>We've just emailed you a validation code at {this.state.email}.</Text>
-                        <Text style={styles.infoText}>Please validate your email using the code you have received.</Text>
+                        <Text style={styles.welcomeText}>Cine Digest</Text>
+
+                        <Text style={styles.infoText}>Please validate your email using the code you have received at {this.state.email}.</Text>
                         <View style={styles.metaWrapper}>
                             <View style={styles.codeWrapper}>
                                 <TextInput
@@ -187,16 +187,15 @@ export default class ValidateEmailScreen extends Component {
                         </TouchableOpacity>
                     </View>
                 </ScrollView>
-            </ImageBackground>
+            </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
-    bgImage: {
-        width: '100%',
+    metaContainer: {
+        backgroundColor: '#fff',
         height: '100%',
-        flex: 1,
     },
     container: {
         flex: 1,
@@ -205,16 +204,16 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 25,
     },
-    logo: {
-        width: 300,
-        height: 150,
-        flex: 1,
-        marginBottom: 20,
-        alignSelf: 'center',
+    welcomeText: {
+        fontSize: 40,
+        fontFamily: 'Quicksand-Light',
+        width: '100%',
+        marginBottom: 40,
+        textAlign: 'center',
+        color: '#963694',
     },
     infoText: {
         textAlign: 'center',
-        marginBottom: 20,
         color: '#6c7a89',
     },
     metaWrapper: {
@@ -261,5 +260,6 @@ const styles = StyleSheet.create({
     changeEmailText: {
         margin: 30,
         color: '#963694',
+        textAlign: 'center',
     },
 });
