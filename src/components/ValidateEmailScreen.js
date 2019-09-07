@@ -242,7 +242,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'center',
         borderRadius: 50,
-        marginTop: 20,
+        marginTop: 30,
         padding: 15,
         minHeight: btnHeight,
         width: '80%',
