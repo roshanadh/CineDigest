@@ -19,11 +19,10 @@ import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
 import netCon from '../util/NetCon.js';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
-const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
 
-export default class SignUpScreen extends Component {
+export default class ValidateEmailScreen extends Component {
     constructor(props, context) {
         super(props, context);
         this.state = {
@@ -56,31 +55,33 @@ export default class SignUpScreen extends Component {
                     .then(validationCode => {
                         console.warn(validationCode + ' is the validation code!');
                     }, error => {
-                        this.setState({ isLoading: false });
                         console.warn('Some error occurred in mailCode()');
                     });
             });
         };
 
         this.validateHandler = () => {
-            this.setState({ isLoading: true });
-            const { code, userEnteredCode } = this.state;
-            console.warn(code + ' is the code!');
-            console.warn(userEnteredCode + ' is the entered!');
-            if (code !== userEnteredCode) {
-                this.setState({ isLoading: false });
-                console.warn('Wrong code');
-            } else {
-                this.setState({ isLoading: false });
-                console.warn('Correct code!');
-                db.validateUser(this.state.username, this.state.email)
-                    .then(result => {
-                        console.warn(this.state.username + ' validated!');
-                        this.props.navigation.navigate('SignIn');
-                    }, error => {
-                        console.warn('Could not validate!');
-                    });
-            }
+            this.setState({ isLoading: true }, () => {
+                const { code, userEnteredCode } = this.state;
+                console.warn(code + ' is the code!');
+                console.warn(userEnteredCode + ' is the entered!');
+                if (code !== userEnteredCode) {
+                    this.setState({ isLoading: false });
+                    console.warn('Wrong code');
+                    CustomSnackbar.showSnackBar('The validation code was incorrect!', 'long', '#e74c3c', 'OK');
+                } else {
+                    console.warn('Correct code!');
+                    db.validateUser(this.state.username, this.state.email)
+                        .then(result => {
+                            console.warn(this.state.username + ' validated!');
+                            this.setState({ isLoading: false });
+                            CustomSnackbar.showSnackBar('Your email has been validated!', 'long', '#3fc380', null);
+                            this.props.navigation.navigate('SignIn');
+                        }, error => {
+                            console.warn('Could not validate!');
+                        });
+                }
+            });
         };
 
         this.genCode = () => {
@@ -143,7 +144,6 @@ export default class SignUpScreen extends Component {
         let indicatorJsx = this.state.isLoading ?
             <ActivityIndicator size="small" color="#fefefe"
                 style={styles.indicator} /> : null;
-
         return (
             <ImageBackground blurRadius={1.3} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
                 <StatusBar barStyle="dark-content"
@@ -164,7 +164,7 @@ export default class SignUpScreen extends Component {
                                     autoCapitalize="characters"
                                     onChangeText={(userEnteredCode) => this.setState({ userEnteredCode })}
                                     returnKeyType="done"
-                                    onSubmitEditing={this.signUpHandler} />
+                                    onSubmitEditing={this.validateHandler} />
                                 {keyIconJsx}
                             </View>
                         </View>
@@ -178,6 +178,9 @@ export default class SignUpScreen extends Component {
                                 name: this.state.name,
                                 username: this.state.username,
                                 email: this.state.email,
+                                signUpBtnText: 'Update Email',
+                                isFieldEditable: false,
+                                shouldUpdate: true,
                             });
                         }}>
                             <Text style={styles.changeEmailText}>Not you? Change your email</Text>
@@ -242,10 +245,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'center',
         borderRadius: 50,
-        marginTop: 30,
+        marginTop: 20,
         padding: 15,
         minHeight: btnHeight,
-        width: btnWidth,
+        width: '50%',
         backgroundColor: '#22a7f0',
     },
     btnText: {

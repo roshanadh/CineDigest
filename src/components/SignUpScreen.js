@@ -24,9 +24,8 @@ import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
 import netCon from '../util/NetCon.js';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
-const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
 
 export default class SignUpScreen extends Component {
 	constructor(props, context) {
@@ -39,6 +38,8 @@ export default class SignUpScreen extends Component {
 			password1: '',
 			password2: '',
 			passwordProgress: 0,
+			// After initial signup, obtain UUID
+			uuid: '',
 		};
 
 		this.updatePassword = (password1) => {
@@ -194,41 +195,27 @@ export default class SignUpScreen extends Component {
 
 					if (name === '') {
 						this.setState({ isLoading: false });
-						Alert.alert('Error', 'Please fill up your name!', [{
-							text: 'okay',
-						}]);
+						CustomSnackbar.showSnackBar('You haven\'t entered your name!', 'long', '#e74c3c', 'OK');
 					} else if (username === '') {
 						this.setState({ isLoading: false });
-						Alert.alert('Error', 'Please fill up your username!', [{
-							text: 'okay',
-						}]);
+						CustomSnackbar.showSnackBar('You haven\'t entered your username!', 'long', '#e74c3c', 'OK');
 					} else if (email === '') {
 						this.setState({ isLoading: false });
-						Alert.alert('Error', 'Please fill up your email!', [{
-							text: 'okay',
-						}]);
+						CustomSnackbar.showSnackBar('You haven\'t entered your email!', 'long', '#e74c3c', 'OK');
 					} else if (password1 === '') {
 						this.setState({ isLoading: false });
 						// If password not entered
-						Alert.alert('Error', 'Please enter your password!', [{
-							text: 'okay',
-						}]);
+						CustomSnackbar.showSnackBar('You haven\'t entered your password!', 'long', '#e74c3c', 'OK');
 					} else if (password2 === '') {
 						this.setState({ isLoading: false });
-						Alert.alert('Error', 'Please confirm your password!', [{
-							text: 'okay',
-						}]);
+						CustomSnackbar.showSnackBar('You haven\'t confirmed your password!', 'long', '#e74c3c', 'OK');
 					} else if (password1 !== password2) {
 						this.setState({ isLoading: false });
 						// If Not same return False
-						Alert.alert('Error', 'The passwords did not match!', [{
-							text: 'okay',
-						}]);
+						CustomSnackbar.showSnackBar('The passwords didn\'t match!', 'long', '#e74c3c', 'OK');
 					} else if (!email.match(mailFormat)) {
 						this.setState({ isLoading: false });
-						Alert.alert('Error', 'The email you entered is invalid!', [{
-							text: 'okay',
-						}]);
+						CustomSnackbar.showSnackBar('The email is invalid!', 'long', '#e74c3c', 'OK');
 
 					} else if (this.state.username.includes('.') || this.state.username.includes('/') ||
 						this.state.username.includes('\\') || this.state.username.includes('|') ||
@@ -249,48 +236,71 @@ export default class SignUpScreen extends Component {
 						this.state.username.length < 6 || this.state.password1.length < 6) {
 
 						this.setState({ isLoading: false });
-						Alert.alert('Error', 'Some fields may have errors!', [{
-							text: 'okay',
-						}]);
+						CustomSnackbar.showSnackBar('Some fields may have errors!', 'long', '#e74c3c', 'OK');
 					} else {
-						// Generate Salt for hashing (with 10 rounds) / ASYNC
-						bcrypt.genSalt(5, (_err, salt) => {
-							// Generate Hash for the password / ASYNC
-							bcrypt.hash(this.state.password1, salt, (_err, hash) => {
-								console.warn(hash + ' is the hash!');
-								let addPromise = db.addUser(this.state.username,this.state.email, hash, this.state.name);
-								addPromise.then(result => {
-									this.setState({ isLoading: false });
-									console.warn(result);
-									Alert.alert(
-										'Successful',
-										`${result.username} has been registered!`, [{
-											text: 'OK',
-											onPress: () =>
-												props.navigation.navigate('ValidateEmail', {
-													email: this.state.email,
-													name: this.state.name,
-													username: this.state.username,
-												}),
-										}]
-									);
-								}, err => {
-									this.setState({ isLoading: false });
-									if (err.status === 'ER_DUP_ENTRY') {
-										if (JSON.stringify(err.message).includes('email')) {
-											Alert.alert('Oops', `Email ${this.state.email} is used!`);
-											console.warn(err.message);
+						// Check if sign up required or email update required
+						console.warn('shouldUpdate: ' + this.props.navigation.getParam('shouldUpdate'));
+						if (typeof this.props.navigation.getParam('shouldUpdate') !== 'undefined'
+							&& this.props.navigation.getParam('shouldUpdate') === true) {
+							console.warn('Should update entered: ' + this.props.navigation.getParam('shouldUpdate'))
+							// Email update required
+							this.setState({ validatedStatus: false });
+                            db.updateProfile(this.state.username, this.state.uuid, null, null, this.state.email)
+                                .then(result => {
+                                    this.setState({ isLoading: false }, () => {
+										console.warn(result);
+										CustomSnackbar.showSnackBar('Your email has been updated!', 'long', '#3fc380', null);
+										// Navigate to ValidateEmailScreen
+										props.navigation.navigate('ValidateEmail', {
+											email: this.state.email,
+											name: this.state.name,
+											username: this.state.username,
+										});
+                                    });
+                                }, error => {
+                                        this.setState({ isLoading: false });
+                                        console.warn(error.message);
+                                        if (error.status === 'ER_DUP_ENTRY') {
+                                            CustomSnackbar.showSnackBar('The email is already registered!', 'long', '#e74c3c', 'OK');
+                                        } else {
+                                            CustomSnackbar.showSnackBar('Some error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        }
+                                });
+						} else {
+							// User sign-up required
+							// Generate Salt for hashing (with 10 rounds) / ASYNC
+							bcrypt.genSalt(5, (_err, salt) => {
+								// Generate Hash for the password / ASYNC
+								bcrypt.hash(this.state.password1, salt, (_err, hash) => {
+									console.warn(hash + ' is the hash!');
+									let addPromise = db.addUser(this.state.username, this.state.email, hash, this.state.name);
+									addPromise.then(result => {
+										this.setState({ isLoading: false, uuid: result.uuid });
+										console.warn(result);
+										CustomSnackbar.showSnackBar(`${result.username} has been registered!`, 'long', '#3fc380', null);
+										// Navigate to ValidateEmaiScreen
+										props.navigation.navigate('ValidateEmail', {
+											email: this.state.email,
+											name: this.state.name,
+											username: this.state.username,
+										});
+									}, err => {
+										this.setState({ isLoading: false });
+										if (err.status === 'ER_DUP_ENTRY') {
+											if (JSON.stringify(err.message).includes('email')) {
+												CustomSnackbar.showSnackBar('The email is already in use!', 'long', '#e74c3c', 'OK');												console.warn(err.message);
+											} else {
+												CustomSnackbar.showSnackBar('The username is already in use!', 'long', '#e74c3c', 'OK');
+												console.warn(err);
+											}
 										} else {
-											Alert.alert('Oops', `Username ${this.state.username} already exists!`);
+											Alert.alert('Error', 'Error message: ' + err);
 											console.warn(err);
 										}
-									} else {
-										Alert.alert('Error', 'Error message: ' + err);
-										console.warn(err);
-									}
+									});
 								});
 							});
-						});
+						}
 					}
 				}, error => {
 					// Internet connection is unavailable
@@ -367,6 +377,7 @@ export default class SignUpScreen extends Component {
 							<View style={styles.usernameWrapper}>
 								<TextInput
 									style={styles.input}
+									editable={typeof this.props.navigation.getParam('isFieldEditable') === 'undefined' ? true : false}
 									placeholder="Name"
 									defaultValue={this.props.navigation.getParam('name')}
 									onChangeText={(name) => this.setState({ name })}
@@ -383,6 +394,7 @@ export default class SignUpScreen extends Component {
 							>
 								<TextInput
 									style={styles.input}
+									editable={typeof this.props.navigation.getParam('isFieldEditable') === 'undefined' ? true : false}
 									placeholder="Username"
 									defaultValue={this.props.navigation.getParam('username')}
 									autoCapitalize="none"
@@ -409,6 +421,7 @@ export default class SignUpScreen extends Component {
 							<View style={styles.noBorderPasswordWrapper}>
 								<TextInput
 									style={styles.input}
+									editable={typeof this.props.navigation.getParam('isFieldEditable') === 'undefined' ? true : false}
 									placeholder="Password"
 									autoCapitalize="none"
 									secureTextEntry={true}
@@ -426,6 +439,7 @@ export default class SignUpScreen extends Component {
 							}>
 								<TextInput
 									style={styles.input}
+									editable={typeof this.props.navigation.getParam('isFieldEditable') === 'undefined' ? true : false}
 									placeholder="Confirm Password"
 									secureTextEntry={true}
 									autoCapitalize="none"
@@ -438,7 +452,7 @@ export default class SignUpScreen extends Component {
 
 						<TouchableOpacity style={styles.signupBtn}
 							onPress={this.signUpHandler}>
-							<Text style={styles.btnText}>Sign-up</Text>
+							<Text style={styles.btnText}>{this.props.navigation.getParam('signUpBtnText') || 'Sign-up'}</Text>
 							{indicatorJsx}
 						</TouchableOpacity>
 						<View style={styles.footer}>
@@ -571,7 +585,7 @@ const styles = StyleSheet.create({
 		marginTop: 20,
 		padding: 15,
 		minHeight: btnHeight,
-		width: btnWidth,
+		width: '60%',
 		backgroundColor: '#22a7f0',
 	},
 	btnText: {

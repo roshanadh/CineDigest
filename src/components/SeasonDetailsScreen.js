@@ -40,7 +40,7 @@ export default class SeasonDetailsScreen extends Component {
 			episodeOverviews: [],
 			episodeVoteAverages: [],
 			episodeVoteCounts: [],
-			contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+			contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
 		};
         this.noPoster = false;
 		this.monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
@@ -153,7 +153,7 @@ export default class SeasonDetailsScreen extends Component {
 		this.fetchSeasonDetails = (titleId, seasonNo) => {
 			return new Promise((resolve, reject) => {
 				this.setState({
-					contentJsx: <ActivityIndicator size="large" color="#22a7f0" style={styles.indicator} />,
+					contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
 				}, () => {
 					fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}/${seasonNo}`)
 						.then(response => response.json())
