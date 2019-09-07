@@ -483,7 +483,7 @@ const styles = StyleSheet.create({
 		fontSize: responsiveFontSize(6),
 		fontFamily: 'Quicksand-Light',
 		width: '100%',
-		marginBottom: 30,
+		marginBottom: 20,
 		textAlign: 'center',
 		color: '#963694',
 	},
