@@ -61,6 +61,7 @@ class SignInScreen extends Component {
 								CustomSnackbar.showSnackBar(`'${this.state.username}' is has not been validated!`, 'long', '#e74c3c', 'OK');
 								this.props.navigation.navigate('ValidateEmail', {
 									email: error.email,
+									uuid: error.uuid,
 									name: this.state.name,
 									username: this.state.username,
 								});
