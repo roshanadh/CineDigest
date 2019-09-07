@@ -7,15 +7,14 @@ import {
 	StyleSheet,
 	Alert,
 	ActivityIndicator,
-	ImageBackground,
 	ScrollView,
-	Image,
 	StatusBar,
 	Dimensions,
 	ProgressBarAndroid,
 } from 'react-native';
 
 import bcrypt from 'react-native-bcrypt';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 import TextIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
@@ -311,7 +310,8 @@ export default class SignUpScreen extends Component {
 
 		this.signUpHandler = () => {
 			this.setState({isLoading: true});
-			this.checkSignUp();
+			// this.checkSignUp();
+			this.props.navigation.navigate('ValidateEmail');
 		};
 	}
 
@@ -480,7 +480,7 @@ const styles = StyleSheet.create({
 		padding: 25,
 	},
 	welcomeText: {
-		fontSize: 40,
+		fontSize: responsiveFontSize(6),
 		fontFamily: 'Quicksand-Light',
 		width: '100%',
 		marginBottom: 30,

@@ -8,10 +8,9 @@ import {
 	TextInput,
 	Dimensions,
 	ActivityIndicator,
-	ImageBackground,
 	ScrollView,
-	Image,
 } from 'react-native';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
 import Snackbar from 'react-native-snackbar';
 import UsernameIcon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -217,11 +216,12 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 	},
 	welcomeText: {
-		fontSize: 90,
+		fontSize: responsiveFontSize(11),
 		fontFamily: 'Quicksand-Light',
 		width: '100%',
-		marginBottom: 20,
+		marginBottom: 10,
 		color: '#963694',
+		paddingTop: 0,
 		padding: 25,
 	},
 	container: {
