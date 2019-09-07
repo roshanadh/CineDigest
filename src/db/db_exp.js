@@ -116,7 +116,7 @@ class Database {
                     if (jsonResponse.status === 'success') {
                         resolve(true);
                     } else {
-                        reject(false);
+                        reject(jsonResponse.status);
                     }
                 })
                 .catch(error => {
