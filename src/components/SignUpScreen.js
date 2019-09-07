@@ -311,8 +311,7 @@ export default class SignUpScreen extends Component {
 
 		this.signUpHandler = () => {
 			this.setState({isLoading: true});
-			// this.checkSignUp();
-			this.props.navigation.navigate('ValidateEmail')
+			this.checkSignUp();
 		};
 	}
 

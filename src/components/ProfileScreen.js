@@ -403,6 +403,87 @@ export default class ProfileScreen extends Component {
                     });
             });
         };
+
+        this.genStatJsx = (usernameLengthErrorTextJsx, usernameCharErrorTextJsx, keyIconJsx, indicatorJsx) => {
+            if (usernameLengthErrorTextJsx !== null || usernameCharErrorTextJsx !== null) {
+                return (
+                    <View style={styles.statsContainer}>
+                        {usernameLengthErrorTextJsx}
+                        {usernameCharErrorTextJsx}
+                    </View>
+                );
+            } else {
+                // No errors
+                if (this.state.validatedStatus) {
+                    // Display stats for user
+                    return (
+                        this.state.stats.listedMovies + this.state.stats.listedShows +
+                        this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows +
+                        this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows +
+                        this.state.stats.listedInWatchingShows > 0 ?
+                            <View style={styles.statsContainer}>
+                                <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
+                                {
+                                    (this.state.stats.listedMovies + this.state.stats.listedShows) > 0 ?
+                                        <Text style={styles.statWrapper}>
+                                            <Text style={styles.statNumber}>{this.state.stats.listedMovies + this.state.stats.listedShows}</Text>{'\t'} titles listed!
+                                        </Text> : null
+                                }
+                                <Text>
+                                    {
+                                        (this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows) > 0 ?
+                                            <Text style={styles.statWrapper}>
+                                                <Text style={styles.statNumber}>{this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows}</Text>{'\t'} titles in your wish list!
+                                        </Text> : null
+                                    }
+                                </Text>
+                                <Text>
+                                    {
+                                        (this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows) > 0 ?
+                                            <Text style={styles.statWrapper}>
+                                                <Text style={styles.statNumber}>{this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows}</Text>{'\t'} titles in your watched list!
+                                </Text> : null
+                                    }
+                                </Text>
+                                <Text>
+                                    {
+                                        this.state.stats.listedInWatchingShows > 0 ?
+                                            <Text style={styles.statWrapper}>
+                                                <Text style={styles.statNumber}>{this.state.stats.listedInWatchingShows}</Text>{'\t'} titles in your watching list!
+                                </Text> : null
+                                    }
+                                </Text>
+                            </View> : null
+                    );
+                } else {
+                    // Display email validation form
+                    return (
+                        <View style={styles.statsContainer}>
+                            <Text style={styles.infoText}>We've just emailed you a validation code at {this.state.email}.</Text>
+                            <Text style={styles.infoText}>Please validate your email using the code you have received.</Text>
+                            <View style={styles.textInputActiveWrapper}>
+                                <TextInput
+                                    style={styles.textInput}
+                                    placeholder="Validation Code"
+                                    autoCapitalize="characters"
+                                    onChangeText={(userEnteredCode) => this.setState({ userEnteredCode })}
+                                    returnKeyType="done"
+                                    onSubmitEditing={this.signUpHandler} />
+                                {keyIconJsx}
+                            </View>
+                            <TouchableOpacity style={styles.saveProfileBtn}
+                                onPress={this.validateHandler}>
+                                <Text style={styles.btnText}>Validate</Text>
+                                {indicatorJsx}
+                            </TouchableOpacity>
+                            <TouchableOpacity style={styles.resend} onPress={this.resendCode}>
+                                <Text style={styles.resendText}>Resend Code</Text>
+                            </TouchableOpacity>
+                        </View>
+                    );
+                }
+            }
+        };
     }
 
     componentDidMount() {
@@ -487,72 +568,7 @@ export default class ProfileScreen extends Component {
             this.state.newUsername.includes(',') || this.state.newUsername.includes(' ') ?
                 <Text style={styles.errorText}>Username must not contain any special characters</Text> : null;
 
-        let statJsx =
-            this.state.validatedStatus ? (
-                // Display stats for user
-                this.state.stats.listedMovies + this.state.stats.listedShows +
-                this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows +
-                this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows +
-                this.state.stats.listedInWatchingShows > 0 ?
-                    <View style={styles.statsContainer}>
-                        <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
-                        {
-                            (this.state.stats.listedMovies + this.state.stats.listedShows) > 0 ?
-                                <Text style={styles.statWrapper}>
-                                    <Text style={styles.statNumber}>{this.state.stats.listedMovies + this.state.stats.listedShows}</Text>{'\t'} titles listed!
-                            </Text> : null
-                        }
-                        <Text>
-                            {
-                                (this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows) > 0 ?
-                                    <Text style={styles.statWrapper}>
-                                        <Text style={styles.statNumber}>{this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows}</Text>{'\t'} titles in your wish list!
-                                </Text> : null
-                            }
-                        </Text>
-                        <Text>
-                            {
-                                (this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows) > 0 ?
-                                    <Text style={styles.statWrapper}>
-                                        <Text style={styles.statNumber}>{this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows}</Text>{'\t'} titles in your watched list!
-                                </Text> : null
-                            }
-                        </Text>
-                        <Text>
-                            {
-                                this.state.stats.listedInWatchingShows > 0 ?
-                                    <Text style={styles.statWrapper}>
-                                        <Text style={styles.statNumber}>{this.state.stats.listedInWatchingShows}</Text>{'\t'} titles in your watching list!
-                                </Text> : null
-                            }
-                        </Text>
-                    </View> : null
-            ) : (
-                // Display email validation form
-                    <View style={styles.statsContainer}>
-                        <Text style={styles.infoText}>We've just emailed you a validation code at {this.state.email}.</Text>
-                        <Text style={styles.infoText}>Please validate your email using the code you have received.</Text>
-                        <View style={styles.textInputActiveWrapper}>
-                            <TextInput
-                                style={styles.textInput}
-                                placeholder="Validation Code"
-                                autoCapitalize="characters"
-                                onChangeText={(userEnteredCode) => this.setState({ userEnteredCode })}
-                                returnKeyType="done"
-                                onSubmitEditing={this.signUpHandler} />
-                            {keyIconJsx}
-                        </View>
-                        <TouchableOpacity style={styles.saveProfileBtn}
-                            onPress={this.validateHandler}>
-                            <Text style={styles.btnText}>Validate</Text>
-                            {indicatorJsx}
-                        </TouchableOpacity>
-                        <TouchableOpacity style={styles.resend} onPress={this.resendCode}>
-                            <Text style={styles.resendText}>Resend Code</Text>
-                        </TouchableOpacity>
-                    </View>
-            )
-            
+        let statJsx = this.genStatJsx(usernameLengthErrorTextJsx, usernameCharErrorTextJsx, keyIconJsx, indicatorJsx);
 
         return (
             <ImageBackground blurRadius={1.3}
@@ -612,10 +628,6 @@ export default class ProfileScreen extends Component {
                                     size={20}
                                     color={this.state.isEmailEditable ? '#913d88' : '#67809f'}
                                     onPress={() => this.changeEditable('email')} />
-                            </View>
-                            <View style={styles.footer}>
-                                {usernameLengthErrorTextJsx}
-                                {usernameCharErrorTextJsx}
                             </View>
                             <TouchableOpacity style={styles.saveProfileBtn}
                                 onPress={() => this.updateProfile()}>
