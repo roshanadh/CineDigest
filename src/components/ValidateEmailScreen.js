@@ -6,14 +6,12 @@ import {
     Text,
     StyleSheet,
     ActivityIndicator,
-    ImageBackground,
     ScrollView,
-    Image,
     StatusBar,
     Dimensions,
-    KeyboardAvoidingView,
 } from 'react-native';
 
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import CustomSnackbar from '../util/Snackbar';
@@ -205,7 +203,7 @@ const styles = StyleSheet.create({
         padding: 25,
     },
     welcomeText: {
-        fontSize: 40,
+        fontSize: responsiveFontSize(6),
         fontFamily: 'Quicksand-Light',
         width: '100%',
         marginBottom: 40,
@@ -247,7 +245,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         padding: 15,
         minHeight: btnHeight,
-        width: '50%',
+        width: '80%',
         backgroundColor: '#963694',
     },
     btnText: {
