@@ -150,6 +150,7 @@ class Database {
                         reject({
                             status: jsonResponse.status,
                             email: jsonResponse.email,
+                            uuid: jsonResponse.uuid,
                         });
                     } else {
                         reject({
