@@ -245,7 +245,7 @@ const styles = StyleSheet.create({
         marginTop: 20,
         padding: 15,
         minHeight: btnHeight,
-        width: '50%',
+        width: '80%',
         backgroundColor: '#963694',
     },
     btnText: {
