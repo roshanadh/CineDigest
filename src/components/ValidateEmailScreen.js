@@ -137,6 +137,14 @@ export default class ValidateEmailScreen extends Component {
                     });
             });
         };
+
+        this.redirectToSignIn = () => {
+            // User will be signed-in
+            console.warn(this.state.username, this.state.uuid);
+            onSignIn(this.state.username, this.state.uuid)
+                .then(() => props.navigation.navigate('SignedIn'))
+                .catch(error => console.warn(error.message));
+        };
     }
 
     componentDidMount() {
@@ -175,6 +183,12 @@ export default class ValidateEmailScreen extends Component {
                             onPress={this.validateHandler}>
                             <Text style={styles.btnText}>Validate</Text>
                             {indicatorJsx}
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.signInBtn}
+                            onPress={() => this.redirectToSignIn()}>
+                            <Text style={styles.signInText}>
+                                Just Sign Me In
+							</Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={() => {
                             this.props.navigation.navigate('SignUp', {
@@ -259,6 +273,21 @@ const styles = StyleSheet.create({
     },
     indicator: {
         marginLeft: 20,
+    },
+    signInBtn: {
+        marginTop: 5,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+        alignSelf: 'center',
+        borderRadius: 50,
+        padding: 15,
+        width: '80%',
+        borderWidth: 1,
+        borderColor: '#963694',
+    },
+    signInText: {
+        color: '#963694',
     },
     changeEmailText: {
         margin: 30,
