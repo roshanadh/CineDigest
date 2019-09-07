@@ -15,16 +15,15 @@ import {
 
 import Snackbar from 'react-native-snackbar';
 import UsernameIcon from 'react-native-vector-icons/MaterialCommunityIcons';
-import KeyIcon from 'react-native-vector-icons/Feather';
+import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
 import {onSignIn} from '../auth/auth';
 import netCon from '../util/NetCon';
 
-const { width, height } = Dimensions.get('window');
+const { height } = Dimensions.get('window');
 const btnHeight = height <= 640 ? 0.07 * height : 0.06 * height;
-const btnWidth = width <= 360 ? 0.4 * width : 0.3 * width;
 
 class SignInScreen extends Component {
     constructor(props, context) {
@@ -75,6 +74,30 @@ class SignInScreen extends Component {
 					// Internet connection is unavailable
 						CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
 				});
+		};
+
+		this.genUsernameIconJsx = () => {
+			if (this.state.username.length === 0) {
+				return (
+					<UsernameIcon name="format-text" size={25} color="#ddd" />
+				);
+			} else {
+				return (
+					<UsernameIcon name="format-text" size={25} color="#963694" />
+				);
+			}
+		};
+
+		this.genPasswordIconJsx = () => {
+			if (this.state.password.length === 0) {
+				return (
+					<FeatherIcon name="key" size={25} color="#ddd" />
+				);
+			} else {
+				return (
+					<FeatherIcon name="key" size={25} color="#963694" />
+				);
+			}
 		};
     }
     static navigationOptions = {
@@ -131,26 +154,25 @@ class SignInScreen extends Component {
 		let indicatorJsx = this.state.isLoading ?
 			<ActivityIndicator size="small" color="#fefefe"
 				style={styles.indicator} /> : null;
+		let passwordIconJsx = this.genPasswordIconJsx();
+		let usernameIconJsx = this.genUsernameIconJsx();
 		return (
-			<ImageBackground blurRadius={1.3}
-				source={require('../assets/lilypads.png')}
-				resizeMode="cover" style={styles.bgImage}>
+			<View style={styles.metaContainer}>
 				<StatusBar barStyle="dark-content"
 					translucent={true}
 					backgroundColor="rgba(238, 238, 238, 0)"
 				/>
 				<ScrollView>
 					<View style={styles.container}>
+						<Text style={styles.welcomeText}>Cine Digest</Text>
 						<View style={styles.signInForm}>
-							<Image source={require('../assets/mainLogoWText.png')}
-								resizeMode="contain" style={styles.logo} />
 							<View style={styles.usernameWrapper}>
 								<TextInput placeholder="Username"
 									style={styles.textInput}
 									autoCapitalize="none"
 									onChangeText={this.usernameTextChanged}
 									returnKeyType="next" />
-								<UsernameIcon name="format-text" size={25} color="#ddd" />
+								{usernameIconJsx}
 							</View>
 							<View style={styles.passwordWrapper}>
 								<TextInput placeholder="Password"
@@ -160,65 +182,71 @@ class SignInScreen extends Component {
 									onChangeText={this.passwordTextChanged}
 									returnKeyType="done"
 									onSubmitEditing={this.signInBtnPressedHandler} />
-								<KeyIcon name="key" size={25} color="#ddd" />
+								{passwordIconJsx}
+							</View>
+							<View style={styles.forgotPasswordRedirect}>
+								<TouchableOpacity>
+									<Text style={styles.forgotPasswordText}>
+										Forgot Password?
+									</Text>
+								</TouchableOpacity>
 							</View>
 							<TouchableOpacity style={styles.signInBtn}
 								onPress={this.signInBtnPressedHandler}>
-								<Text style={styles.btnText}>Sign-in</Text>
+								<Text style={styles.btnText}>Sign In</Text>
 								{indicatorJsx}
 							</TouchableOpacity>
-						</View>
-						<View style={styles.signUpRedirect}>
-							<TouchableOpacity onPress={() => this.redirectToSignUp()}>
-								<Text style={styles.signUpText}>
-									Sign-up if you don't have an account
-							</Text>
-							</TouchableOpacity>
+							<View style={styles.signUpRedirect}>
+								<TouchableOpacity style={styles.signUpBtn}
+									onPress={() => this.redirectToSignUp()}>
+									<Text style={styles.signUpText}>
+										Sign Up
+									</Text>
+								</TouchableOpacity>
+							</View>
 						</View>
 					</View>
 				</ScrollView>
-			</ImageBackground>
+			</View>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	bgImage: {
-		width: '100%',
-		height: '100%',
-		flex: 1,
-	},
 	metaContainer: {
-		flexGrow: 1,
-		justifyContent: 'space-between',
-		flexDirection: 'column',
+		backgroundColor: '#fff',
+	},
+	welcomeText: {
+		fontSize: 90,
+		fontFamily: 'Quicksand-Light',
+		width: '100%',
+		marginBottom: 20,
+		color: '#963694',
+		padding: 25,
 	},
 	container: {
-		padding: 20,
 		flex: 1,
 		flexDirection: 'column',
 		justifyContent: 'flex-end',
 	},
 	logo: {
-		width: 300,
-		height: 300,
+		width: 250,
+		height: 250,
 		flex: 1,
 		alignSelf: 'center',
 	},
 	signInForm: {
-		flex: 5,
-		justifyContent: 'flex-end',
+		padding: 20,
 	},
 	usernameWrapper: {
 		flexDirection: 'row',
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderBottomWidth: 1,
-		borderColor: '#22a7f0',
+		borderColor: '#ddd',
 		paddingLeft: 20,
 		paddingRight: 20,
 		marginBottom: 25,
-		backgroundColor: 'rgba(255,255,255,0.3)',
 	},
 	textInput: {
 		marginRight: 10,
@@ -231,11 +259,10 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderBottomWidth: 1,
-		borderColor: '#22a7f0',
+		borderColor: '#ddd',
 		paddingLeft: 20,
 		paddingRight: 20,
-		marginBottom: 40,
-		backgroundColor: 'rgba(255,255,255,0.3)',
+		marginBottom: 15,
 	},
 	signInBtn: {
 		flexDirection: 'row',
@@ -245,8 +272,8 @@ const styles = StyleSheet.create({
 		borderRadius: 50,
 		padding: 15,
 		minHeight: btnHeight,
-		width: btnWidth,
-		backgroundColor: '#22a7f0',
+		width: '45%',
+		backgroundColor: '#963694',
 	},
 	btnText: {
 		color: '#fff',
@@ -255,17 +282,35 @@ const styles = StyleSheet.create({
 	indicator: {
 		marginLeft: 20,
 	},
-	signUpRedirect: {
+	signUpBtn: {
+		marginTop: 5,
+		flexDirection: 'row',
+		justifyContent: 'center',
+		alignItems: 'flex-end',
+		alignSelf: 'center',
+		borderRadius: 50,
+		padding: 15,
+		width: '45%',
+		borderWidth: 1,
+		borderColor: '#963694',
+	},
+	forgotPasswordRedirect: {
 		flex: 1,
 		flexDirection: 'row',
-		alignItems: 'center',
-		justifyContent: 'center',
+		alignItems: 'flex-end',
+		justifyContent: 'flex-end',
 		textAlign: 'center',
-		margin: 30,
+		marginBottom: 30,
+	},
+	forgotPasswordText: {
+		textAlign: 'center',
+		// textDecorationLine: 'underline',
+		color: '#913d88',
 	},
 	signUpText: {
 		textAlign: 'center',
-		color: '#19b5fe',
+		fontSize: 15,
+		color: '#913d88',
 	},
 });
 

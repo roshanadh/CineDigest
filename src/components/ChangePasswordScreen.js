@@ -70,7 +70,7 @@ export default class ChangePassword extends Component {
                         indeterminate={false}
                         progress={1}
                         style={styles.progressBar}
-                        color="#963694" />
+                        color="#ddd" />
                 );
             } else if (this.state.newPassword.length > 0 && this.state.newPassword.length < 6) {
                 return (
@@ -97,7 +97,7 @@ export default class ChangePassword extends Component {
                         indeterminate={false}
                         progress={this.state.passwordProgress}
                         style={styles.progressBar}
-                        color="#963694" />
+                        color="#ddd" />
                 );
             }
         };
@@ -231,22 +231,44 @@ export default class ChangePassword extends Component {
                     });
             }
         };
+
+        this.genInfoContainer = (newPasswordLengthErrorTextJsx, confirmPasswordLengthErrorTextJsx) => {
+            if (newPasswordLengthErrorTextJsx !== null || confirmPasswordLengthErrorTextJsx !== null) {
+                return (
+                    <View style={styles.infoContainer}>
+                        {newPasswordLengthErrorTextJsx}
+                        {confirmPasswordLengthErrorTextJsx}
+                    </View>
+                );
+            } else {
+                return (
+                    <View style={styles.infoContainer}>
+                        <Text style={styles.infoText}>You need a password to access your lists.</Text>
+                        <Text style={styles.infoText}>Create a strong password that includes different <Text style={styles.highlight}>$ymb0ls</Text> and <Text style={styles.highlight}>cAsEs</Text>.</Text>
+                    </View>
+                );
+            }
+        }
     }
 
     render() {
         let indicatorJsx = this.state.isLoading ?
             <ActivityIndicator size="small" color="#fefefe"
                 style={styles.indicator} /> : <View style={styles.emptyView} />;
+
         let newPasswordLengthErrorTextJsx =
             this.state.newPassword.length > 0 && this.state.newPassword.length < 6 ?
                 <Text style={styles.errorText}>Password must contain atleast 6 characters</Text> : null;
         let confirmPasswordLengthErrorTextJsx =
             this.state.passwordConfirmation.length > 0 && (this.state.newPassword !== this.state.passwordConfirmation) ?
                 <Text style={styles.errorText}>Passwords do not match</Text> : null;
+
         let progressBarJsx = this.genProgressBarJsx();
         let oldPasswordIconJsx = this.genOldPasswordIconJsx();
         let passwordIconJsx = this.genPasswordIconJsx();
         let confirmPasswordIconJsx = this.genConfirmPasswordIconJsx();
+
+        let infoContainerJsx = this.genInfoContainer(newPasswordLengthErrorTextJsx, confirmPasswordLengthErrorTextJsx);
 
         return (
             <ImageBackground blurRadius={1.3}
@@ -295,20 +317,13 @@ export default class ChangePassword extends Component {
                                     {confirmPasswordIconJsx}
                                 </View>
                             </View>
-                            <View style={styles.footer}>
-                                {newPasswordLengthErrorTextJsx}
-                                {confirmPasswordLengthErrorTextJsx}
-                            </View>
                             <TouchableOpacity style={styles.changePassBtn}
                                 onPress={() => this.changePassword()}>
                                 <Text style={styles.btnText}>Change Password</Text>
                                 {indicatorJsx}
                             </TouchableOpacity>
                         </View>
-                        <View style={styles.infoContainer}>
-                            <Text style={styles.infoText}>You need a password to access your lists stored on this device.</Text>
-                            <Text style={styles.infoText}>Create a strong password that comprises different <Text style={styles.highlight}>$ymb0ls</Text> and <Text style={styles.highlight}>cAsEs</Text>.</Text>
-                        </View>
+                        {infoContainerJsx}
                     </View>
                 </ScrollView>
             </ImageBackground>
@@ -341,8 +356,9 @@ const styles = StyleSheet.create({
         borderWidth: 0.1,
         borderColor: '#013243',
         flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center',
         padding: 20,
-        paddingBottom: 0,
         flex: 1,
         width: '100%',
         backgroundColor: '#fff',
@@ -363,7 +379,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderColor: '#963694',
+        borderColor: '#ddd',
         paddingLeft: 20,
         paddingRight: 20,
         backgroundColor: 'rgba(255,255,255,0.3)',
@@ -383,7 +399,7 @@ const styles = StyleSheet.create({
     horizontalRule: {
         borderBottomWidth: 1,
         width: '100%',
-        borderColor: '#963694',
+        borderColor: '#ddd',
     },
     errorWrapper: {
         flexDirection: 'row',
@@ -418,14 +434,14 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     footer: {
-        marginBottom: 10,
+        marginTop: 20,
     },
     errorText: {
         color: '#e74c3c',
-        fontSize: 14,
         alignSelf: 'center',
         textAlign: 'center',
-        marginBottom: 10,
+        fontSize: 13,
+        marginBottom: 15,
     },
     infoText: {
         fontSize: 13,

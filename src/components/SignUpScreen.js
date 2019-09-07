@@ -70,7 +70,7 @@ export default class SignUpScreen extends Component {
 						indeterminate={false}
 						progress={1}
 						style={styles.progressBar}
-						color="#22a7f0" />
+						color="#ddd" />
 				);
 			} else if (this.state.password1.length > 0 && this.state.password1.length < 6) {
 				return (
@@ -97,7 +97,7 @@ export default class SignUpScreen extends Component {
 						indeterminate={false}
 						progress={this.state.passwordProgress}
 						style={styles.progressBar}
-						color="#22a7f0" />
+						color="#ddd" />
 				);
 			}
 		};
@@ -117,7 +117,7 @@ export default class SignUpScreen extends Component {
 				);
 			} else {
 				return (
-					<FeatherIcon name="key" size={25} color="#22a7f0" />
+					<FeatherIcon name="key" size={25} color="#963694" />
 				);
 			}
 		};
@@ -133,7 +133,7 @@ export default class SignUpScreen extends Component {
 				);
 			} else {
 				return (
-					<FeatherIcon name="key" size={25} color="#22a7f0" />
+					<FeatherIcon name="key" size={25} color="#963694" />
 				);
 			}
 		};
@@ -145,7 +145,7 @@ export default class SignUpScreen extends Component {
 				);
 			} else {
 				return (
-					<TextIcon name="format-text" size={25} color="#22a7f0" />
+					<TextIcon name="format-text" size={25} color="#963694" />
 				);
 			}
 		};
@@ -162,7 +162,7 @@ export default class SignUpScreen extends Component {
 				);
 			} else {
 				return (
-					<TextIcon name="format-text" size={25} color="#22a7f0" />
+					<TextIcon name="format-text" size={25} color="#963694" />
 				);
 			}
 		};
@@ -174,7 +174,7 @@ export default class SignUpScreen extends Component {
 				);
 			} else {
 				return (
-					<FeatherIcon name="at-sign" size={25} color="#22a7f0" />
+					<FeatherIcon name="at-sign" size={25} color="#963694" />
 				);
 			}
 		};
@@ -215,7 +215,7 @@ export default class SignUpScreen extends Component {
 						CustomSnackbar.showSnackBar('The passwords didn\'t match!', 'long', '#e74c3c', 'OK');
 					} else if (!email.match(mailFormat)) {
 						this.setState({ isLoading: false });
-						CustomSnackbar.showSnackBar('The email is invalid!', 'long', '#e74c3c', 'OK');
+						CustomSnackbar.showSnackBar('You entered an invalid email!', 'long', '#e74c3c', 'OK');
 
 					} else if (this.state.username.includes('.') || this.state.username.includes('/') ||
 						this.state.username.includes('\\') || this.state.username.includes('|') ||
@@ -364,15 +364,14 @@ export default class SignUpScreen extends Component {
 		let confirmPasswordIconJsx = this.genConfirmPasswordIconJsx();
 
 		return (
-			<ImageBackground blurRadius={1.3} source={require('../assets/lilypads.png')} resizeMode="cover" style={styles.bgImage}>
+			<View style={styles.metaContainer}>
 				<StatusBar barStyle="dark-content"
 					translucent={true}
 					backgroundColor="rgba(255, 255, 255, 1)"
 				/>
-				<ScrollView style={styles.metaContainer}>
+				<ScrollView>
 					<View style={styles.container}>
-						<Image source={require('../assets/mainLogoWText.png')}
-							resizeMode="contain" style={styles.logo} />
+						<Text style={styles.welcomeText}>Cine Digest</Text>
 						<View style={styles.metaWrapper}>
 							<View style={styles.usernameWrapper}>
 								<TextInput
@@ -452,7 +451,7 @@ export default class SignUpScreen extends Component {
 
 						<TouchableOpacity style={styles.signupBtn}
 							onPress={this.signUpHandler}>
-							<Text style={styles.btnText}>{this.props.navigation.getParam('signUpBtnText') || 'Sign-up'}</Text>
+							<Text style={styles.btnText}>{this.props.navigation.getParam('signUpBtnText') || 'Sign Up'}</Text>
 							{indicatorJsx}
 						</TouchableOpacity>
 						<View style={styles.footer}>
@@ -464,16 +463,14 @@ export default class SignUpScreen extends Component {
 						</View>
 					</View>
 				</ScrollView>
-			</ImageBackground>
+			</View>
 		);
 	}
 }
 
 const styles = StyleSheet.create({
-	bgImage: {
-		width: '100%',
-		height: '100%',
-		flex: 1,
+	metaContainer: {
+		backgroundColor: '#fff',
 	},
 	container: {
 		flex: 1,
@@ -482,12 +479,13 @@ const styles = StyleSheet.create({
 		alignItems: 'center',
 		padding: 25,
 	},
-	logo: {
-		width: 300,
-		height: 150,
-		flex: 1,
-		marginBottom: 20,
-		alignSelf: 'center',
+	welcomeText: {
+		fontSize: 40,
+		fontFamily: 'Quicksand-Light',
+		width: '100%',
+		marginBottom: 30,
+		textAlign: 'center',
+		color: '#963694',
 	},
 	metaWrapper: {
 		flexDirection: 'column',
@@ -501,7 +499,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderBottomWidth: 1,
-		borderColor: '#22a7f0',
+		borderColor: '#ddd',
 		paddingLeft: 20,
 		paddingRight: 20,
 		backgroundColor: 'rgba(255,255,255,0.3)',
@@ -511,7 +509,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderBottomWidth: 1,
-		borderColor: '#22a7f0',
+		borderColor: '#ddd',
 		paddingLeft: 20,
 		paddingRight: 20,
 		backgroundColor: 'rgba(255,255,255,0.3)',
@@ -523,7 +521,7 @@ const styles = StyleSheet.create({
 	horizontalRule: {
 		borderBottomWidth: 1,
 		width: '100%',
-		borderColor: '#22a7f0',
+		borderColor: '#ddd',
 	},
 	errorWrapper: {
 		flexDirection: 'row',
@@ -547,7 +545,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'center',
 		alignItems: 'center',
 		borderBottomWidth: 1,
-		borderColor: '#22a7f0',
+		borderColor: '#ddd',
 		paddingLeft: 20,
 		paddingRight: 20,
 		backgroundColor: 'rgba(255,255,255,0.3)',
@@ -586,7 +584,7 @@ const styles = StyleSheet.create({
 		padding: 15,
 		minHeight: btnHeight,
 		width: '60%',
-		backgroundColor: '#22a7f0',
+		backgroundColor: '#963694',
 	},
 	btnText: {
 		color: '#fff',
@@ -601,6 +599,6 @@ const styles = StyleSheet.create({
 	footerText: {
 		marginBottom: 5,
 		textAlign: 'center',
-		color: '#336e7b',
+		color: '#6c7a89',
 	},
 });
