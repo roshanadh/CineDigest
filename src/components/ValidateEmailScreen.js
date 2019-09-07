@@ -35,13 +35,13 @@ export default class ValidateEmailScreen extends Component {
         };
 
         this.genKeyIconJsx = () => {
-            if (this.state.code.length === 0) {
+            if (this.state.userEnteredCode.length === 0) {
                 return (
                     <FeatherIcon name="key" size={25} color="#ddd" />
                 );
             } else {
                 return (
-                    <FeatherIcon name="key" size={25} color="#22a7f0" />
+                    <FeatherIcon name="key" size={25} color="#963694" />
                 );
             }
         };
@@ -229,7 +229,7 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderColor: '#22a7f0',
+        borderColor: '#ddd',
         paddingLeft: 20,
         paddingRight: 20,
         backgroundColor: 'rgba(255,255,255,0.3)',
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
         padding: 15,
         minHeight: btnHeight,
         width: '50%',
-        backgroundColor: '#22a7f0',
+        backgroundColor: '#963694',
     },
     btnText: {
         color: '#fff',
@@ -258,16 +258,8 @@ const styles = StyleSheet.create({
     indicator: {
         marginLeft: 20,
     },
-    footer: {
-        marginTop: 30,
-    },
-    footerText: {
-        marginBottom: 5,
-        textAlign: 'center',
-        color: '#336e7b',
-    },
     changeEmailText: {
         margin: 30,
-        color: '#22a7f0',
+        color: '#963694',
     },
 });
