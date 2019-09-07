@@ -467,7 +467,7 @@ export default class ProfileScreen extends Component {
                                     autoCapitalize="characters"
                                     onChangeText={(userEnteredCode) => this.setState({ userEnteredCode })}
                                     returnKeyType="done"
-                                    onSubmitEditing={this.signUpHandler} />
+                                    onSubmitEditing={this.validateHandler} />
                                 {keyIconJsx}
                             </View>
                             <TouchableOpacity style={styles.saveProfileBtn}
