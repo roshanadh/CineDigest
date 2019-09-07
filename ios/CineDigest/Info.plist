@@ -74,6 +74,13 @@
 		<string>SimpleLineIcons.ttf</string>
 		<string>Zocial.ttf</string>
 		<string>Fontisto.ttf</string>
+		<string>Quicksand_Dash.otf</string>
+		<string>Quicksand-Bold.otf</string>
+		<string>Quicksand-BoldItalic.otf</string>
+		<string>Quicksand-Italic.otf</string>
+		<string>Quicksand-Light.otf</string>
+		<string>Quicksand-LightItalic.otf</string>
+		<string>Quicksand-Regular.otf</string>
 	</array>
 </dict>
 </plist>
