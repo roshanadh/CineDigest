@@ -16,6 +16,7 @@ import FeatherIcon from 'react-native-vector-icons/Feather';
 
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
+import { onSignIn } from '../auth/auth';
 import netCon from '../util/NetCon.js';
 
 const { height } = Dimensions.get('window');
@@ -49,7 +50,8 @@ export default class ValidateEmailScreen extends Component {
             const name = this.props.navigation.getParam('name', null);
             const email = this.props.navigation.getParam('email', null);
             const username = this.props.navigation.getParam('username', null);
-            this.setState({ name, email, username }, () => {
+            const uuid = this.props.navigation.getParam('uuid', null);
+            this.setState({ name, email, username, uuid }, () => {
                 this.mailCode()
                     .then(validationCode => {
                         console.warn(validationCode + ' is the validation code!');
@@ -75,7 +77,10 @@ export default class ValidateEmailScreen extends Component {
                             console.warn(this.state.username + ' validated!');
                             this.setState({ isLoading: false });
                             CustomSnackbar.showSnackBar('Your email has been validated!', 'long', '#3fc380', null);
-                            this.props.navigation.navigate('SignIn');
+                            // User will be signed-in
+                            onSignIn(this.state.username, this.state.uuid)
+                                .then(() => props.navigation.navigate('SignedIn'))
+                                .catch(error => console.warn(error.message));
                         }, error => {
                             console.warn('Could not validate!');
                         });
