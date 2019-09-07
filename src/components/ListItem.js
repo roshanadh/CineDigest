@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     title: {
-        color: '#19b5fe',
+        color: '#963694',
         flex: 1,
         fontSize: 16,
         fontWeight: 'bold',

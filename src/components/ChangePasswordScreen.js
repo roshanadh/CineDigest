@@ -423,7 +423,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderRadius: 50,
         padding: 15,
-        width: '70%',
+        width: '80%',
         backgroundColor: '#963694',
     },
     btnText: {

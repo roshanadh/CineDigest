@@ -58,7 +58,7 @@ class SignInScreen extends Component {
 							} else if (error.status === 'USERNAME-NOT-FOUND') {
 								CustomSnackbar.showSnackBar(`'${this.state.username}' is not a registered user!`, 'long', '#e74c3c', 'OK');
 							} else if (error.status === 'NOT-VALIDATED') {
-								CustomSnackbar.showSnackBar(`'${this.state.username}' is has not been validated!`, 'long', '#e74c3c', 'OK');
+								CustomSnackbar.showSnackBar(`'${this.state.username}' has not been validated!`, 'long', '#e74c3c', 'OK');
 								this.props.navigation.navigate('ValidateEmail', {
 									email: error.email,
 									uuid: error.uuid,
