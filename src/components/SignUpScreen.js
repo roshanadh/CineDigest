@@ -282,6 +282,7 @@ export default class SignUpScreen extends Component {
 											email: this.state.email,
 											name: this.state.name,
 											username: this.state.username,
+											uuid: this.state.uuid,
 										});
 									}, err => {
 										this.setState({ isLoading: false });
@@ -310,8 +311,7 @@ export default class SignUpScreen extends Component {
 
 		this.signUpHandler = () => {
 			this.setState({isLoading: true});
-			// this.checkSignUp();
-			this.props.navigation.navigate('ValidateEmail');
+			this.checkSignUp();
 		};
 	}
 
