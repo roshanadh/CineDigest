@@ -63,10 +63,10 @@ export default class ResetPasswordScreen extends Component {
                             .then(results => {
                                 // Email is registered
                                 this.mailCode()
-                                    .then(confirmationCode => {
-                                        console.warn(confirmationCode + ' is the confirmation code!');
+                                    .then(recoveryCode => {
+                                        console.warn(recoveryCode + ' is the recovery code!');
                                         this.props.navigation.navigate('ResetPassword', {
-                                            code: confirmationCode,
+                                            code: recoveryCode,
                                             email,
                                         });
                                     }, error => {
@@ -122,7 +122,7 @@ export default class ResetPasswordScreen extends Component {
             return new Promise((resolve, reject) => {
                 let ranString = this.genCode();
                 console.warn(ranString);
-                db.mailer(this.state.email, 'Confirmation Code', 'Your confirmation code is: ' + ranString)
+                db.mailer(this.state.email, 'Recovery Code', 'Your recovery code is: ' + ranString)
                     .then(success => {
                         console.warn('Mailed successfully!');
                         resolve(ranString);
@@ -136,7 +136,6 @@ export default class ResetPasswordScreen extends Component {
         this.sendCodeHandler = () => {
             this.setState({ isLoading: true });
             this.checkEmail();
-            // this.props.navigation.navigate('ResetPassword');
         };
     }
 
