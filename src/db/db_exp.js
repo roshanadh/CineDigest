@@ -60,6 +60,35 @@ class Database {
         });
     }
 
+    checkEmail(email) {
+        return new Promise((resolve, reject) => {
+            const payload = {
+                email,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/checkEmail', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status !== 'NOT-FOUND') {
+                        resolve({
+                            username: jsonResponse.username,
+                            uuid: jsonResponse.uuid,
+                        });
+                    } else {
+                        reject(jsonResponse.status);
+                    }
+                })
+                .catch(error => {
+                    console.warn(error.message);
+                    reject(error.message);
+                });
+        });
+    }
+
     addUser(username, email, password, name) {
         return new Promise((resolve, reject) => {
             const payload = {
