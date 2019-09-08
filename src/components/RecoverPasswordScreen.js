@@ -65,6 +65,7 @@ export default class ResetPasswordScreen extends Component {
                                 this.mailCode()
                                     .then(recoveryCode => {
                                         console.warn(recoveryCode + ' is the recovery code!');
+                                        CustomSnackbar.showSnackBar('A recovery code has been mailed to you!', 'always', '#3fc380', 'OK');
                                         this.props.navigation.navigate('ResetPassword', {
                                             code: recoveryCode,
                                             email,
