@@ -9,6 +9,7 @@ import MainScreen from './MainScreen';
 import SignInScreen from './SignInScreen';
 import SignUpScreen from './SignUpScreen';
 import ValidateEmailScreen from './ValidateEmailScreen';
+import RecoverPasswordScreen from './RecoverPasswordScreen';
 
 export const SignedOut = createAppContainer(new createStackNavigator(
     {
@@ -28,6 +29,12 @@ export const SignedOut = createAppContainer(new createStackNavigator(
             screen: ValidateEmailScreen,
             navigationOptions: {
                 title: 'Validate Email',
+            },
+        },
+        RecoverPassword: {
+            screen: RecoverPasswordScreen,
+            navigationOptions: {
+                title: 'Recover Password',
             },
         },
     },
