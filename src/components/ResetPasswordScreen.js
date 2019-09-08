@@ -7,9 +7,9 @@ import {
     StyleSheet,
     ActivityIndicator,
     ScrollView,
+    Alert,
 } from 'react-native';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import Feather from 'react-native-vector-icons/Feather';
 
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp.js';
@@ -26,117 +26,74 @@ export default class ResetPasswordScreen extends Component {
         super(props);
         this.state = {
             isLoading: false,
+            userEnteredCode: '',
+            code: '',
             email: '',
         };
 
-        this.genEmailIconJsx = () => {
-            if (this.state.email.length === 0) {
+        this.initState = () => {
+            this.setState({
+                email: this.props.navigation.getParam('email'),
+                code: this.props.navigation.getParam('code'),
+            });
+        };
+
+        this.genTextIconJsx = () => {
+            if (this.state.userEnteredCode.length === 0) {
                 return (
-                    <Feather name="at-sign" size={25} color="#ddd" />
+                    <MCIcons name="format-text" size={25} color="#ddd" />
                 );
             } else {
                 return (
-                    <Feather name="at-sign" size={25} color="#963694" />
+                    <MCIcons name="format-text" size={25} color="#963694" />
                 );
             }
         };
 
-        this.checkEmail = () => {
+        this.checkCode = () => {
             netCon.checkNetCon()
                 .then(success => {
                     // Internet connection is available
                     const {
+                        code,
+                        userEnteredCode,
                         email,
                     } = this.state;
 
-                    const mailFormat = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
-
-                    if (email === '') {
+                    if (userEnteredCode === '') {
                         this.setState({ isLoading: false });
-                        CustomSnackbar.showSnackBar('You haven\'t entered your email!', 'long', '#e74c3c', 'OK');
-                    } else if (!email.match(mailFormat)) {
-                        this.setState({ isLoading: false });
-                        CustomSnackbar.showSnackBar('You entered an invalid email!', 'long', '#e74c3c', 'OK');
-
+                        CustomSnackbar.showSnackBar('You haven\'t entered the code!', 'long', '#e74c3c', 'OK');
                     } else {
-                        db.checkEmail(email)
+                        db.resetPassword(userEnteredCode, code, email)
                             .then(results => {
-                                // Email is registered
-                                this.mailCode()
-                                    .then(recoveryCode => {
-                                        console.warn(recoveryCode + ' is the recovery code!');
-                                        this.props.navigation.navigate('ResetPassword', {
-                                            code: recoveryCode,
-                                            email,
-                                        });
-                                    }, error => {
-                                            CustomSnackbar.showSnackBar('An error occurred. Please try again!', 'long', '#e74c3c', 'OK');
-                                            console.warn('Some error occurred in mailCode() ' + error);
-                                    });
+                                // Successfully reset
+                                this.setState({ isLoading: false });
+                                CustomSnackbar.showSnackBar('Your password has been reset!', 'always', '#3fc380', 'OK');
+                                this.props.navigation.navigate('SignIn');
                             }, error => {
-                                    // Email is not registered
+                                    // Couldn't reset password
                                     this.setState({ isLoading: false });
-                                    CustomSnackbar.showSnackBar('The email is not registered!', 'long', '#e74c3c', 'OK');
-                            });
+                                    if (error.status === 'NO-PERMISSION') {
+                                        CustomSnackbar.showSnackBar('The validation code is incorrect!', 'long', '#e74c3c', 'OK');
+                                    } else {
+                                        CustomSnackbar.showSnackBar('An error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                        Alert.alert('Error', error.status);
+                                    }
+                            })
+                            .catch(error => console.warn(error.message));
                     }
                 })
                 .catch(error => console.warn(error.message));
         };
 
-        this.genCode = () => {
-            let string = Math.random().toString(26).replace('.', '');
-            let ranString = '';
-            if (string.length > 6) {
-                ranString = string.substring(0, 6);
-            } else if (string.length < 6) {
-                switch (string.length) {
-                    case 0:
-                        ranString = 'abc023';
-                        break;
-                    case 1:
-                        ranString = string + '123ab';
-                        break;
-                    case 2:
-                        ranString = string + 'aef4';
-                        break;
-                    case 3:
-                        ranString = string + 'r0w';
-                        break;
-                    case 4:
-                        ranString = string + '1a';
-                        break;
-                    case 5:
-                        ranString = string + '1';
-                        break;
-                    default:
-                        null;
-                }
-            } else {
-                ranString = string;
-            }
-            this.setState({ code: ranString.toUpperCase() });
-            return ranString.toUpperCase();
-        };
-
-        this.mailCode = () => {
-            return new Promise((resolve, reject) => {
-                let ranString = this.genCode();
-                console.warn(ranString);
-                db.mailer(this.state.email, 'Recovery Code', 'Your recovery code is: ' + ranString)
-                    .then(success => {
-                        console.warn('Mailed successfully!');
-                        resolve(ranString);
-                    }, error => {
-                        console.warn('Mail could not be sent!');
-                        reject(false);
-                    });
-            });
-        };
-
-        this.sendCodeHandler = () => {
+        this.resetPassHandler = () => {
             this.setState({ isLoading: true });
-            this.checkEmail();
+            this.checkCode();
         };
+    }
+
+    componentDidMount() {
+        this.initState();
     }
 
     render() {
@@ -144,7 +101,7 @@ export default class ResetPasswordScreen extends Component {
             <ActivityIndicator size="small" color="#fefefe"
                 style={styles.indicator} /> : <View style={styles.emptyView} />;
 
-        let emailIconJsx = this.genEmailIconJsx();
+        let textIconJsx = this.genTextIconJsx();
 
         return (
             <View style={styles.metaContainer}>
@@ -152,30 +109,25 @@ export default class ResetPasswordScreen extends Component {
                     <View style={styles.container}>
                         <View style={styles.changePasswordContainer}>
                             <MCIcons name="textbox-password" size={80} color="#34495e" style={styles.passwordIcon} />
-                            <View style={styles.infoContainer}>
-                                <Text style={styles.infoText}>A password recovery code will be emailed to you.</Text>
-                            </View>
                             <View style={styles.metaWrapper}>
                                 <View style={styles.passwordWrapper}>
-                                    <TextInput placeholder="Email"
+                                    <TextInput placeholder="Code"
                                         style={styles.textInput}
-                                        autoCapitalize="none"
-                                        onChangeText={email => this.setState({ email })}
+                                        autoCapitalize="characters"
+                                        onChangeText={userEnteredCode => this.setState({ userEnteredCode })}
                                         returnKeyType="done"
-                                        keyboardType="email-address"
-                                        autoCompleteType="email"
-                                        onSubmitEditing={this.sendCodeHandler} />
-                                    {emailIconJsx}
+                                        onSubmitEditing={this.resetPassHandler} />
+                                    {textIconJsx}
                                 </View>
                             </View>
-                            <TouchableOpacity style={styles.sendCodeBtn}
-                                onPress={() => this.sendCodeHandler()}>
-                                <Text style={styles.btnText}>Send Code</Text>
+                            <TouchableOpacity style={styles.resetPassBtn}
+                                onPress={() => this.resetPassHandler()}>
+                                <Text style={styles.btnText}>Reset Password</Text>
                                 {indicatorJsx}
                             </TouchableOpacity>
                             <View style={styles.infoContainer}>
-                                <Text style={styles.infoText}>The email you provide should be associated with your username.</Text>
-                                <Text style={styles.infoText}>Do not share your recovery codes with anyone else.</Text>
+                                <Text style={styles.infoText}>If your recovery code is correct, your password will be reset.</Text>
+                                <Text style={styles.infoText}>A temporary password will be emailed at {this.state.email}.</Text>
                             </View>
                         </View>
                     </View>
@@ -261,7 +213,7 @@ const styles = StyleSheet.create({
         flex: 5,
         minHeight: '6%',
     },
-    sendCodeBtn: {
+    resetPassBtn: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',

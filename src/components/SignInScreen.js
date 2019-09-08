@@ -124,21 +124,8 @@ class SignInScreen extends Component {
 		netCon.checkNetCon()
 			.then(success => {
 				// Internet connection available
-				Snackbar.show({
-					title: 'Initializing the app...',
-					duration: Snackbar.LENGTH_INDEFINITE,
-					color: '#fefefe',
-					fontSize: 16,
-					backgroundColor: '#3fc380',
-					action: {
-						title: 'Hide',
-						color: '#fefefe',
-						onPress: () => { },
-					},
-				});
 				fetch('https://api-cine-digest.herokuapp.com/api/v1')
 					.then(response => {
-						Snackbar.dismiss();
 						if (response.status === 503) {
 							CustomSnackbar.showSnackBar('Server is currently down for maintenance!', 'always', '#e74c3c', 'OK');
 						} else if (response.status !== 200) {
