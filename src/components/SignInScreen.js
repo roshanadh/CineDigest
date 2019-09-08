@@ -99,6 +99,10 @@ class SignInScreen extends Component {
 				);
 			}
 		};
+
+		this.forgotPasswordHandler = () => {
+			this.props.navigation.navigate('RecoverPassword');
+		};
     }
     static navigationOptions = {
         header: null,
@@ -185,7 +189,7 @@ class SignInScreen extends Component {
 								{passwordIconJsx}
 							</View>
 							<View style={styles.forgotPasswordRedirect}>
-								<TouchableOpacity>
+								<TouchableOpacity onPress={this.forgotPasswordHandler}>
 									<Text style={styles.forgotPasswordText}>
 										Forgot Password?
 									</Text>
@@ -217,13 +221,15 @@ const styles = StyleSheet.create({
 		backgroundColor: '#fff',
 	},
 	welcomeText: {
-		fontSize: responsiveFontSize(11),
+		fontSize: responsiveFontSize(10),
 		fontFamily: 'Quicksand-Light',
 		width: '100%',
 		marginBottom: 10,
 		color: '#963694',
 		paddingTop: 0,
 		padding: 25,
+		textShadowColor: '#aaa',
+		textShadowRadius: 8,
 	},
 	container: {
 		flex: 1,
