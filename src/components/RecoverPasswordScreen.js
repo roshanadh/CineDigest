@@ -16,7 +16,7 @@ import db from '../db/db_exp.js';
 import netCon from '../util/NetCon.js';
 
 
-export default class RecoverPassword extends Component {
+export default class ResetPasswordScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'Recover Password',
@@ -59,11 +59,24 @@ export default class RecoverPassword extends Component {
                         CustomSnackbar.showSnackBar('You entered an invalid email!', 'long', '#e74c3c', 'OK');
 
                     } else {
-                        this.mailCode()
-                            .then(recoveryCode => {
-                                console.warn(recoveryCode + ' is the recovery code!');
+                        db.checkEmail(email)
+                            .then(results => {
+                                // Email is registered
+                                this.mailCode()
+                                    .then(confirmationCode => {
+                                        console.warn(confirmationCode + ' is the confirmation code!');
+                                        this.props.navigation.navigate('ResetPassword', {
+                                            code: confirmationCode,
+                                            email,
+                                        });
+                                    }, error => {
+                                            CustomSnackbar.showSnackBar('An error occurred. Please try again!', 'long', '#e74c3c', 'OK');
+                                            console.warn('Some error occurred in mailCode() ' + error);
+                                    });
                             }, error => {
-                                console.warn('Some error occurred in mailCode()');
+                                    // Email is not registered
+                                    this.setState({ isLoading: false });
+                                    CustomSnackbar.showSnackBar('The email is not registered!', 'long', '#e74c3c', 'OK');
                             });
                     }
                 })
@@ -109,11 +122,9 @@ export default class RecoverPassword extends Component {
             return new Promise((resolve, reject) => {
                 let ranString = this.genCode();
                 console.warn(ranString);
-                db.mailer(this.state.email, 'Recovery Code', 'Your password recovery code is: ' + ranString)
+                db.mailer(this.state.email, 'Confirmation Code', 'Your confirmation code is: ' + ranString)
                     .then(success => {
                         console.warn('Mailed successfully!');
-                        this.setState({ isLoading: false });
-                        CustomSnackbar.showSnackBar('A recovery code has been sent!', 'long', '#3fc380', null);
                         resolve(ranString);
                     }, error => {
                         console.warn('Mail could not be sent!');
@@ -125,6 +136,7 @@ export default class RecoverPassword extends Component {
         this.sendCodeHandler = () => {
             this.setState({ isLoading: true });
             this.checkEmail();
+            // this.props.navigation.navigate('ResetPassword');
         };
     }
 
