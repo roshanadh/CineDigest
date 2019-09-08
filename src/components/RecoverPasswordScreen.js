@@ -175,7 +175,7 @@ export default class ResetPasswordScreen extends Component {
                             </TouchableOpacity>
                             <View style={styles.infoContainer}>
                                 <Text style={styles.infoText}>The email you provide should be associated with your username.</Text>
-                                <Text style={styles.infoText}>Do not share your recovery codes to anyone else.</Text>
+                                <Text style={styles.infoText}>Do not share your recovery codes with anyone else.</Text>
                             </View>
                         </View>
                     </View>
