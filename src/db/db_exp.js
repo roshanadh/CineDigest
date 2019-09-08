@@ -89,6 +89,41 @@ class Database {
         });
     }
 
+    resetPassword(userCode, code, email) {
+        return new Promise((resolve, reject) => {
+            const payload = {
+                code,
+                userCode,
+                email,
+            };
+            const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
+            fetch('http://api-cine-digest.herokuapp.com/api/v1/resetPassword', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: formBody,
+            })
+                .then(response => response.json())
+                .then(jsonResponse => {
+                    if (jsonResponse.status === 'success') {
+                        resolve(true);
+                    } else if (jsonResponse.status === 'NO-PERMISSION') {
+                        reject({
+                            status: jsonResponse.status,
+                        });
+                    } else {
+                        reject({
+                            status: jsonResponse.status,
+                            message: jsonResponse.message,
+                        });
+                    }
+                })
+                .catch(error => {
+                    console.warn(error.message);
+                    reject(error.message);
+                });
+        });
+    }
+
     addUser(username, email, password, name) {
         return new Promise((resolve, reject) => {
             const payload = {
