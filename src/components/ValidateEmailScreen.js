@@ -202,6 +202,7 @@ export default class ValidateEmailScreen extends Component {
                         }}>
                             <Text style={styles.changeEmailText}>Not you? Change your email</Text>
                         </TouchableOpacity>
+                        <Text style={styles.infoText}>You will not be able to recover a lost password unless you validate your email.</Text>
                     </View>
                 </ScrollView>
             </View>
