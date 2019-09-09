@@ -726,8 +726,8 @@ const styles = StyleSheet.create({
     castHeader: {
         color: '#913d88',
         fontSize: 15,
-        marginTop: 10,
-        marginBottom: 10,
+        marginTop: 20,
+        marginBottom: 5,
     },
     fab: {
         zIndex: 1,
