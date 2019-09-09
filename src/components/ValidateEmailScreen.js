@@ -243,6 +243,8 @@ const styles = StyleSheet.create({
         marginBottom: 40,
         textAlign: 'center',
         color: '#963694',
+        textShadowColor: '#aaa',
+        textShadowRadius: 6,
     },
     infoText: {
         textAlign: 'center',
