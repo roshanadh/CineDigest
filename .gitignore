@@ -63,3 +63,6 @@ buck-out/
 
 # Webstorm
 .idea
+
+# Environment Variables / Config file
+.env
