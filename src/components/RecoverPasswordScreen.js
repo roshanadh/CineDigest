@@ -16,7 +16,7 @@ import db from '../db/db_exp.js';
 import netCon from '../util/NetCon.js';
 
 
-export default class ResetPasswordScreen extends Component {
+export default class RecoverPasswordScreen extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
             title: 'Recover Password',
@@ -62,8 +62,10 @@ export default class ResetPasswordScreen extends Component {
                         db.checkEmail(email)
                             .then(results => {
                                 // Email is registered
+                                console.warn('reg');
                                 this.mailCode()
                                     .then(recoveryCode => {
+                                        this.setState({ isLoading: false });
                                         console.warn(recoveryCode + ' is the recovery code!');
                                         CustomSnackbar.showSnackBar('A recovery code has been mailed to you!', 'always', '#3fc380', 'OK');
                                         this.props.navigation.navigate('ResetPassword', {
@@ -122,7 +124,7 @@ export default class ResetPasswordScreen extends Component {
         this.mailCode = () => {
             return new Promise((resolve, reject) => {
                 let ranString = this.genCode();
-                console.warn(ranString);
+                console.warn(ranString + ' is the random string');
                 db.mailer(this.state.email, 'Recovery Code', 'Your recovery code is: ' + ranString)
                     .then(success => {
                         console.warn('Mailed successfully!');
@@ -130,7 +132,8 @@ export default class ResetPasswordScreen extends Component {
                     }, error => {
                         console.warn('Mail could not be sent!');
                         reject(false);
-                    });
+                    })
+                    .catch(error => console.warn(error.message));
             });
         };
 
