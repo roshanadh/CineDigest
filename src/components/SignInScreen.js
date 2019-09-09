@@ -12,7 +12,6 @@ import {
 } from 'react-native';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
-import Snackbar from 'react-native-snackbar';
 import UsernameIcon from 'react-native-vector-icons/MaterialCommunityIcons';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 
