@@ -1,5 +1,7 @@
+import CryptoJS from 'crypto-js';
 import Snackbar from '../util/Snackbar';
 import { onSignIn, onSignOut } from '../auth/auth';
+import { CRYPTO_KEY } from 'react-native-dotenv';
 
 class Database {
     mailer(email, subject, mail) {
@@ -86,12 +88,13 @@ class Database {
         });
     }
 
-    resetPassword(userCode, code, email) {
+    resetPassword(email) {
         return new Promise((resolve, reject) => {
+            // Encrypt the email
+            const emailCipher = CryptoJS.HmacSHA1(email, CRYPTO_KEY);
             const payload = {
-                code,
-                userCode,
                 email,
+                emailCipher,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
             fetch('http://api-cine-digest.herokuapp.com/api/v1/resetPassword', {
