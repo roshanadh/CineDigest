@@ -251,7 +251,7 @@ export default class ChangePassword extends Component {
                     </View>
                 );
             }
-        }
+        };
     }
 
     render() {

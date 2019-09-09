@@ -18,6 +18,7 @@ import AsyncStorage from '@react-native-community/async-storage';
 import Carousel from 'react-native-snap-carousel';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import SimpleLineIcons from 'react-native-vector-icons/SimpleLineIcons';
+import EntypoIcon from 'react-native-vector-icons/Entypo';
 
 import ListItem from './ListItem';
 import SearchItem from './SearchItem';
@@ -404,14 +405,19 @@ export default class MoviesListsScreen extends Component {
 		let {wishListJsx, watchedListJsx} = this.state;
 		let fabJsx =
 			<ActionButton
-				buttonColor="#1abc9c"
+				buttonColor="#9b59b6"
 				position="right"
 				style={styles.fab}
 				shadowStyle={styles.fabShadow}
 				renderIcon= {active => active ?
 					(<FeatherIcon name="settings" style={styles.actionButtonIcon} size={30} />)
 					: (<FeatherIcon name="settings" style={styles.actionButtonIcon} />)} >
-
+						<ActionButton.Item buttonColor="#1abc9c"
+					title="About the app"
+					style={styles.actionButtonItem}
+					onPress={(() => this.props.navigation.navigate('AboutScreen'))}>
+					<EntypoIcon name="info" style={styles.actionButtonIcon} />
+				</ActionButton.Item>
 				<ActionButton.Item buttonColor="#db0a5b"
 					title="Sign out"
 					style={styles.actionButtonItem}
