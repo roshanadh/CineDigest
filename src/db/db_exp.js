@@ -74,10 +74,7 @@ class Database {
                 .then(response => response.json())
                 .then(jsonResponse => {
                     if (jsonResponse.status !== 'NOT-FOUND') {
-                        resolve({
-                            username: jsonResponse.username,
-                            uuid: jsonResponse.uuid,
-                        });
+                        resolve(true);
                     } else {
                         reject(jsonResponse.status);
                     }
