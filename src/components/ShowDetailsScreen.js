@@ -369,18 +369,25 @@ export default class ShowDetailsScreen extends Component {
         };
 
         this.getRecommendations = () => {
-            if (this.state.titleId === '' || this.state.title === '') {
-                // Show has not been loaded yet
-                Alert.alert('Oops', 'Please try again!');
-            } else {
-                this.props.navigation.navigate('RecommendationsScreen', {
-                    username: this.state.username,
-                    uuid: this.state.uuid,
-                    titleId: this.state.titleId,
-                    title: this.state.title,
-                    recomType: 'show',
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    if (this.state.titleId === '' || this.state.title === '') {
+                        // Show has not been loaded yet
+                        Alert.alert('Oops', 'Please try again!');
+                    } else {
+                        this.props.navigation.navigate('RecommendationsScreen', {
+                            username: this.state.username,
+                            uuid: this.state.uuid,
+                            titleId: this.state.titleId,
+                            title: this.state.title,
+                            recomType: 'show',
+                        });
+                    }
+                }, error => {
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
                 });
-            }
         };
 
         this.initScreen = () => {

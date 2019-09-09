@@ -48,27 +48,34 @@ export default class FullListScreen extends Component {
                     style={styles.trashIcon}
                     size={28}
                     onPress={() => {
-                        Alert.alert('Are you sure?', 'Your ' + listTypeForHeader + ' will be cleared!',
-                            [
-                                {
-                                    text: 'Cancel',
-                                    onPress: () => { },
-                                    style: 'cancel',
-                                },
-                                {
-                                    text: 'OK',
-                                    onPress: () => {
-                                        let uuid = navigation.getParam('uuid', null);
-                                        let listType = navigation.getParam('listType', null);
-                                        let titleType = navigation.getParam('titleType', null);
-                                        db.deleteAllListItems(uuid, listType, titleType)
-                                            .then((result) => {
-                                                CustomSnackbar.showSnackBar(`Your ${listTypeForHeader} has been cleared!`, 'short', '#3fc380', null);
-                                            }, (error) => Alert.alert('Oops', 'Please try again!'));
-                                    },
-                                },
-                            ]
-                        );
+                        netCon.checkNetCon()
+                            .then(success => {
+                                // Internet connection available
+                                Alert.alert('Are you sure?', 'Your ' + listTypeForHeader + ' will be cleared!',
+                                    [
+                                        {
+                                            text: 'Cancel',
+                                            onPress: () => { },
+                                            style: 'cancel',
+                                        },
+                                        {
+                                            text: 'OK',
+                                            onPress: () => {
+                                                let uuid = navigation.getParam('uuid', null);
+                                                let listType = navigation.getParam('listType', null);
+                                                let titleType = navigation.getParam('titleType', null);
+                                                db.deleteAllListItems(uuid, listType, titleType)
+                                                    .then((result) => {
+                                                        CustomSnackbar.showSnackBar(`Your ${listTypeForHeader} has been cleared!`, 'short', '#3fc380', null);
+                                                    }, (error) => Alert.alert('Oops', 'Please try again!'));
+                                            },
+                                        },
+                                    ]
+                                );
+                            }, error => {
+                                // Internet connection unavailable
+                                CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                            });
                     }} />
             ),
         };

@@ -89,8 +89,15 @@ export default class ResetPasswordScreen extends Component {
         };
 
         this.resetPassHandler = () => {
-            this.setState({ isLoading: true });
-            this.checkCode();
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    this.setState({ isLoading: true });
+                    this.checkCode();
+                }, error => {
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                });
         };
     }
 

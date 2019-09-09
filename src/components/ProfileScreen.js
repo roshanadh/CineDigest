@@ -16,6 +16,7 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import netCon from '../util/NetCon';
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp';
 
@@ -322,35 +323,49 @@ export default class ProfileScreen extends Component {
         );
 
         this.validateHandler = () => {
-            this.setState({ isValidatedLoading: true });
-            const { code, userEnteredCode } = this.state;
-            console.warn(code + ' is the code!');
-            console.warn(userEnteredCode + ' is the entered!');
-            if (code !== userEnteredCode) {
-                this.setState({ isValidatedLoading: false });
-                CustomSnackbar.showSnackBar('The validation code is incorrect!', 'long', '#f9690e', 'OK');
-                console.warn('Wrong code');
-            } else {
-                console.warn('Correct code!');
-                db.validateUser(this.state.username, this.state.email)
-                    .then(result => {
-                        console.warn(this.state.username + ' validated!');
-                        CustomSnackbar.showSnackBar('Your email has been validated!', 'long', '#3fc380', null);
-                        this.setState({ validatedStatus: true, isValidatedLoading: false });
-                    }, error => {
-                        console.warn('Could not validate!');
-                        console.warn(error);
-                    });
-            }
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    this.setState({ isValidatedLoading: true });
+                    const { code, userEnteredCode } = this.state;
+                    console.warn(code + ' is the code!');
+                    console.warn(userEnteredCode + ' is the entered!');
+                    if (code !== userEnteredCode) {
+                        this.setState({ isValidatedLoading: false });
+                        CustomSnackbar.showSnackBar('The validation code is incorrect!', 'long', '#f9690e', 'OK');
+                        console.warn('Wrong code');
+                    } else {
+                        console.warn('Correct code!');
+                        db.validateUser(this.state.username, this.state.email)
+                            .then(result => {
+                                console.warn(this.state.username + ' validated!');
+                                CustomSnackbar.showSnackBar('Your email has been validated!', 'long', '#3fc380', null);
+                                this.setState({ validatedStatus: true, isValidatedLoading: false });
+                            }, error => {
+                                console.warn('Could not validate!');
+                                console.warn(error);
+                            });
+                    }
+                }, error => {
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                });
         };
 
         this.resendCode = () => {
-            this.mailCode()
-                .then(validationCode => {
-                    console.warn(validationCode + ' is the validation code!');
-                    CustomSnackbar.showSnackBar('Validation code has been resent!', 'short', '#3fc380', null);
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    this.mailCode()
+                        .then(validationCode => {
+                            console.warn(validationCode + ' is the validation code!');
+                            CustomSnackbar.showSnackBar('Validation code has been resent!', 'short', '#3fc380', null);
+                        }, error => {
+                            console.warn('Some error occurred in mailCode()');
+                        });
                 }, error => {
-                    console.warn('Some error occurred in mailCode()');
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
                 });
         };
 
@@ -633,16 +648,33 @@ export default class ProfileScreen extends Component {
                                     onPress={() => this.changeEditable('email')} />
                             </View>
                             <TouchableOpacity style={styles.saveProfileBtn}
-                                onPress={() => this.updateProfile()}>
+                                onPress={() => {
+                                    netCon.checkNetCon()
+                                        .then(success => {
+                                            // Internet connection available
+                                            this.updateProfile();
+                                        }, error => {
+                                            // Internet connection unavailable
+                                            CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                                        });
+                                }
+                            }>
                                 <Text style={styles.btnText}>Save Profile</Text>
                                 {indicatorJsx}
                             </TouchableOpacity>
                             <TouchableOpacity style={styles.changePass}
                                 onPress={() =>
-                                    this.props.navigation.navigate('ChangePasswordScreen', {
-                                        username: this.state.username,
-                                        uuid: this.state.uuid,
-                                    })
+                                    netCon.checkNetCon()
+                                        .then(success => {
+                                            // Internet connection available
+                                            this.props.navigation.navigate('ChangePasswordScreen', {
+                                                username: this.state.username,
+                                                uuid: this.state.uuid,
+                                            });
+                                        }, error => {
+                                            // Internet connection unavailable
+                                            CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                                        })
                                 }>
                                 <Text style={styles.changePassText}>Change your password?</Text>
                             </TouchableOpacity>
