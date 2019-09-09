@@ -59,12 +59,14 @@ export default class ResetPasswordScreen extends Component {
                         userEnteredCode,
                         email,
                     } = this.state;
-
                     if (userEnteredCode === '') {
                         this.setState({ isLoading: false });
                         CustomSnackbar.showSnackBar('You haven\'t entered the code!', 'long', '#e74c3c', 'OK');
+                    } else if (userEnteredCode !== code) {
+                        this.setState({ isLoading: false });
+                        CustomSnackbar.showSnackBar('The validation code is incorrect!', 'long', '#e74c3c', 'OK');
                     } else {
-                        db.resetPassword(userEnteredCode, code, email)
+                        db.resetPassword(email)
                             .then(results => {
                                 // Successfully reset
                                 this.setState({ isLoading: false });
@@ -74,7 +76,7 @@ export default class ResetPasswordScreen extends Component {
                                     // Couldn't reset password
                                     this.setState({ isLoading: false });
                                     if (error.status === 'NO-PERMISSION') {
-                                        CustomSnackbar.showSnackBar('The validation code is incorrect!', 'long', '#e74c3c', 'OK');
+                                        CustomSnackbar.showSnackBar('Permission denied from server!', 'long', '#e74c3c', 'OK');
                                     } else {
                                         CustomSnackbar.showSnackBar('An error occurred. Please try again!', 'long', '#e74c3c', 'OK');
                                         Alert.alert('Error', error.status);
@@ -87,8 +89,15 @@ export default class ResetPasswordScreen extends Component {
         };
 
         this.resetPassHandler = () => {
-            this.setState({ isLoading: true });
-            this.checkCode();
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    this.setState({ isLoading: true });
+                    this.checkCode();
+                }, error => {
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                });
         };
     }
 

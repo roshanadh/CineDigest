@@ -16,6 +16,9 @@ import db from '../db/db_exp';
 import KeyIcon from 'react-native-vector-icons/Feather';
 import MCIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 
+import netCon from '../util/NetCon';
+import CustomSnackbar from '../util/Snackbar';
+
 export default class ChangePassword extends Component {
     static navigationOptions = ({ navigation }) => {
         return {
@@ -318,7 +321,16 @@ export default class ChangePassword extends Component {
                                 </View>
                             </View>
                             <TouchableOpacity style={styles.changePassBtn}
-                                onPress={() => this.changePassword()}>
+                                onPress={() =>
+                                    netCon.checkNetCon()
+                                        .then(success => {
+                                            // Internet connection available
+                                            this.changePassword();
+                                        }, error => {
+                                            // Internet connection unavailable
+                                            CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                                        })
+                                }>
                                 <Text style={styles.btnText}>Change Password</Text>
                                 {indicatorJsx}
                             </TouchableOpacity>

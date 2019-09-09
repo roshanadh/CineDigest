@@ -15,6 +15,7 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import ActionButton from 'react-native-action-button';
 
+import netCon from '../util/NetCon';
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp';
 
@@ -288,18 +289,25 @@ export default class MovieDetails extends Component {
         };
 
         this.getRecommendations = () => {
-            if (this.state.titleId === '' || this.state.title === '') {
-                // Movie has not been loaded yet
-                Alert.alert('Oops', 'Please try again!');
-            } else {
-                this.props.navigation.navigate('RecommendationsScreen', {
-                    username: this.state.username,
-                    uuid: this.state.uuid,
-                    titleId: this.state.titleId,
-                    title: this.state.title,
-                    recomType: 'movie',
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    if (this.state.titleId === '' || this.state.title === '') {
+                        // Movie has not been loaded yet
+                        Alert.alert('Oops', 'Please try again!');
+                    } else {
+                        this.props.navigation.navigate('RecommendationsScreen', {
+                            username: this.state.username,
+                            uuid: this.state.uuid,
+                            titleId: this.state.titleId,
+                            title: this.state.title,
+                            recomType: 'movie',
+                        });
+                    }
+                }, error => {
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
                 });
-            }
         };
 
         this.initScreen = () => {

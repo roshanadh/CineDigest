@@ -2,12 +2,12 @@ import React, {Component} from 'react';
 import {
     View,
     StyleSheet,
-    Alert,
     ImageBackground,
     ScrollView,
     ActivityIndicator,
 } from 'react-native';
 
+import CustomSnackbar from '../util/Snackbar';
 import ListContainer from './ListContainer';
 import netCon from '../util/NetCon';
 
@@ -69,19 +69,19 @@ export default class SearchScreen extends Component {
         fetch(`https://api-cine-digest.herokuapp.com/api/v1/search${this.searchType}/${searchQuery}`)
             .then(response => response.json())
             .then(jsonResponse => { // TODO read full response, not just titles
-                this.setState({
-                    isEmpty: false,
-                    searchResponse: jsonResponse,
-                });
+                if (jsonResponse.status === 'NOT-FOUND') {
+                    CustomSnackbar.showSnackBar('No results found!', 'long', '#e74c3c', 'OK');
+                    this.props.navigation.goBack();
+                } else {
+                    this.setState({
+                        isEmpty: false,
+                        searchResponse: jsonResponse,
+                    });
+                }
             }) // TODO fix response status parsing
             .catch(error => {
-                Alert.alert('Invalid Request', `Your request couldn't be handled!`, [{
-                    text: 'OK',
-                    onPress:(
-                        () => this.searchType === 'm' ?
-                            this.props.navigation.navigate('MoviesListsScreen') :
-                            this.props.navigation.navigate('ShowsListsScreen') ),
-                }]);
+                CustomSnackbar.showSnackBar('Request couldn\'t be handled!', 'long', '#e74c3c', 'OK');
+                this.props.navigation.goBack();
             });
     }
     render() {

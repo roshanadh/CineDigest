@@ -62,30 +62,37 @@ export default class ValidateEmailScreen extends Component {
         };
 
         this.validateHandler = () => {
-            this.setState({ isLoading: true }, () => {
-                const { code, userEnteredCode } = this.state;
-                console.warn(code + ' is the code!');
-                console.warn(userEnteredCode + ' is the entered!');
-                if (code !== userEnteredCode) {
-                    this.setState({ isLoading: false });
-                    console.warn('Wrong code');
-                    CustomSnackbar.showSnackBar('The validation code was incorrect!', 'long', '#e74c3c', 'OK');
-                } else {
-                    console.warn('Correct code!');
-                    db.validateUser(this.state.username, this.state.email)
-                        .then(result => {
-                            console.warn(this.state.username + ' validated!');
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    this.setState({ isLoading: true }, () => {
+                        const { code, userEnteredCode } = this.state;
+                        console.warn(code + ' is the code!');
+                        console.warn(userEnteredCode + ' is the entered!');
+                        if (code !== userEnteredCode) {
                             this.setState({ isLoading: false });
-                            CustomSnackbar.showSnackBar('Your email has been validated!', 'long', '#3fc380', null);
-                            // User will be signed-in
-                            onSignIn(this.state.username, this.state.uuid)
-                                .then(() => props.navigation.navigate('SignedIn'))
-                                .catch(error => console.warn(error.message));
-                        }, error => {
-                            console.warn('Could not validate!');
-                        });
-                }
-            });
+                            console.warn('Wrong code');
+                            CustomSnackbar.showSnackBar('The validation code was incorrect!', 'long', '#e74c3c', 'OK');
+                        } else {
+                            console.warn('Correct code!');
+                            db.validateUser(this.state.username, this.state.email)
+                                .then(result => {
+                                    console.warn(this.state.username + ' validated!');
+                                    this.setState({ isLoading: false });
+                                    CustomSnackbar.showSnackBar('Your email has been validated!', 'long', '#3fc380', null);
+                                    // User will be signed-in
+                                    onSignIn(this.state.username, this.state.uuid)
+                                        .then(() => props.navigation.navigate('SignedIn'))
+                                        .catch(error => console.warn(error.message));
+                                }, error => {
+                                    console.warn('Could not validate!');
+                                });
+                        }
+                    });
+                }, error => {
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                });
         };
 
         this.genCode = () => {
@@ -140,10 +147,17 @@ export default class ValidateEmailScreen extends Component {
 
         this.redirectToSignIn = () => {
             // User will be signed-in
-            console.warn(this.state.username, this.state.uuid);
-            onSignIn(this.state.username, this.state.uuid)
-                .then(() => props.navigation.navigate('SignedIn'))
-                .catch(error => console.warn(error.message));
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    onSignIn(this.state.username, this.state.uuid)
+                        .then(() => props.navigation.navigate('SignedIn'))
+                        .catch(error => console.warn(error.message));
+
+                }, error => {
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                });
         };
     }
 
@@ -202,6 +216,7 @@ export default class ValidateEmailScreen extends Component {
                         }}>
                             <Text style={styles.changeEmailText}>Not you? Change your email</Text>
                         </TouchableOpacity>
+                        <Text style={styles.infoText}>You will not be able to recover a lost password unless you validate your email.</Text>
                     </View>
                 </ScrollView>
             </View>

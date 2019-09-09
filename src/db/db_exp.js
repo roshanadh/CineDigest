@@ -91,7 +91,7 @@ class Database {
     resetPassword(email) {
         return new Promise((resolve, reject) => {
             // Encrypt the email
-            const emailCipher = CryptoJS.HmacSHA1(email, CRYPTO_KEY);
+            const emailCipher = CryptoJS.AES.encrypt(email, CRYPTO_KEY);
             const payload = {
                 email,
                 emailCipher,

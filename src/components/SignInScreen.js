@@ -101,7 +101,14 @@ class SignInScreen extends Component {
 		};
 
 		this.forgotPasswordHandler = () => {
-			this.props.navigation.navigate('RecoverPassword');
+			netCon.checkNetCon()
+				.then(success => {
+					// Internet connection available
+					this.props.navigation.navigate('RecoverPassword');
+				}, error => {
+					// Internet connection unavailable
+					CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+				});
 		};
     }
     static navigationOptions = {
@@ -117,7 +124,14 @@ class SignInScreen extends Component {
     };
 
 	redirectToSignUp = () => {
-		this.props.navigation.navigate('SignUp');
+		netCon.checkNetCon()
+			.then(success => {
+				// Internet connection available
+				this.props.navigation.navigate('SignUp');
+			}, error => {
+				// Internet connection unavailable
+				CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+			});
 	}
 
 	componentDidMount() {

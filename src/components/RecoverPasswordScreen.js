@@ -138,8 +138,15 @@ export default class RecoverPasswordScreen extends Component {
         };
 
         this.sendCodeHandler = () => {
-            this.setState({ isLoading: true });
-            this.checkEmail();
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    this.setState({ isLoading: true });
+                    this.checkEmail();
+                }, error => {
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                });
         };
     }
 
