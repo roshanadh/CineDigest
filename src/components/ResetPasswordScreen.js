@@ -59,7 +59,6 @@ export default class ResetPasswordScreen extends Component {
                         userEnteredCode,
                         email,
                     } = this.state;
-                    console.warn('CODE: ' + code + ' and user\'s: ' + userEnteredCode);
                     if (userEnteredCode === '') {
                         this.setState({ isLoading: false });
                         CustomSnackbar.showSnackBar('You haven\'t entered the code!', 'long', '#e74c3c', 'OK');
