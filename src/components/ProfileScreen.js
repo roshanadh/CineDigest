@@ -60,18 +60,26 @@ export default class ProfileScreen extends Component {
         };
 
         this.changeEditable = (field) => {
-            switch (field) {
-                case 'name':
-                    this.setState({isNameEditable: !this.state.isNameEditable});
-                    break;
-                case 'username':
-                    this.setState({ isUsernameEditable: !this.state.isUsernameEditable });
-                    break;
-                case 'email':
-                    this.setState({ isEmailEditable: !this.state.isEmailEditable });
-                    break;
-                default: null;
-            }
+            netCon.checkNetCon()
+                .then(success => {
+                    // Internet connection available
+                    switch (field) {
+                        case 'name':
+                            this.setState({ isNameEditable: !this.state.isNameEditable });
+                            break;
+                        case 'username':
+                            this.setState({ isUsernameEditable: !this.state.isUsernameEditable });
+                            break;
+                        case 'email':
+                            this.setState({ isEmailEditable: !this.state.isEmailEditable });
+                            break;
+                        default: null;
+                    }
+                }, error => {
+                    // Internet connection unavailable
+                    CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                });
+            
         };
 
         this.updateProfile = () => {

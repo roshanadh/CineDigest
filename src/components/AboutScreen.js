@@ -1,23 +1,14 @@
 import React, { Component } from 'react';
 import {
     View,
-    TextInput,
     Text,
-    TouchableOpacity,
     StyleSheet,
-    ActivityIndicator,
     ScrollView,
     ImageBackground,
-    ProgressBarAndroid,
-    Alert,
     Linking,
 } from 'react-native';
-import bcrypt from 'react-native-bcrypt';
-import db from '../db/db_exp';
+import { responsiveFontSize } from 'react-native-responsive-dimensions';
 import AntDesignIcon from 'react-native-vector-icons/AntDesign';
-
-import netCon from '../util/NetCon';
-import CustomSnackbar from '../util/Snackbar';
 
 export default class AboutScreen extends Component {
     static navigationOptions = ({ navigation }) => {
@@ -33,18 +24,6 @@ export default class AboutScreen extends Component {
             },
         };
     }
-    constructor(props) {
-        super(props);
-        this.state = {
-            isLoading: false,
-            username: '',
-            uuid: '',
-            passwordProgress: 0,
-            oldPassword: '',
-            newPassword: '',
-            passwordConfirmation: '',
-        };
-    }
 
     render() {
         return (
@@ -53,9 +32,10 @@ export default class AboutScreen extends Component {
                 resizeMode="cover" style={styles.bgImage}>
                 <ScrollView style={styles.scrollView}>
                     <View style={styles.container}>
-                        <View style={styles.changePasswordContainer}>
+                        <View style={styles.aboutContainer}>
+                            <Text style={styles.welcomeText}>Cine Digest</Text>
                             <Text style={styles.text}>
-                                <Text style={styles.highlight}>Cine Digest</Text> is an attempt at providing a platform for
+                                is an attempt at providing a platform for
                                 movie and television enthusiasts to gather their interests.
                             </Text>
                             <Text style={styles.text}>
@@ -65,14 +45,25 @@ export default class AboutScreen extends Component {
                                 Gandaki College of Engineering and Science{'\n'}
                                 Pokhara, Nepal
                             </Text>
-                            <Text style={styles.text}>
+                            <Text style={styles.insight}>
                                 by the group of
                             </Text>
-                            <Text style={styles.devNames}>
-                                Roshan Adhikari,{'\n'}Sakar Raman Parajuli, and{'\n'}Sandhya Acharya
+                            <Text style={styles.devNameList}>
+                                <Text style={styles.devName}>
+                                    Roshan Adhikari
+                                </Text>{'\n'}
+                                <Text style={styles.devName}>
+                                    Sakar Raman Parajuli
+                                </Text>{'\n'}
+                                <Text style={styles.devName}>
+                                    Sandhya Acharya
+                                </Text>
                             </Text>
-                            <Text style={styles.text}>
-                                under the supervision of <Text style={styles.highlight}>Er. Mahesh Shakya</Text>.
+                            <Text style={styles.insight}>
+                                under the supervision of
+                            </Text>
+                            <Text style={styles.devNameList}>
+                                <Text style={styles.devName}>Er. Mahesh Shakya</Text>.
                             </Text>
                         </View>
 
@@ -105,7 +96,7 @@ const styles = StyleSheet.create({
         paddingTop: 10,
         paddingBottom: 10,
     },
-    changePasswordContainer: {
+    aboutContainer: {
         flexDirection: 'column',
         justifyContent: 'flex-start',
         padding: 20,
@@ -115,6 +106,17 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderWidth: 0.1,
         borderColor: '#013243',
+    },
+    welcomeText: {
+        fontSize: responsiveFontSize(5),
+        fontFamily: 'Quicksand-Light',
+        width: '100%',
+        color: '#963694',
+        paddingTop: 0,
+        padding: 25,
+        textShadowColor: '#aaa',
+        textShadowRadius: 6,
+        textAlign: 'center',
     },
     infoContainer: {
         borderWidth: 0.1,
@@ -126,6 +128,9 @@ const styles = StyleSheet.create({
         flex: 1,
         width: '100%',
         backgroundColor: '#fff',
+    },
+    insight: {
+        marginBottom: 5,
     },
     text: {
         fontSize: 14,
@@ -145,10 +150,14 @@ const styles = StyleSheet.create({
     collegeName: {
         color: '#67809f',
         textAlign: 'center',
-        marginBottom: 10,
+        marginBottom: 15,
         fontSize: 15,
     },
-    devNames: {
+    devNameList: {
+        textAlign: 'center',
+        marginBottom: 15,
+    },
+    devName: {
         color: '#67809f',
         textAlign: 'center',
         marginBottom: 10,

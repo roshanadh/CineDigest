@@ -86,13 +86,31 @@ export default class MovieDetails extends Component {
                         this.setState({
                             wishListBtnJsx:
                                 <TouchableOpacity style={styles.removeFromListBtn}
-                                    onPress={() => this.removeFromList('wishList')}>
+                                    onPress={() =>
+                                        netCon.checkNetCon()
+                                            .then(success => {
+                                                // Internet connection available
+                                                this.removeFromList('wishList');
+                                            }, error => {
+                                                // Internet connection unavailable
+                                                CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                                            })
+                                        }>
                                     <Text style={styles.btnText}>Remove from Wish-list</Text>
                                 </TouchableOpacity>,
                             // If movie is in Wish-list, it cannot be already in Watched-list
                             watchedListBtnJsx:
                                 <TouchableOpacity style={styles.watchedListBtn}
-                                    onPress={() => this.addToWatchedList()}>
+                                    onPress={() =>
+                                        netCon.checkNetCon()
+                                            .then(success => {
+                                                // Internet connection available
+                                                this.addToWatchedList();
+                                            }, error => {
+                                                // Internet connection unavailable
+                                                CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                                            })
+                                    }>
                                     <Text style={styles.btnText}>Add to Watched-list</Text>
                                 </TouchableOpacity>,
                         }, () =>
@@ -110,12 +128,30 @@ export default class MovieDetails extends Component {
                                 this.setState({
                                     wishListBtnJsx:
                                         <TouchableOpacity style={styles.disabledBtn}
-                                            onPress={() => this.displayAlreadyInList('watched', this.state.title)}>
+                                            onPress={() =>
+                                                netCon.checkNetCon()
+                                                    .then(success => {
+                                                        // Internet connection available
+                                                        this.displayAlreadyInList('watched', this.state.title);
+                                                    }, error => {
+                                                        // Internet connection unavailable
+                                                        CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                                                    })
+                                                }>
                                             <Text style={styles.disabledBtnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchedListBtnJsx:
                                         <TouchableOpacity style={styles.removeFromListBtn}
-                                            onPress={() => this.removeFromList('watchedList')} >
+                                            onPress={() =>
+                                                netCon.checkNetCon()
+                                                    .then(success => {
+                                                        // Internet connection available
+                                                        this.removeFromList('watchedList')
+                                                    }, error => {
+                                                        // Internet connection unavailable
+                                                        CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                                                    })
+                                                } >
                                             <Text style={styles.btnText}>Remove from Watched-list</Text>
                                         </TouchableOpacity >,
                                 }, () =>
@@ -129,12 +165,30 @@ export default class MovieDetails extends Component {
                                 this.setState({
                                     wishListBtnJsx:
                                         <TouchableOpacity style={styles.wishListBtn}
-                                            onPress={() => this.addToWishList()}>
+                                            onPress={() =>
+                                                netCon.checkNetCon()
+                                                    .then(success => {
+                                                        // Internet connection available
+                                                        this.addToWishList();
+                                                    }, error => {
+                                                        // Internet connection unavailable
+                                                        CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                                                    })
+                                                }>
                                             <Text style={styles.btnText}>Add to Wish-list</Text>
                                         </TouchableOpacity>,
                                     watchedListBtnJsx:
                                         <TouchableOpacity style={styles.watchedListBtn}
-                                            onPress={() => this.addToWatchedList()}>
+                                            onPress={() =>
+                                                netCon.checkNetCon()
+                                                    .then(success => {
+                                                        // Internet connection available
+                                                        this.addToWatchedList()
+                                                    }, error => {
+                                                        // Internet connection unavailable
+                                                        CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
+                                                    })
+                                                }>
                                             <Text style={styles.btnText}>Add to Watched-list</Text>
                                         </TouchableOpacity>,
                                 }, () =>
