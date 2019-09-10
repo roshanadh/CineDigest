@@ -134,7 +134,12 @@ export default class ValidateEmailScreen extends Component {
             return new Promise((resolve, reject) => {
                 let ranString = this.genCode();
                 console.warn(ranString);
-                db.mailer(this.state.email, 'Validation Code', 'Your validation code is: ' + ranString)
+                db.mailer(this.state.email,
+                        'Validation Code',
+                        'Your validation code is: ' + ranString
+                        + '\nTHIS CODE WILL BE DISCARDED IN A FEW MOMENTS. '
+                        + 'IF YOU CANNOT VALIDATE USING THIS CODE, TRY RESENDING THE CODE!'
+                    )
                     .then(success => {
                         console.warn('Mailed successfully!');
                         resolve(ranString);
