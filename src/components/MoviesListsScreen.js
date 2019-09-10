@@ -183,7 +183,6 @@ export default class MoviesListsScreen extends Component {
 								for (let i = len - 1; i >= len - safeMinus; i--) {
 									titleIds.push(result[i].titleId);
 									titles.push(result[i].titleName);
-
 									let fullOverview = result[i].titleOverview;
 									// Limit overview to 150 characters or less
 
