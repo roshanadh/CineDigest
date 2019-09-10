@@ -423,6 +423,10 @@ export default class ProfileScreen extends Component {
                     }, error => {
                         console.warn('Mail could not be sent!');
                         reject(false);
+                    })
+                    .catch(error => {
+                        console.warn(error);
+                        CustomSnackbar.showSnackBar('An error occurred. Please try again later', 'always', '#e74c3c', 'OK');
                     });
             });
         };

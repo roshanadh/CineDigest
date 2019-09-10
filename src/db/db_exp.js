@@ -17,7 +17,15 @@ class Database {
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
             })
-                .then(response => response.json())
+                .then(response => {
+                    let jsonResponse;
+                    try {
+                        jsonResponse = response.json();
+                    } catch (error) {
+                        reject(error);
+                    }
+                    return jsonResponse;
+                })
                 .then(jsonResponse => {
                     if (jsonResponse.status !== 'OP-NOT-DONE') {
                         console.warn('Mail sent to ' + email);
