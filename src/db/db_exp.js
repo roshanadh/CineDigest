@@ -12,7 +12,7 @@ class Database {
                 mail,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/mailer', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/mailer', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -44,7 +44,7 @@ class Database {
                 uuid,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/getUser', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/getUser', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -76,7 +76,7 @@ class Database {
                 email,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/checkEmail', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/checkEmail', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -105,7 +105,7 @@ class Database {
                 emailCipher,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/resetPassword', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/resetPassword', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -141,7 +141,7 @@ class Database {
                 name,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/register', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/register', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -178,7 +178,7 @@ class Database {
                 email,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/validate', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/validate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -205,7 +205,7 @@ class Database {
                 password,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/verify', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/verify', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -253,7 +253,7 @@ class Database {
                     newEmail,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                fetch('https://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formBody,
@@ -288,7 +288,7 @@ class Database {
                     newName,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                fetch('https://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formBody,
@@ -323,7 +323,7 @@ class Database {
                     newEmail,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                fetch('https://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formBody,
@@ -358,7 +358,7 @@ class Database {
                     newEmail,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                fetch('https://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formBody,
@@ -386,7 +386,7 @@ class Database {
                     newUsername,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                fetch('https://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formBody,
@@ -420,7 +420,7 @@ class Database {
                     newName,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                fetch('https://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formBody,
@@ -448,7 +448,7 @@ class Database {
                     newEmail,
                 };
                 const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-                fetch('http://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
+                fetch('https://api-cine-digest.herokuapp.com/api/v1/updateProfile', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                     body: formBody,
@@ -480,7 +480,7 @@ class Database {
                 newPassword,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/changePassword', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/changePassword', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -515,7 +515,7 @@ class Database {
                 titlePosterPath: request.titlePosterPath,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/addMovieToWishList', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/addMovieToWishList', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -550,7 +550,7 @@ class Database {
                 titlePosterPath: request.titlePosterPath,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/addMovieToWatchedList', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/addMovieToWatchedList', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -585,7 +585,7 @@ class Database {
                 titlePosterPath: request.titlePosterPath,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/addShowToWishList', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/addShowToWishList', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -620,7 +620,7 @@ class Database {
                 titlePosterPath: request.titlePosterPath,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/addShowToWatchingList', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/addShowToWatchingList', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -655,7 +655,7 @@ class Database {
                 titlePosterPath: request.titlePosterPath,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/addShowToWatchedList', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/addShowToWatchedList', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -685,7 +685,7 @@ class Database {
                 titleType: request.titleType,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/removeFromList', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/removeFromList', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -713,7 +713,7 @@ class Database {
                 titleType,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/getHistory', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/getHistory', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -739,7 +739,7 @@ class Database {
                 uuid,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/getStats', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/getStats', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -768,7 +768,7 @@ class Database {
                 titleType,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/isInList', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/isInList', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -795,7 +795,7 @@ class Database {
                 titleType,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/getRecentTitles', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/getRecentTitles', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
@@ -842,7 +842,7 @@ class Database {
                                     };
                                     const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
                                     // Check if movie is already in a list
-                                    fetch('http://api-cine-digest.herokuapp.com/api/v1/isInList', {
+                                    fetch('https://api-cine-digest.herokuapp.com/api/v1/isInList', {
                                         method: 'POST',
                                         headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                                         body: formBody,
@@ -891,7 +891,7 @@ class Database {
                 titleType,
             };
             const formBody = Object.keys(payload).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(payload[key])).join('&');
-            fetch('http://api-cine-digest.herokuapp.com/api/v1/removeFromList', {
+            fetch('https://api-cine-digest.herokuapp.com/api/v1/removeFromList', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
                 body: formBody,
