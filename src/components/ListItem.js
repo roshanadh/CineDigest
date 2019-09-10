@@ -19,7 +19,7 @@ export default class ListItem extends Component {
             overview: this.props.overview,
             voteCount: this.props.voteCount,
             voteAverage: this.props.voteAverage,
-            posterPath: this.props.posterPath,
+            posterPath: `https://image.tmdb.org/t/p/w185${this.props.posterPath}`,
         };
     }
 

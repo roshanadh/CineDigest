@@ -238,7 +238,7 @@ export default class MovieDetails extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.originalPosterPath,
+                                    titlePosterPath: this.state.posterPath,
                                     titleType: 'movie',
                                     uuid: this.state.uuid,
                                 })
@@ -278,7 +278,7 @@ export default class MovieDetails extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.originalPosterPath,
+                                    titlePosterPath: this.state.posterPath,
                                     titleType: 'movie',
                                     uuid: this.state.uuid,
                                 })
@@ -321,7 +321,7 @@ export default class MovieDetails extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titlePosterPath: this.state.originalPosterPath,
+                                    titlePosterPath: this.state.posterPath,
                                     titleType: 'movie',
                                     uuid: this.state.uuid,
                                 })
