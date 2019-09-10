@@ -331,7 +331,7 @@ export default class ShowDetailsScreen extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titleoriginalPosterPath: this.state.originalPosterPath,
+                                    titlePosterPath: this.state.posterPath,
                                     titleType: 'show',
                                     uuid: this.state.uuid,
                                 })
@@ -369,7 +369,7 @@ export default class ShowDetailsScreen extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titleoriginalPosterPath: this.state.originalPosterPath,
+                                    titlePosterPath: this.state.posterPath,
                                     titleType: 'show',
                                     uuid: this.state.uuid,
                                 })
@@ -407,7 +407,7 @@ export default class ShowDetailsScreen extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titleoriginalPosterPath: this.state.originalPosterPath,
+                                    titlePosterPath: this.state.posterPath,
                                     titleType: 'show',
                                     uuid: this.state.uuid,
                                 })
@@ -456,7 +456,7 @@ export default class ShowDetailsScreen extends Component {
                                     titleOverview: this.state.overview,
                                     titleVoteCount: this.state.voteCount,
                                     titleVoteAverage: this.state.voteAverage,
-                                    titleoriginalPosterPath: this.state.originalPosterPath,
+                                    titlePosterPath: this.state.posterPath,
                                     titleType: 'show',
                                     uuid: this.state.uuid,
                                 })
