@@ -16,7 +16,7 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import Pie from 'react-native-pie'
+import Pie from 'react-native-pie';
 
 import netCon from '../util/NetCon';
 import CustomSnackbar from '../util/Snackbar';
@@ -460,37 +460,60 @@ export default class ProfileScreen extends Component {
                     } = this.state.stats;
 
                     const movieSeries = [(listedInWishMovies / listedMovies) * 100, (listedInWatchedMovies / listedMovies) * 100];
+                    const showSeries = [(listedInWishShows / listedShows) * 100, (listedInWatchedShows / listedShows) * 100, (listedInWatchingShows / listedShows) * 100];
 
+                    const moviePieJsx =
+                        this.state.stats.listedMovies > 0 ?
+                            <View style={styles.pieContainer}>
+                                <Pie
+                                    radius={80}
+                                    innerRadius={60}
+                                    series={movieSeries}
+                                    colors={['#f00', '#0f0']}
+                                    backgroundColor={'#000'} />
+                                <View style={styles.moviePieInfo}>
+                                    <Text style={styles.pieInfoText}>Movies</Text>
+                                </View>
+                            </View> : null;
+
+                    const showPieJsx =
+                        this.state.stats.listedShows > 0 ?
+                            <View style={styles.pieContainer}>
+                                <Pie
+                                    radius={80}
+                                    innerRadius={60}
+                                    series={showSeries}
+                                    colors={['#f00', '#0f0', '#bbb']}
+                                    backgroundColor={'#000'} />
+                                <View style={styles.showPieInfo}>
+                                    <Text style={styles.pieInfoText}>Shows</Text>
+                                </View>
+                            </View> : null;
                     return (
                         listedMovies + listedShows +
                         listedInWishMovies + listedInWishShows +
                         listedInWatchedMovies + listedInWatchedShows +
                         listedInWatchingShows > 0 ?
                             <View style={styles.statsContainer}>
-                                {this.state.stats.listedMovies > 0 ?
-                                    <View style={styles.pieContainer}>
-                                        <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
-                                        <Pie
-                                            radius={100}
-                                            innerRadius={80}
-                                            series={movieSeries}
-                                            colors={['#f00', '#0f0']}
-                                            backgroundColor={'#000'} />
-                                        <View style={styles.pieInfo}>
-                                            <Text style={styles.pieInfoText}>Movies</Text>
-                                        </View>
-                                        <View style={styles.gauge}>
-                                            <View style={styles.pieIndex}>
-                                                <View style={{ ...styles.indexColor, backgroundColor: '#0f0' }} />
-                                                <Text style={styles.gaugeText}>Movies in Wish List</Text>
-                                            </View>
-                                            <View style={styles.pieIndex}>
-                                                <View style={{ ...styles.indexColor, backgroundColor: '#f00' }} />
-                                                <Text style={styles.gaugeText}>Movies in Watched List</Text>
-                                            </View>
-                                        </View>
-                                    </View> : null
-                                }
+                                <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
+                                <View style={styles.graphicsMetaContainer}>
+                                    {moviePieJsx}
+                                    {showPieJsx}
+                                </View>
+                                <View style={styles.indexContainer}>
+                                    <View style={styles.pieIndex}>
+                                        <View style={{ ...styles.indexColor, backgroundColor: '#0f0' }} />
+                                        <Text style={styles.gaugeText}>Wish List</Text>
+                                    </View>
+                                    <View style={styles.pieIndex}>
+                                        <View style={{ ...styles.indexColor, backgroundColor: '#f00' }} />
+                                        <Text style={styles.gaugeText}>Watched List</Text>
+                                    </View>
+                                    <View style={styles.pieIndex}>
+                                        <View style={{ ...styles.indexColor, backgroundColor: '#bbb' }} />
+                                        <Text style={styles.gaugeText}>Watching List</Text>
+                                    </View>
+                                </View>
                             </View> : null
                     );
                 } else {
@@ -754,6 +777,11 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         backgroundColor: '#fff',
     },
+    graphicsMetaContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
     statsHeader: {
         fontSize: 13,
         color: '#34495e',
@@ -761,20 +789,30 @@ const styles = StyleSheet.create({
         marginBottom: 15,
     },
     pieContainer: {
-        width: '100%',
         alignItems: 'center',
+        marginHorizontal: 10,
     },
-    pieInfo: {
+    moviePieInfo: {
         position: 'absolute',
         width: 100,
-        height: 260,
+        height: 160,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    showPieInfo: {
+        position: 'absolute',
+        width: 100,
+        height: 160,
         alignItems: 'center',
         justifyContent: 'center',
     },
     pieInfoText: {
         backgroundColor: 'transparent',
         color: '#67809f',
-        fontSize: 24,
+        fontSize: 14,
+    },
+    indexContainer: {
+        margin: 20,
     },
     pieIndex: {
         marginVertical: 10,
