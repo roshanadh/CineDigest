@@ -495,7 +495,7 @@ export default class ProfileScreen extends Component {
                         listedInWatchedMovies + listedInWatchedShows +
                         listedInWatchingShows > 0 ?
                             <View style={styles.statsContainer}>
-                                <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
+                                <Text style={styles.statsHeader}>We thought you'd like some pies!</Text>
                                 <View style={styles.graphicsMetaContainer}>
                                     {moviesPieJsx}
                                     {showsPieJsx}
