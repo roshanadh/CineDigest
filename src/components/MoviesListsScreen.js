@@ -36,6 +36,7 @@ export default class MoviesListsScreen extends Component {
 			uuid: '',
 			searchQuery: '',
 			filterYear: '',
+			filterShown: false,
 			movieRecoms: [
 				{
 					title: 'The Green Mile' ,
@@ -300,9 +301,9 @@ export default class MoviesListsScreen extends Component {
 
 	filterShown = (isShown) => {
 		if (isShown) {
-			this.setState({scrollViewMargin: 120});
+			this.setState({scrollViewMargin: 120, filterShown: true});
 		} else {
-			this.setState({scrollViewMargin: 60});
+			this.setState({scrollViewMargin: 60, filterShown: false});
 		}
 	};
 
@@ -314,7 +315,7 @@ export default class MoviesListsScreen extends Component {
 				} else {
 					this.props.navigation.navigate('SearchScreen', {
 						searchQuery: this.state.searchQuery,
-						releaseYear: this.state.filterYear,
+						releaseYear: this.state.filterShown ? this.state.filterYear : null,
 						searchType: 'm',
 						username: this.state.username,
 						uuid: this.state.uuid,
