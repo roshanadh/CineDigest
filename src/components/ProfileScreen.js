@@ -16,6 +16,8 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import Pie from 'react-native-pie';
+
 import netCon from '../util/NetCon';
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp';
@@ -79,7 +81,6 @@ export default class ProfileScreen extends Component {
                     // Internet connection unavailable
                     CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
                 });
-            
         };
 
         this.updateProfile = () => {
@@ -448,43 +449,71 @@ export default class ProfileScreen extends Component {
                 // No errors
                 if (this.state.validatedStatus) {
                     // Display stats for user
+                    const {
+                        listedMovies,
+                        listedShows,
+                        listedInWishMovies,
+                        listedInWishShows,
+                        listedInWatchedMovies,
+                        listedInWatchedShows,
+                        listedInWatchingShows,
+                    } = this.state.stats;
+
+                    const moviesSeries = [(listedInWishMovies / listedMovies) * 100, (listedInWatchedMovies / listedMovies) * 100];
+                    const showsSeries = [(listedInWishShows / listedShows) * 100, (listedInWatchedShows / listedShows) * 100, (listedInWatchingShows / listedShows) * 100];
+
+                    const moviesPieJsx =
+                        this.state.stats.listedMovies > 0 ?
+                            <View style={styles.pieContainer}>
+                                <Pie
+                                    radius={80}
+                                    innerRadius={60}
+                                    series={moviesSeries}
+                                    colors={['#019875', '#22a7f0']}
+                                    backgroundColor={'#000'} />
+                                <View style={styles.moviePieInfo}>
+                                    <Text style={styles.pieInfoText}>Movies</Text>
+                                </View>
+                            </View> : null;
+
+                    const showsPieJsx =
+                        this.state.stats.listedShows > 0 ?
+                            <View style={styles.pieContainer}>
+                                <Pie
+                                    radius={80}
+                                    innerRadius={60}
+                                    series={showsSeries}
+                                    colors={['#019875', '#22a7f0', '#f27935']}
+                                    backgroundColor={'#000'} />
+                                <View style={styles.showPieInfo}>
+                                    <Text style={styles.pieInfoText}>Shows</Text>
+                                </View>
+                            </View> : null;
                     return (
-                        this.state.stats.listedMovies + this.state.stats.listedShows +
-                        this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows +
-                        this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows +
-                        this.state.stats.listedInWatchingShows > 0 ?
+                        listedMovies + listedShows +
+                        listedInWishMovies + listedInWishShows +
+                        listedInWatchedMovies + listedInWatchedShows +
+                        listedInWatchingShows > 0 ?
                             <View style={styles.statsContainer}>
-                                <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
-                                {
-                                    (this.state.stats.listedMovies + this.state.stats.listedShows) > 0 ?
-                                        <Text style={styles.statWrapper}>
-                                            <Text style={styles.statNumber}>{this.state.stats.listedMovies + this.state.stats.listedShows}</Text>{'\t'} titles listed!
-                                        </Text> : null
-                                }
-                                <Text>
-                                    {
-                                        (this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows) > 0 ?
-                                            <Text style={styles.statWrapper}>
-                                                <Text style={styles.statNumber}>{this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows}</Text>{'\t'} titles in your wish list!
-                                        </Text> : null
-                                    }
-                                </Text>
-                                <Text>
-                                    {
-                                        (this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows) > 0 ?
-                                            <Text style={styles.statWrapper}>
-                                                <Text style={styles.statNumber}>{this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows}</Text>{'\t'} titles in your watched list!
-                                </Text> : null
-                                    }
-                                </Text>
-                                <Text>
-                                    {
-                                        this.state.stats.listedInWatchingShows > 0 ?
-                                            <Text style={styles.statWrapper}>
-                                                <Text style={styles.statNumber}>{this.state.stats.listedInWatchingShows}</Text>{'\t'} titles in your watching list!
-                                </Text> : null
-                                    }
-                                </Text>
+                                <Text style={styles.statsHeader}>We thought you'd like some pies!</Text>
+                                <View style={styles.graphicsMetaContainer}>
+                                    {moviesPieJsx}
+                                    {showsPieJsx}
+                                </View>
+                                <View style={styles.indexContainer}>
+                                    <View style={styles.pieIndex}>
+                                        <View style={{ ...styles.indexColor, backgroundColor: '#22a7f0' }} />
+                                        <Text style={styles.gaugeText}>Wish List</Text>
+                                    </View>
+                                    <View style={styles.pieIndex}>
+                                        <View style={{ ...styles.indexColor, backgroundColor: '#019875' }} />
+                                        <Text style={styles.gaugeText}>Watched List</Text>
+                                    </View>
+                                    <View style={styles.pieIndex}>
+                                        <View style={{ ...styles.indexColor, backgroundColor: '#f27935' }} />
+                                        <Text style={styles.gaugeText}>Watching List</Text>
+                                    </View>
+                                </View>
                             </View> : null
                     );
                 } else {
@@ -743,13 +772,15 @@ const styles = StyleSheet.create({
     },
     statsContainer: {
         borderWidth: 0.1,
-        borderColor: '#013243',
-        flexDirection: 'column',
+        width: '100%',
         padding: 20,
         paddingBottom: 10,
-        flex: 1,
-        width: '100%',
         backgroundColor: '#fff',
+    },
+    graphicsMetaContainer: {
+        flexDirection: 'row',
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     statsHeader: {
         fontSize: 13,
@@ -757,13 +788,48 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 15,
     },
-    statWrapper: {
-        fontSize: 14,
-        color: '#22313f',
+    pieContainer: {
+        alignItems: 'center',
+        marginHorizontal: 10,
     },
-    statNumber: {
-        fontSize: 18,
+    moviePieInfo: {
+        position: 'absolute',
+        width: 100,
+        height: 160,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    showPieInfo: {
+        position: 'absolute',
+        width: 100,
+        height: 160,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    pieInfoText: {
+        backgroundColor: 'transparent',
         color: '#67809f',
+        fontSize: 14,
+    },
+    indexContainer: {
+        margin: 20,
+    },
+    pieIndex: {
+        marginVertical: 10,
+        flexDirection: 'row',
+    },
+    indexColor: {
+        marginRight: 8,
+        width: 10,
+        borderRadius: 100,
+    },
+    gauge: {
+        marginTop: 20,
+    },
+    gaugeText: {
+        backgroundColor: 'transparent',
+        color: '#67809f',
+        fontSize: 12,
     },
     profileIcon: {
         margin: 25,
