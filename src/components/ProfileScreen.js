@@ -459,31 +459,31 @@ export default class ProfileScreen extends Component {
                         listedInWatchingShows,
                     } = this.state.stats;
 
-                    const movieSeries = [(listedInWishMovies / listedMovies) * 100, (listedInWatchedMovies / listedMovies) * 100];
-                    const showSeries = [(listedInWishShows / listedShows) * 100, (listedInWatchedShows / listedShows) * 100, (listedInWatchingShows / listedShows) * 100];
+                    const moviesSeries = [(listedInWishMovies / listedMovies) * 100, (listedInWatchedMovies / listedMovies) * 100];
+                    const showsSeries = [(listedInWishShows / listedShows) * 100, (listedInWatchedShows / listedShows) * 100, (listedInWatchingShows / listedShows) * 100];
 
-                    const moviePieJsx =
+                    const moviesPieJsx =
                         this.state.stats.listedMovies > 0 ?
                             <View style={styles.pieContainer}>
                                 <Pie
                                     radius={80}
                                     innerRadius={60}
-                                    series={movieSeries}
-                                    colors={['#f00', '#0f0']}
+                                    series={moviesSeries}
+                                    colors={['#019875', '#22a7f0']}
                                     backgroundColor={'#000'} />
                                 <View style={styles.moviePieInfo}>
                                     <Text style={styles.pieInfoText}>Movies</Text>
                                 </View>
                             </View> : null;
 
-                    const showPieJsx =
+                    const showsPieJsx =
                         this.state.stats.listedShows > 0 ?
                             <View style={styles.pieContainer}>
                                 <Pie
                                     radius={80}
                                     innerRadius={60}
-                                    series={showSeries}
-                                    colors={['#f00', '#0f0', '#bbb']}
+                                    series={showsSeries}
+                                    colors={['#019875', '#22a7f0', '#f27935']}
                                     backgroundColor={'#000'} />
                                 <View style={styles.showPieInfo}>
                                     <Text style={styles.pieInfoText}>Shows</Text>
@@ -497,20 +497,20 @@ export default class ProfileScreen extends Component {
                             <View style={styles.statsContainer}>
                                 <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
                                 <View style={styles.graphicsMetaContainer}>
-                                    {moviePieJsx}
-                                    {showPieJsx}
+                                    {moviesPieJsx}
+                                    {showsPieJsx}
                                 </View>
                                 <View style={styles.indexContainer}>
                                     <View style={styles.pieIndex}>
-                                        <View style={{ ...styles.indexColor, backgroundColor: '#0f0' }} />
+                                        <View style={{ ...styles.indexColor, backgroundColor: '#22a7f0' }} />
                                         <Text style={styles.gaugeText}>Wish List</Text>
                                     </View>
                                     <View style={styles.pieIndex}>
-                                        <View style={{ ...styles.indexColor, backgroundColor: '#f00' }} />
+                                        <View style={{ ...styles.indexColor, backgroundColor: '#019875' }} />
                                         <Text style={styles.gaugeText}>Watched List</Text>
                                     </View>
                                     <View style={styles.pieIndex}>
-                                        <View style={{ ...styles.indexColor, backgroundColor: '#bbb' }} />
+                                        <View style={{ ...styles.indexColor, backgroundColor: '#f27935' }} />
                                         <Text style={styles.gaugeText}>Watching List</Text>
                                     </View>
                                 </View>
