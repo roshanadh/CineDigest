@@ -39,7 +39,7 @@ export default class AboutScreen extends Component {
                                 movie and television enthusiasts to gather their interests.
                             </Text>
                             <Text style={styles.text}>
-                                The application, together with its API, was developed as part of Minor Project II for
+                                The application was developed as part of Minor Project II for
                             </Text>
                             <Text style={styles.collegeName}>
                                 Gandaki College of Engineering and Science{'\n'}
