@@ -794,7 +794,7 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         padding: 15,
         width: '80%',
-        backgroundColor: '#8e44ad',
+        backgroundColor: '#f27935',
         marginBottom: 10,
     },
     watchedListBtn: {
