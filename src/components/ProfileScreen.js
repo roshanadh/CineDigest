@@ -418,8 +418,8 @@ export default class ProfileScreen extends Component {
                 console.warn(ranString);
                 db.mailer(this.state.newEmail.trim().length !== 0 ? this.state.newEmail : this.state.email,
                     'Validation Code',
-                    'Your validation code is: ' + ranString
-                    + '\nTHIS CODE WILL BE DISCARDED IN A FEW MOMENTS. '
+                    'Your one-time validation code is: ' + ranString
+                    + '\nTHIS CODE WILL BE DISCARDED IF YOU SIGNIN STRAIGHT AWAY. '
                     + 'IF YOU CANNOT VALIDATE USING THIS CODE, TRY RESENDING THE CODE!'
                 )
                     .then(success => {
