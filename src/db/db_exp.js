@@ -818,7 +818,7 @@ class Database {
     getTitleRecommendations(uuid, titleType) {
         return new Promise((resolve, reject) => {
             this.getRecentTitles(uuid, titleType)
-                // Get last 5 entries to history table
+                // Get last 10 entries to history table
                 .then((result) => {
                     if (result.length > 2) {
                         // Proceed only if atleast 3 titles have been added to lists
