@@ -16,6 +16,8 @@ import AntDesignIcon from 'react-native-vector-icons/AntDesign';
 import FeatherIcon from 'react-native-vector-icons/Feather';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
+import Pie from 'react-native-pie'
+
 import netCon from '../util/NetCon';
 import CustomSnackbar from '../util/Snackbar';
 import db from '../db/db_exp';
@@ -79,7 +81,6 @@ export default class ProfileScreen extends Component {
                     // Internet connection unavailable
                     CustomSnackbar.showSnackBar('An internet connection is required!', 'always', '#e74c3c', 'OK');
                 });
-            
         };
 
         this.updateProfile = () => {
@@ -448,43 +449,48 @@ export default class ProfileScreen extends Component {
                 // No errors
                 if (this.state.validatedStatus) {
                     // Display stats for user
+                    const {
+                        listedMovies,
+                        listedShows,
+                        listedInWishMovies,
+                        listedInWishShows,
+                        listedInWatchedMovies,
+                        listedInWatchedShows,
+                        listedInWatchingShows,
+                    } = this.state.stats;
+
+                    const movieSeries = [(listedInWishMovies / listedMovies) * 100, (listedInWatchedMovies / listedMovies) * 100];
+
                     return (
-                        this.state.stats.listedMovies + this.state.stats.listedShows +
-                        this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows +
-                        this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows +
-                        this.state.stats.listedInWatchingShows > 0 ?
+                        listedMovies + listedShows +
+                        listedInWishMovies + listedInWishShows +
+                        listedInWatchedMovies + listedInWatchedShows +
+                        listedInWatchingShows > 0 ?
                             <View style={styles.statsContainer}>
-                                <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
-                                {
-                                    (this.state.stats.listedMovies + this.state.stats.listedShows) > 0 ?
-                                        <Text style={styles.statWrapper}>
-                                            <Text style={styles.statNumber}>{this.state.stats.listedMovies + this.state.stats.listedShows}</Text>{'\t'} titles listed!
-                                        </Text> : null
+                                {this.state.stats.listedMovies > 0 ?
+                                    <View style={styles.pieContainer}>
+                                        <Text style={styles.statsHeader}>We thought you'd like some numbers</Text>
+                                        <Pie
+                                            radius={100}
+                                            innerRadius={80}
+                                            series={movieSeries}
+                                            colors={['#f00', '#0f0']}
+                                            backgroundColor={'#000'} />
+                                        <View style={styles.pieInfo}>
+                                            <Text style={styles.pieInfoText}>Movies</Text>
+                                        </View>
+                                        <View style={styles.gauge}>
+                                            <View style={styles.pieIndex}>
+                                                <View style={{ ...styles.indexColor, backgroundColor: '#0f0' }} />
+                                                <Text style={styles.gaugeText}>Movies in Wish List</Text>
+                                            </View>
+                                            <View style={styles.pieIndex}>
+                                                <View style={{ ...styles.indexColor, backgroundColor: '#f00' }} />
+                                                <Text style={styles.gaugeText}>Movies in Watched List</Text>
+                                            </View>
+                                        </View>
+                                    </View> : null
                                 }
-                                <Text>
-                                    {
-                                        (this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows) > 0 ?
-                                            <Text style={styles.statWrapper}>
-                                                <Text style={styles.statNumber}>{this.state.stats.listedInWishMovies + this.state.stats.listedInWishShows}</Text>{'\t'} titles in your wish list!
-                                        </Text> : null
-                                    }
-                                </Text>
-                                <Text>
-                                    {
-                                        (this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows) > 0 ?
-                                            <Text style={styles.statWrapper}>
-                                                <Text style={styles.statNumber}>{this.state.stats.listedInWatchedMovies + this.state.stats.listedInWatchedShows}</Text>{'\t'} titles in your watched list!
-                                </Text> : null
-                                    }
-                                </Text>
-                                <Text>
-                                    {
-                                        this.state.stats.listedInWatchingShows > 0 ?
-                                            <Text style={styles.statWrapper}>
-                                                <Text style={styles.statNumber}>{this.state.stats.listedInWatchingShows}</Text>{'\t'} titles in your watching list!
-                                </Text> : null
-                                    }
-                                </Text>
                             </View> : null
                     );
                 } else {
@@ -743,12 +749,9 @@ const styles = StyleSheet.create({
     },
     statsContainer: {
         borderWidth: 0.1,
-        borderColor: '#013243',
-        flexDirection: 'column',
+        width: '100%',
         padding: 20,
         paddingBottom: 10,
-        flex: 1,
-        width: '100%',
         backgroundColor: '#fff',
     },
     statsHeader: {
@@ -757,13 +760,38 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         marginBottom: 15,
     },
-    statWrapper: {
-        fontSize: 14,
-        color: '#22313f',
+    pieContainer: {
+        width: '100%',
+        alignItems: 'center',
     },
-    statNumber: {
-        fontSize: 18,
+    pieInfo: {
+        position: 'absolute',
+        width: 100,
+        height: 260,
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    pieInfoText: {
+        backgroundColor: 'transparent',
         color: '#67809f',
+        fontSize: 24,
+    },
+    pieIndex: {
+        marginVertical: 10,
+        flexDirection: 'row',
+    },
+    indexColor: {
+        marginRight: 8,
+        width: 10,
+        borderRadius: 100,
+    },
+    gauge: {
+        marginTop: 20,
+    },
+    gaugeText: {
+        backgroundColor: 'transparent',
+        color: '#67809f',
+        fontSize: 12,
     },
     profileIcon: {
         margin: 25,
