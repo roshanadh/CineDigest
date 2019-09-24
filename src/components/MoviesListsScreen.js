@@ -366,7 +366,7 @@ export default class MoviesListsScreen extends Component {
 							.then(result => {
 								console.warn('getTitleR called!');
 								// Promise takes time to resolve..
-								// wait 5 seconds before updating state.
+								// wait 3 seconds before updating state.
 								setTimeout(() => {
 									// Update state only if the resolved promise..
 									// is not empty.
