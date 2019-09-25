@@ -8,6 +8,7 @@ import {
     ActivityIndicator,
 } from 'react-native';
 
+import CustomSnackbar from '../util/Snackbar';
 import RecommendationsList from './RecommendationsList';
 import netCon from '../util/NetCon';
 
@@ -78,11 +79,16 @@ export default class RecommendationsScreen extends Component {
         fetch(`https://api-cine-digest.herokuapp.com/api/v1/${path}/${this.titleId}`)
             .then(response => response.json())
             .then(jsonResponse => { // TODO read full response, not just titles
-                this.setState({
-                    isEmpty: false,
-                    searchResponse: jsonResponse,
-                });
-            }) // TODO fix response status parsing
+                if (jsonResponse.status !== 'NOT-FOUND') {
+                    this.setState({
+                        isEmpty: false,
+                        searchResponse: jsonResponse,
+                    });
+                } else {
+                    CustomSnackbar.showSnackBar('Couldn\'t find any similar titles!', 'long', '#e74c3c', 'OK');
+                    this.props.navigation.goBack();
+                }
+            })
             .catch(error => {
                 Alert.alert('Something went wrong', `Please try again!`, [{
                     text: 'OK',
