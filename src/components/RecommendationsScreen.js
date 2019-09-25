@@ -78,7 +78,7 @@ export default class RecommendationsScreen extends Component {
         }
         fetch(`https://api-cine-digest.herokuapp.com/api/v1/${path}/${this.titleId}`)
             .then(response => response.json())
-            .then(jsonResponse => { // TODO read full response, not just titles
+            .then(jsonResponse => {
                 if (jsonResponse.status !== 'NOT-FOUND') {
                     this.setState({
                         isEmpty: false,

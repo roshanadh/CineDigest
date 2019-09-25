@@ -10,7 +10,6 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 
 export default class ListItem extends Component {
     constructor(props) {
-        // alert(props.titleId);
         super(props);
 
         this.state = {

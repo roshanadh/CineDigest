@@ -68,7 +68,7 @@ export default class SearchScreen extends Component {
         console.warn('Search query: ' + searchQuery);
         fetch(`https://api-cine-digest.herokuapp.com/api/v1/search${this.searchType}/${searchQuery}`)
             .then(response => response.json())
-            .then(jsonResponse => { // TODO read full response, not just titles
+            .then(jsonResponse => {
                 if (jsonResponse.status === 'NOT-FOUND') {
                     CustomSnackbar.showSnackBar('No results found!', 'long', '#e74c3c', 'OK');
                     this.props.navigation.goBack();
@@ -78,7 +78,7 @@ export default class SearchScreen extends Component {
                         searchResponse: jsonResponse,
                     });
                 }
-            }) // TODO fix response status parsing
+            })
             .catch(error => {
                 CustomSnackbar.showSnackBar('Request couldn\'t be handled!', 'long', '#e74c3c', 'OK');
                 this.props.navigation.goBack();
