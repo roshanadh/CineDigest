@@ -183,7 +183,7 @@ export default class ValidateEmailScreen extends Component {
                 />
                 <ScrollView>
                     <View style={styles.container}>
-                        <Text style={styles.welcomeText}>Cine Digest</Text>
+                        <Text style={styles.welcomeText}>Let us know it's you!</Text>
 
                         <Text style={styles.infoText}>Please validate your email using the code you have received at {this.state.email}.</Text>
                         <View style={styles.metaWrapper}>
@@ -242,14 +242,14 @@ const styles = StyleSheet.create({
         padding: 25,
     },
     welcomeText: {
-        fontSize: responsiveFontSize(6),
+        fontSize: responsiveFontSize(3),
         fontFamily: 'Quicksand-Light',
         width: '100%',
         marginBottom: 40,
         textAlign: 'center',
         color: '#963694',
         textShadowColor: '#aaa',
-        textShadowRadius: 6,
+        textShadowRadius: 1,
     },
     infoText: {
         textAlign: 'center',

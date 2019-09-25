@@ -9,6 +9,7 @@ import {
 	Dimensions,
 	ActivityIndicator,
 	ScrollView,
+	Image,
 } from 'react-native';
 import { responsiveFontSize } from 'react-native-responsive-dimensions';
 
@@ -168,7 +169,9 @@ class SignInScreen extends Component {
 				/>
 				<ScrollView>
 					<View style={styles.container}>
-						<Text style={styles.welcomeText}>Cine Digest</Text>
+						<Image source={require('../assets/logo.png')}
+							style={styles.logo}
+							resizeMode="contain" />
 						<View style={styles.signInForm}>
 							<View style={styles.usernameWrapper}>
 								<TextInput placeholder="Username"
@@ -237,7 +240,7 @@ const styles = StyleSheet.create({
 		justifyContent: 'flex-end',
 	},
 	logo: {
-		width: 250,
+		width: '100%',
 		height: 250,
 		flex: 1,
 		alignSelf: 'center',
