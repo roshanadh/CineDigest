@@ -639,7 +639,7 @@ export default class ShowDetailsScreen extends Component {
                     }, () => {
                         fetch(`https://api-cine-digest.herokuapp.com/api/v1/gets/${titleId}`)
                             .then(response => response.json())
-                            .then(jsonResponse => { // TODO read full response, not just titles
+                            .then(jsonResponse => {
                                 // Parse Genres from array of JSON
                                 let genres = [];
                                 for (let i = 0; i < jsonResponse.genres.length; i++) { genres[i] = jsonResponse.genres[i].name; }
@@ -668,9 +668,8 @@ export default class ShowDetailsScreen extends Component {
                                 this.initScreen()
                                     .then(() => resolve(true))
                                     .catch(error => reject(error));
-                            }) // TODO fix response status parsing
+                            })
                             .catch(error => {
-                                // alert('Oops!\nPlease make sure your search query is correct!');
                                 reject(false);
                             });
                     });
