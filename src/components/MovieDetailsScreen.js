@@ -10,6 +10,7 @@ import {
     Alert,
     ActivityIndicator,
 } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 import Icon from 'react-native-vector-icons/FontAwesome';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -33,6 +34,21 @@ export default class MovieDetails extends Component {
             },
         };
     };
+    setDate = (event, date) => {
+        const notifyYear = date.getFullYear().toString();
+        const notifyMonth =
+            (date.getMonth() + 1).toString().length < 2 ?
+                '0' + (date.getMonth() + 1).toString() :
+                (date.getMonth() + 1).toString();
+        const notifyDate = date.getDate().toString();
+        const notifyFullDate = notifyYear + '-' + notifyMonth + '-' + notifyDate;
+        this.setState({
+            showDate: false,
+            notifyDate: notifyFullDate,
+        });
+        // }, () => CustomSnackbar.showSnackBar('You will be notified in ' + this.state.notifyDate, 'long', '#3fc380', null));
+        console.warn('You will be notified in ' + this.state.notifyDate);
+    }
 
     constructor(props) {
         super(props);
@@ -40,6 +56,10 @@ export default class MovieDetails extends Component {
             'July', 'August', 'September', 'October', 'November', 'December',
         ];
         this.state = {
+            date: new Date('2019-09-28'),
+            maximumDate: null,
+            notifyDate: null,
+            showDate: false,
             username: '',
             uuid: '',
             titleId: '',
@@ -421,6 +441,16 @@ export default class MovieDetails extends Component {
                             {this.monthNames[new Date(this.state.releaseDate).getMonth()]}
                             {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
                         </Text>
+                        <Icon name="bell-o" size={20}
+                            color="#db0a5b"
+                            style={styles.notifyIcon}
+                            onPress={() => {
+                                console.warn('Ok you will be notified!');
+                                this.setState({ showDate: true },
+                                    () => {
+                                        console.warn(this.state.showDate + ' is showDate!');
+                                    });
+                            }} />
                     </View> :
                     <View style={styles.detailsContentWrapper}>
                         <Text style={styles.detailsTitle}>Released</Text>
@@ -428,6 +458,16 @@ export default class MovieDetails extends Component {
                             {this.monthNames[new Date(this.state.releaseDate).getMonth()]}
                             {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
                         </Text>
+                        <Icon name="bell-o" size={20}
+                            color="#db0a5b"
+                            style={styles.notifyIcon}
+                            onPress={() => {
+                                console.warn('Ok you will be notified!');
+                                this.setState({showDate: true},
+                                    () => {
+                                        console.warn(this.state.showDate + ' is showDate!');
+                                    });
+                            }} />
                     </View>
                 ) : null;
 
@@ -525,6 +565,7 @@ export default class MovieDetails extends Component {
                                     posterPath: jsonResponse.poster_path,
                                     originalPosterPath: `https://image.tmdb.org/t/p/original/${jsonResponse.poster_path}`,
                                     releaseDate: jsonResponse.release_date,
+                                    maximumDate: new Date(jsonResponse.release_date),
                                 });
                                 this.initScreen()
                                     .then(() => resolve(true))
@@ -542,8 +583,17 @@ export default class MovieDetails extends Component {
     willFocusSubscription = this.props.navigation.addListener(
         'willFocus',
         payload => {
+            const dateObj = new Date();
+            const currentYear = dateObj.getFullYear().toString();
+            const currentMonth =
+                (dateObj.getMonth() + 1).toString().length < 2 ?
+                    '0' + (dateObj.getMonth() + 1).toString() :
+                    (dateObj.getMonth() + 1).toString();
+            const currentDate = dateObj.getDate().toString();
+            const currentFullDate = currentYear + '-' + currentMonth + '-' + currentDate;
             console.debug('willFocus', payload);
             this.setState({
+                date: new Date(currentFullDate),
                 contentJsx: <ActivityIndicator size="large" color="#674172" style={styles.indicator} />,
             });
         }
@@ -555,7 +605,18 @@ export default class MovieDetails extends Component {
             console.debug('didFocus', payload);
             let titleId = this.props.navigation.getParam('titleId', null);
             console.warn('DID FOCUS titleID: ' + titleId);
-            this.setState({titleId}, () => {
+            const dateObj = new Date();
+            const currentYear = dateObj.getFullYear().toString();
+            const currentMonth =
+                (dateObj.getMonth() + 1).toString().length < 2 ?
+                    '0' + (dateObj.getMonth() + 1).toString() :
+                    (dateObj.getMonth() + 1).toString();
+            const currentDate = dateObj.getDate().toString();
+            const currentFullDate = currentYear + '-' + currentMonth + '-' + currentDate;
+            this.setState({
+                titleId,
+                date: new Date(currentFullDate),
+            }, () => {
                 console.warn('Added to state: ' + this.state.titleId);
                 this.getUserId()
                     .then(() => {
@@ -568,11 +629,22 @@ export default class MovieDetails extends Component {
     );
 
     render() {
+        const { showDate, date, maximumDate } = this.state;
         return (
             <ImageBackground blurRadius={2}
                 source={require('../assets/lilypads.png')}
                 resizeMode="cover" style={styles.bgImage}>
                 {this.state.contentJsx}
+                {showDate &&
+                    <DateTimePicker
+                        value={date}
+                        maximumDate={maximumDate}
+                        minimumDate={date}
+                        mode="date"
+                        display="default"
+                        onChange={this.setDate}
+                    />
+                }
             </ImageBackground>
         );
     }
@@ -641,6 +713,9 @@ const styles = StyleSheet.create({
         marginBottom: 15,
         fontSize: 15,
         textAlign: 'justify',
+    },
+    notifyIcon: {
+        marginLeft: 20,
     },
     detailsWrapper: {
         backgroundColor: 'rgba(218, 223, 225, 0.1)',
