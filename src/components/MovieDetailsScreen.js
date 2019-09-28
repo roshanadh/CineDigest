@@ -443,16 +443,6 @@ export default class MovieDetails extends Component {
                             {this.monthNames[new Date(this.state.releaseDate).getMonth()]}
                             {' ' + this.state.releaseDate.slice(-2)}, {' ' + this.state.releaseDate.slice(0, 4)}
                         </Text>
-                        <Icon name="bell-o" size={20}
-                            color="#db0a5b"
-                            style={styles.notifyIcon}
-                            onPress={() => {
-                                console.warn('Ok you will be notified!');
-                                this.setState({showDate: true},
-                                    () => {
-                                        console.warn(this.state.showDate + ' is showDate!');
-                                    });
-                            }} />
                     </View>
                 ) : null;
 
