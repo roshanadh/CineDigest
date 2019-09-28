@@ -128,16 +128,6 @@ export default class SeasonDetailsScreen extends Component {
 									{' ' + this.monthNames[new Date(this.state.episodeAirDates[i]).getMonth()]}
 											{' ' + this.state.episodeAirDates[i].slice(-2)}, {' ' + this.state.episodeAirDates[i].slice(0, 4)}
 										</Text>
-										<Icon name="bell-o" size={20}
-											color="#db0a5b"
-											style={styles.notifyIcon}
-											onPress={() => {
-												console.warn('Ok you will be notified!');
-												this.setState({ showDate: true },
-													() => {
-														console.warn(this.state.showDate + ' is showDate!');
-													});
-											}} />
 									</View>
 								) : null
 						}
@@ -287,7 +277,7 @@ export default class SeasonDetailsScreen extends Component {
 				soundName: 'default', // (optional) Sound to play when the notification is shown. Value of 'default' plays the default sound. It can be set to a custom sound such as 'android.resource://com.xyz/raw/my_sound'. It will look for the 'my_sound' audio file in 'res/raw' directory and play it. default: 'default' (default sound is played)
 				number: '10', // (optional) Valid 32 bit integer specified as string. default: none (Cannot be zero)
 				repeatType: 'day', // (optional) Repeating interval. Check 'Repeating Notifications' section for more info.
-				actions: '["Yes", "No"]',  // (Android only) See the doc for notification actions to know more
+				actions: '["OK"]',  // (Android only) See the doc for notification actions to know more
 				date: new Date(new Date(notifyYear, notifyMonth, notifyDay, 6, 20, 0).getTime()),
 			});
 			Alert.alert(
@@ -312,7 +302,8 @@ export default class SeasonDetailsScreen extends Component {
 	}
 
 	render() {
-		const { showDate, date, maximumDate } = this.state;
+		// TODO set maximumDate as in MovieDetailsScreen
+		const { showDate, date } = this.state;
 		return (
 			<ImageBackground blurRadius={2}
 				source={require('../assets/lilypads.png')}
@@ -321,7 +312,6 @@ export default class SeasonDetailsScreen extends Component {
 				{showDate &&
 					<DateTimePicker
 						value={date}
-						maximumDate={maximumDate}
 						minimumDate={date}
 						mode="date"
 						display="default"
