@@ -34,7 +34,6 @@ target 'CineDigest' do
 
 
 
-  pod 'RNDateTimePicker', :path => '../node_modules/@react-native-community/datetimepicker'
 
   target 'CineDigestTests' do
     inherit! :search_paths
